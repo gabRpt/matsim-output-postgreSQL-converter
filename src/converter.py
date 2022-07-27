@@ -56,7 +56,7 @@ def importPersons():
         
     # Importing the data to the database
     conn = tools.connectToDatabase()
-    # personGeoDataframe.to_sql('person', con=conn, if_exists='append', index=False, dtype={'first_act_coord': Geometry('POINT', srid=config.DB_SRID)})
+    personGeoDataframe.to_sql('person', con=conn, if_exists='append', index=False, dtype={'first_act_coord': Geometry('POINT', srid=config.DB_SRID)})
 
 
 # TODO Optimize this function by modifying matsim package
@@ -143,7 +143,23 @@ def importNetworkLinks():
 
 
 def importFacilities():
-    pass
+    facilityReader = matsim.Facility.facility_reader(config.PATH_FACILITIES)
+    facilities = gpd.GeoDataFrame(facilityReader.facilities)
+    
+    # Renaming the columns to match the database
+    facilities.rename(columns={
+        'type': 'activityType'
+    }, inplace = True)
+    
+    
+    # Creating a point from coordinates
+    facilities['location'] = facilities.apply(lambda row: 'POINT({} {})'.format(row['x'], row['y']), axis=1)
+    facilities.drop(columns=['x', 'y'], inplace=True)
+    
+    # Importing the data to the database
+    conn = tools.connectToDatabase()
+    facilities.to_sql('facility', con=conn, if_exists='append', index=False, dtype={'location': Geometry('POINT', srid=config.DB_SRID)})
+
 
 def importTrips():
     pass
