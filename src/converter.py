@@ -161,8 +161,32 @@ def importFacilities():
     facilities.to_sql('facility', con=conn, if_exists='append', index=False, dtype={'location': Geometry('POINT', srid=config.DB_SRID)})
 
 
+
 def importTrips():
-    pass
+    tripsDataframe = pd.read_csv(config.PATH_TRIPS, sep=';')   
+    
+    tripsDataframe.drop(columns=[
+        'start_activity_type',
+        'end_activity_type',
+        'start_x',
+        'start_y',
+        'end_x',
+        'end_y',
+    ], inplace=True)
+    
+    # Renaming the columns to match the database
+    tripsDataframe.rename(columns={
+        'trip_id': 'id',
+        'person': 'personId',
+    }, inplace = True)
+    
+    # Correcting dep_time format
+    tripsDataframe['dep_time'] = tripsDataframe['dep_time'].apply(lambda x: tools.checkAndCorrectTime(x))
+        
+    # Importing the data to the database
+    conn = tools.connectToDatabase()
+    tripsDataframe.to_sql('trip', con=conn, if_exists='append', index=False)
+
 
 def importActivities():
     pass
