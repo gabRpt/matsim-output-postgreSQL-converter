@@ -5,5 +5,6 @@ def main():
     # converter.importHouseholds()
     # converter.importPersons()
     converter.importNetworkLinks()
+    # converter.importFacilities()
 
 main()

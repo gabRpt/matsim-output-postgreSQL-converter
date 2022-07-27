@@ -5,6 +5,7 @@ import pandas as pd
 import geopandas as gpd
 import numpy as np
 from geoalchemy2 import Geometry
+from shapely.geometry import LineString
 
 def importVehicles():
     vehicleDataframes = matsim.Vehicle.vehicle_reader(config.PATH_ALLVEHICLE)
@@ -52,15 +53,14 @@ def importPersons():
     # Creating a point from first activity coordinates
     personGeoDataframe['first_act_point'] = personGeoDataframe.apply(lambda row: 'POINT({} {})'.format(row['first_act_x'], row['first_act_y']), axis=1)
     personGeoDataframe.drop(columns=['first_act_x', 'first_act_y'], inplace=True)
-    
+        
     # Importing the data to the database
     conn = tools.connectToDatabase()
-    personGeoDataframe.to_sql('person', con=conn, if_exists='append', index=False, dtype={'first_act_coord': Geometry('POINT', srid=config.DB_SRID)})
+    # personGeoDataframe.to_sql('person', con=conn, if_exists='append', index=False, dtype={'first_act_coord': Geometry('POINT', srid=config.DB_SRID)})
 
 
 # TODO Optimize this function by modifying matsim package
 # -> Modify Network.py to return add or modify network reader, to return links links with their attributes in the same dataframe
-# -> LineString conversion to Geometry
 def importNetworkLinks():
     network = matsim.Network.read_network(config.PATH_NETWORK)
     nodes = gpd.GeoDataFrame(network.nodes)
@@ -68,11 +68,34 @@ def importNetworkLinks():
     nodeAttributes = network.node_attrs
     linkAttributes = network.link_attrs
     
+    # Creating lines in links from "from_node" and "to_node" coordinates
+    # attach xy to links
+    full_net = (links
+    .merge(nodes,
+            left_on='from_node',
+            right_on='node_id')
+    .merge(nodes,
+            left_on='to_node',
+            right_on='node_id',
+            suffixes=('_from_node', '_to_node'))
+    )
+
+    # create the geometry column from coordinates
+    geometry = [LineString([(ox,oy), (dx,dy)]) for ox, oy, dx, dy in zip(full_net.x_from_node, full_net.y_from_node, full_net.x_to_node, full_net.y_to_node)]
+
+    # build the geopandas geodataframe
+    links = (gpd.GeoDataFrame(full_net,
+        geometry=geometry)
+        .drop(columns=['x_from_node','y_from_node','node_id_from_node','node_id_to_node','x_to_node','y_to_node'])
+    )
+    
+    
     # Renaming the attributes columns to match the database
     attributesColumnsNames = linkAttributes.name.unique()
     finalLinksAttributes = {'link_id': []}
     for column in attributesColumnsNames:
         finalLinksAttributes[column] = [] 
+    
     
     # Creating a dataframe with the links attributes for each link
     currentLinkId = linkAttributes.iloc[0]['link_id']
@@ -92,24 +115,15 @@ def importNetworkLinks():
     
     linksAttributesDataframe = pd.DataFrame.from_dict(finalLinksAttributes)
     
+    
     # Merging the links attributes with the links dataframe in a geodataframe
     links = gpd.GeoDataFrame(pd.merge(links, linksAttributesDataframe, on='link_id', how='left'))
-    
-    
-    # Creating points from nodes coordinates
-    nodes['point'] = nodes.apply(lambda row: 'POINT({} {})'.format(row['x'], row['y']), axis=1)
-    nodes.drop(columns=['x', 'y'], inplace=True)
-    
-    
-    # Creating geometric lines from links.from and links.to
-    print('================')
-    links['geom'] = links.apply(lambda row: 'LINESTRING({} {})'.format(nodes[nodes['node_id'] == row['from_node']]['point'], nodes[nodes['node_id'] == row['to_node']]['point']), axis=1)
-    links.drop(columns=['from_node', 'to_node'], inplace=True)
     
     
     # Renaming the columns to match the database
     links.rename(columns={
         'link_id': 'id',
+        'geometry': 'geom',
     }, inplace = True)
     
     for columnName in attributesColumnsNames:
@@ -118,18 +132,15 @@ def importNetworkLinks():
         }, inplace = True)
     
     
+    # Conversion of the geometry column to object
+    links['geom']  = links['geom'].apply(lambda x: x.wkt)
+    
+    
     # Importing the data to the database
     conn = tools.connectToDatabase()
     links.to_sql('networkLink', con=conn, if_exists='append', index=False, dtype={'geom': Geometry('LINESTRING', srid=config.DB_SRID)})
-    
-    
-    # print(links.dtypes)
-    # print(nodes[nodes['node_id'] == links.iloc[0]['from_node']]['point'])
-    # print(nodes.dtypes)
-    # print(nodeAttributes.dtypes)
-    # print(links.dtypes)
-    # print(linkAttributes.dtypes)
-    # print(finalAttributesColumnsNames)
+
+
 
 def importFacilities():
     pass
