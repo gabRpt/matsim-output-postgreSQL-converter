@@ -6,6 +6,8 @@ def main():
     # converter.importPersons()
     # converter.importNetworkLinks()
     # converter.importFacilities()
-    converter.importTrips()
+    # converter.importTrips()
+    # converter.importActivities()
+    converter.importEvents()
 
 main()
