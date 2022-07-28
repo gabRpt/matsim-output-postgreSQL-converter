@@ -11,5 +11,5 @@ PATH_PERSONS = PATH_SIMULATION_OUTPUT + '/output_persons.csv'
 PATH_PLANS = PATH_SIMULATION_OUTPUT + '/output_plans.xml.gz'
 PATH_TRIPS = PATH_SIMULATION_OUTPUT + '/output_trips.csv'
 
-DB_CONNECTION_STRING = 'postgresql+psycopg2://postgres:admin@localhost:5432/furbain'
+DB_CONNECTION_STRING = 'postgresql+psycopg2://postgres:admin@localhost:5432/test'
 DB_SRID = '2154'

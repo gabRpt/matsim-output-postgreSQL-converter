@@ -6,6 +6,8 @@ import geopandas as gpd
 from geoalchemy2 import Geometry
 from shapely.geometry import LineString
 
+
+
 def importVehicles():
     vehicleDataframes = matsim.Vehicle.vehicle_reader(config.PATH_ALLVEHICLE)
     vehicleTypes = vehicleDataframes.vehicle_types
@@ -28,6 +30,9 @@ def importVehicles():
     vehicles.to_sql('vehicle', con=conn, if_exists='append', index=False)
 
 
+
+
+
 def importHouseholds():
     householdReader = matsim.Household.houshold_reader(config.PATH_HOUSEHOLDS)
     householdDataframe = householdReader.households
@@ -38,6 +43,9 @@ def importHouseholds():
     # Importing the data to the database
     conn = tools.connectToDatabase()
     householdDataframe.to_sql('household', con=conn, if_exists='append', index=False)
+
+
+
 
 
 def importPersons():
@@ -56,6 +64,9 @@ def importPersons():
     # Importing the data to the database
     conn = tools.connectToDatabase()
     personGeoDataframe.to_sql('person', con=conn, if_exists='append', index=False, dtype={'first_act_coord': Geometry('POINT', srid=config.DB_SRID)})
+
+
+
 
 
 # TODO Optimize this function by modifying matsim package
@@ -141,6 +152,8 @@ def importNetworkLinks():
 
 
 
+
+
 def importFacilities():
     facilityReader = matsim.Facility.facility_reader(config.PATH_FACILITIES)
     facilities = gpd.GeoDataFrame(facilityReader.facilities)
@@ -158,6 +171,8 @@ def importFacilities():
     # Importing the data to the database
     conn = tools.connectToDatabase()
     facilities.to_sql('facility', con=conn, if_exists='append', index=False, dtype={'location': Geometry('POINT', srid=config.DB_SRID)})
+
+
 
 
 
@@ -185,6 +200,9 @@ def importTrips():
     # Importing the data to the database
     conn = tools.connectToDatabase()
     tripsDataframe.to_sql('trip', con=conn, if_exists='append', index=False)
+
+
+
 
 
 def importActivities():
@@ -217,5 +235,11 @@ def importActivities():
     conn = tools.connectToDatabase()
     activitiesDataframe.to_sql('activity', con=conn, if_exists='append', index=False, dtype={'location': Geometry('POINT', srid=config.DB_SRID)})
 
+
+
+
+
+#TODO: import events
 def importEvents():
-    pass
+    events = matsim.Events.event_reader(config.PATH_EVENTS)    
+    eventsDataframe = pd.DataFrame(events)
