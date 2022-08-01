@@ -5,14 +5,14 @@ from datetime import datetime
 def main():
     overallStartTime = datetime.now()
     tablesToImport = [
-        "vehicles",
-        "households",
-        "persons",
-        "networkLinks",
-        "facilities",
-        "trips",
-        "activities",
-        # "events"
+        # "vehicles",
+        # "households",
+        # "persons",
+        # "networkLinks",
+        # "facilities",
+        # "trips",
+        # "activities",
+        "events",
     ]
     
     print("========== STARTING IMPORTATIONS ==========")

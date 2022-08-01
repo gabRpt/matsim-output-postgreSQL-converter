@@ -241,5 +241,40 @@ def importActivities():
 
 #TODO: import events
 def importEvents():
+    print('')
+    timeRangeInMinutes = 60 * 10
+    timeRangeInSeconds = timeRangeInMinutes * 60
+    
     events = matsim.Events.event_reader(config.PATH_EVENTS)    
     eventsDataframe = pd.DataFrame(events)
+    
+    # Keeping only events of type left link
+    eventsDataframe.drop(eventsDataframe[eventsDataframe['type'] != 'left link'].index, inplace=True)
+    eventsDataframe.sort_values(by=['link','time'], inplace=True)
+    eventsDataframe.reset_index(drop=True, inplace=True)
+    print(eventsDataframe)
+    
+    # Calculating the number of vehicles in each link at each time step
+    # Calculating the mean speed of each link at each time step
+    currentLink = eventsDataframe['link'][0]
+    currentStartingTime = eventsDataframe['time'][0]
+    currentEndingTime = currentStartingTime + timeRangeInSeconds
+    currentNumberOfVehicles = 0
+    eventsParsedDataframe = pd.DataFrame(columns=['link', 'time', 'numberOfVehicles'])
+    for index, row in eventsDataframe.iterrows():
+        if currentLink == row['link']:
+            if row['time'] < currentEndingTime:
+                currentNumberOfVehicles += 1
+            else:
+                eventsParsedDataframe.loc[index] = [currentLink, currentStartingTime, currentNumberOfVehicles]
+                currentNumberOfVehicles = 1
+                currentStartingTime = row['time']
+                currentEndingTime = currentStartingTime + timeRangeInSeconds
+        else:
+            eventsParsedDataframe.loc[index] = [currentLink, currentStartingTime, currentNumberOfVehicles]
+            currentNumberOfVehicles = 1
+            currentStartingTime = row['time']
+            currentEndingTime = currentStartingTime + timeRangeInSeconds
+            currentLink = row['link']
+    
+    print(eventsParsedDataframe)
