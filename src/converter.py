@@ -239,10 +239,9 @@ def importActivities():
 
 
 
-#TODO: import events
 def importEvents():
-    print('')
-    timeRangeInMinutes = 60 * 10
+    print('') # TODO: remove this line 
+    timeRangeInMinutes = 60 #* 10
     timeRangeInSeconds = timeRangeInMinutes * 60
     
     events = matsim.Events.event_reader(config.PATH_EVENTS)    
@@ -260,21 +259,29 @@ def importEvents():
     currentStartingTime = eventsDataframe['time'][0]
     currentEndingTime = currentStartingTime + timeRangeInSeconds
     currentNumberOfVehicles = 0
-    eventsParsedDataframe = pd.DataFrame(columns=['link', 'time', 'numberOfVehicles'])
+    eventsParsed = {"link": [], "time": [], "numberOfVehicles": []}
+    addRow = False
+    
     for index, row in eventsDataframe.iterrows():
         if currentLink == row['link']:
             if row['time'] < currentEndingTime:
-                currentNumberOfVehicles += 1
+                currentNumberOfVehicles += 1   
             else:
-                eventsParsedDataframe.loc[index] = [currentLink, currentStartingTime, currentNumberOfVehicles]
-                currentNumberOfVehicles = 1
-                currentStartingTime = row['time']
-                currentEndingTime = currentStartingTime + timeRangeInSeconds
+                addRow = True          
         else:
-            eventsParsedDataframe.loc[index] = [currentLink, currentStartingTime, currentNumberOfVehicles]
-            currentNumberOfVehicles = 1
+            addRow = True
+        
+        if addRow:
+            eventsParsed['link'].append(currentLink)
+            eventsParsed['time'].append(currentStartingTime)
+            eventsParsed['numberOfVehicles'].append(currentNumberOfVehicles)
+            
+            currentLink = row['link']
             currentStartingTime = row['time']
             currentEndingTime = currentStartingTime + timeRangeInSeconds
-            currentLink = row['link']
+            currentNumberOfVehicles = 1
+            
+            addRow = False
     
+    eventsParsedDataframe = pd.DataFrame(eventsParsed)
     print(eventsParsedDataframe)
