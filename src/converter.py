@@ -5,8 +5,7 @@ import pandas as pd
 import geopandas as gpd
 from geoalchemy2 import Geometry
 from shapely.geometry import LineString
-
-
+import collections
 
 def importVehicles():
     vehicleDataframes = matsim.Vehicle.vehicle_reader(config.PATH_ALLVEHICLE)
@@ -288,7 +287,6 @@ def importEvents():
     eventsParsedDataframe = pd.DataFrame(eventsParsed)
     print(eventsParsedDataframe)
 
-
 def importEventsBis():
     print('') # TODO: remove this line 
     timeRangeInMinutes = 60 #* 10
@@ -299,6 +297,7 @@ def importEventsBis():
     
     network = matsim.Network.read_network(config.PATH_NETWORK)
     networkLinksDataframe = network.links
+    networkLinksDict = dict(zip(networkLinksDataframe['link_id'], networkLinksDataframe['length']))
         
     eventsDataframe.drop(eventsDataframe[
         (eventsDataframe['type'] != 'left link') &
@@ -312,39 +311,27 @@ def importEventsBis():
     # Calculating the mean speed of each link at each time step
     currentStartingTime = eventsDataframe['time'][0]
     currentEndingTime = currentStartingTime + timeRangeInSeconds
-    eventsParsed = {"link": [], "time": [], "numberOfVehicles": []}
-    enteredLinksQueueDict = {} # key: link, value: list of times
-    meanSpeedInLinksDict = {} # key: link, value: list of speeds
+
     
     # maxTime = eventsDataframe.loc[eventsDataframe['time'].idxmax(), 'time']
+    enteredLinksQueueDict = collections.defaultdict(list)
+    meanSpeedInLinksDict = collections.defaultdict(list)
     
-    # 4min30 for 500k events
-    # 27sec with time range of 60min
-    for index, row in eventsDataframe.iterrows():
-        if row['time'] > currentEndingTime:
-            break
-        if row['type'] in ['entered link', 'departure']:
-            if row['link'] in enteredLinksQueueDict:
-                enteredLinksQueueDict[row['link']].append(row['time'])
-            else:
-                enteredLinksQueueDict[row['link']] = [row['time']]
+    # Parsing the events
+    for row in eventsDataframe.itertuples():
+        if row.type in ['entered link', 'departure']:
+            enteredLinksQueueDict[row.link].append(row.time)
         
         else:
-            if row['link'] in enteredLinksQueueDict:
+            if row.link in enteredLinksQueueDict:
                 # Calculating time spent in the link
-                startingTimeInLink = enteredLinksQueueDict[row['link']].pop(0)
-                secondsSpentInLink = row['time'] - startingTimeInLink
+                startingTimeInLink = enteredLinksQueueDict[row.link].pop(0)
+                secondsSpentInLink = row.time - startingTimeInLink
                 
                 # Calculating the mean speed in the link
-                linkLength = networkLinksDataframe[networkLinksDataframe['link_id'] == row['link']]['length'].values[0]
+                linkLength = networkLinksDict[row.link]
                 speed = linkLength / secondsSpentInLink
                 
-                if row['link'] in meanSpeedInLinksDict:
-                    meanSpeedInLinksDict[row['link']].append(speed)
-                else:
-                    meanSpeedInLinksDict[row['link']] = [speed]
-                
-                
+                meanSpeedInLinksDict[row.link].append(speed)
+
     
-    # eventsParsedDataframe = pd.DataFrame(eventsParsed)
-    # print(meanSpeedInLinksDict)
