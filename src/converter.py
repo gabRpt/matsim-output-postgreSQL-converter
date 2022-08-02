@@ -247,8 +247,9 @@ def importEvents():
     events = matsim.Events.event_reader(config.PATH_EVENTS)    
     eventsDataframe = pd.DataFrame(events)
     
-    # Keeping only events of type left link
-    eventsDataframe.drop(eventsDataframe[eventsDataframe['type'] != 'left link'].index, inplace=True)
+    eventsDataframe.drop(eventsDataframe[
+        (eventsDataframe['type'] != 'left link') &
+        (eventsDataframe['type'] != 'entered link')].index, inplace=True)
     eventsDataframe.sort_values(by=['link','time'], inplace=True)
     eventsDataframe.reset_index(drop=True, inplace=True)
     print(eventsDataframe)
@@ -261,27 +262,89 @@ def importEvents():
     currentNumberOfVehicles = 0
     eventsParsed = {"link": [], "time": [], "numberOfVehicles": []}
     addRow = False
-    
-    for index, row in eventsDataframe.iterrows():
-        if currentLink == row['link']:
-            if row['time'] < currentEndingTime:
-                currentNumberOfVehicles += 1   
-            else:
-                addRow = True          
-        else:
-            addRow = True
         
-        if addRow:
-            eventsParsed['link'].append(currentLink)
-            eventsParsed['time'].append(currentStartingTime)
-            eventsParsed['numberOfVehicles'].append(currentNumberOfVehicles)
+    for index, row in eventsDataframe.iterrows():
+        if row['type'] == 'left link':
+            if currentLink == row['link']:
+                if row['time'] < currentEndingTime:
+                    currentNumberOfVehicles += 1   
+                else:
+                    addRow = True          
+            else:
+                addRow = True
             
-            currentLink = row['link']
-            currentStartingTime = row['time']
-            currentEndingTime = currentStartingTime + timeRangeInSeconds
-            currentNumberOfVehicles = 1
-            
-            addRow = False
+            if addRow:
+                eventsParsed['link'].append(currentLink)
+                eventsParsed['time'].append(currentStartingTime)
+                eventsParsed['numberOfVehicles'].append(currentNumberOfVehicles)
+                
+                currentLink = row['link']
+                currentStartingTime = row['time']
+                currentEndingTime = currentStartingTime + timeRangeInSeconds
+                currentNumberOfVehicles = 1
+                
+                addRow = False
     
     eventsParsedDataframe = pd.DataFrame(eventsParsed)
     print(eventsParsedDataframe)
+
+
+def importEventsBis():
+    print('') # TODO: remove this line 
+    timeRangeInMinutes = 60 #* 10
+    timeRangeInSeconds = timeRangeInMinutes * 60
+    
+    events = matsim.Events.event_reader(config.PATH_EVENTS)    
+    eventsDataframe = pd.DataFrame(events)
+    
+    network = matsim.Network.read_network(config.PATH_NETWORK)
+    networkLinksDataframe = network.links
+        
+    eventsDataframe.drop(eventsDataframe[
+        (eventsDataframe['type'] != 'left link') &
+        (eventsDataframe['type'] != 'entered link') &
+        (eventsDataframe['type'] != 'departure')].index, inplace=True)
+    # eventsDataframe.sort_values(by=['link','time'], inplace=True)
+    eventsDataframe.reset_index(drop=True, inplace=True)
+    print(eventsDataframe)
+    
+    # Calculating the number of vehicles in each link at each time step
+    # Calculating the mean speed of each link at each time step
+    currentStartingTime = eventsDataframe['time'][0]
+    currentEndingTime = currentStartingTime + timeRangeInSeconds
+    eventsParsed = {"link": [], "time": [], "numberOfVehicles": []}
+    enteredLinksQueueDict = {} # key: link, value: list of times
+    meanSpeedInLinksDict = {} # key: link, value: list of speeds
+    
+    # maxTime = eventsDataframe.loc[eventsDataframe['time'].idxmax(), 'time']
+    
+    # 4min30 for 500k events
+    # 27sec with time range of 60min
+    for index, row in eventsDataframe.iterrows():
+        if row['time'] > currentEndingTime:
+            break
+        if row['type'] in ['entered link', 'departure']:
+            if row['link'] in enteredLinksQueueDict:
+                enteredLinksQueueDict[row['link']].append(row['time'])
+            else:
+                enteredLinksQueueDict[row['link']] = [row['time']]
+        
+        else:
+            if row['link'] in enteredLinksQueueDict:
+                # Calculating time spent in the link
+                startingTimeInLink = enteredLinksQueueDict[row['link']].pop(0)
+                secondsSpentInLink = row['time'] - startingTimeInLink
+                
+                # Calculating the mean speed in the link
+                linkLength = networkLinksDataframe[networkLinksDataframe['link_id'] == row['link']]['length'].values[0]
+                speed = linkLength / secondsSpentInLink
+                
+                if row['link'] in meanSpeedInLinksDict:
+                    meanSpeedInLinksDict[row['link']].append(speed)
+                else:
+                    meanSpeedInLinksDict[row['link']] = [speed]
+                
+                
+    
+    # eventsParsedDataframe = pd.DataFrame(eventsParsed)
+    # print(meanSpeedInLinksDict)
