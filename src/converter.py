@@ -6,6 +6,8 @@ import geopandas as gpd
 from geoalchemy2 import Geometry
 from shapely.geometry import LineString
 import collections
+import math
+from datetime import timedelta
 
 def importVehicles():
     vehicleDataframes = matsim.Vehicle.vehicle_reader(config.PATH_ALLVEHICLE)
@@ -238,16 +240,17 @@ def importActivities():
 
 
 
-def importEvents(timeStepInMinutes):
-    eventsResultsDataframe = _getEventsVehicleCountAndMeanSpeed(timeStepInMinutes)
+def importEvents(timeStepInMinutes=60, useRoundedTime=True, displayHoursInsteadOfSeconds=True):
+    eventsResultsDataframe = _getEventsVehicleCountAndMeanSpeed(timeStepInMinutes, useRoundedTime, displayHoursInsteadOfSeconds)
     print(eventsResultsDataframe)
 
 
 
 
 
-# returns a datframe with, for each link, the vehiclecount and meanspeed every x minutes set in parameter
-def _getEventsVehicleCountAndMeanSpeed(timeStepInMinutes):
+# returns a dataframe with, for each link, the vehicle count and mean speed every x minutes set in parameter
+# if useRoundedTime is True => if the first event is at time '12613' (3.5h) => it will start at time '10800' (3h)
+def _getEventsVehicleCountAndMeanSpeed(timeStepInMinutes=60, useRoundedTime=True, displayHoursInsteadOfSeconds=True):
     timeStepInSeconds = timeStepInMinutes * 60
     
     events = matsim.Events.event_reader(config.PATH_EVENTS)    
@@ -285,7 +288,14 @@ def _getEventsVehicleCountAndMeanSpeed(timeStepInMinutes):
     
     # Calculating the number of vehicles in each link at each time step
     # Calculating the mean speed of each link at each time step
-    currentStartingTime = eventsDataframe['time'][0]
+    if useRoundedTime:
+        currentStartingTime = math.floor(eventsDataframe['time'][0] / 3600) * 3600
+        while eventsDataframe['time'][0] > currentStartingTime:
+            currentStartingTime += timeStepInSeconds
+        currentStartingTime -= timeStepInSeconds
+    else: 
+        currentStartingTime = eventsDataframe['time'][0]
+    
     currentEndingTime = currentStartingTime + timeStepInSeconds
 
     enteredLinksQueueDict = collections.defaultdict(list)
@@ -295,14 +305,17 @@ def _getEventsVehicleCountAndMeanSpeed(timeStepInMinutes):
     
     # Parsing the events
     for row in eventsDataframe.itertuples():
-        
         # Checking if we are still in the current time span
         if row.time > currentEndingTime:
             for linkId, speeds in meanSpeedInLinksDict.items():
                 vehicleCount = vehiclesPerLinkDict[linkId]
                 speeds = [i for i in speeds if i != 0] # removing 0 values
                 meanSpeed = sum(speeds) / vehicleCount if vehicleCount > 0 else 0
-                timespan = f'{int(currentStartingTime)}_{int(currentEndingTime)}'
+
+                if displayHoursInsteadOfSeconds:
+                    timespan = f'{tools.getFormattedTime(currentStartingTime)}_{tools.getFormattedTime(currentEndingTime)}'
+                else:
+                    timespan = f'{int(currentStartingTime)}_{int(currentEndingTime)}'
                 
                 # Checking if meanspeed is above links freespeed limit
                 if meanSpeed > networkLinksFreespeedDict[linkId]:
