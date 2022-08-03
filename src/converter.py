@@ -142,7 +142,7 @@ def importNetworkLinks():
     
     
     # Conversion of the geometry column to object
-    links['geom']  = links['geom'].apply(lambda x: x.wkt)
+    links['geom'] = links['geom'].apply(lambda x: x.wkt)
     
     
     # Importing the data to the database
@@ -251,12 +251,14 @@ def importEvents():
     networkLinksLengthDict = dict(zip(networkLinksDataframe['link_id'], networkLinksDataframe['length']))
     networkLinksFreespeedDict = dict(zip(networkLinksDataframe['link_id'], networkLinksDataframe['freespeed']))
     
+    # TODO : Simplify data formating
     # Removing unused rows
     eventsDataframe.drop(eventsDataframe[
         (eventsDataframe['type'] != 'left link') &
         (eventsDataframe['type'] != 'entered link') &
         (eventsDataframe['type'] != 'departure') &
-        (eventsDataframe['type'] != 'arrival')].index, inplace=True)
+        (eventsDataframe['type'] != 'arrival') &
+        (eventsDataframe['type'] != 'VehicleDepartsAtFacility')].index, inplace=True)
 
     # Removing starting and ending events not using car as mode
     eventsDataframe.drop(eventsDataframe[
@@ -274,8 +276,17 @@ def importEvents():
         (eventsDataframe['type'] == 'departure') &
         (eventsDataframe['person'].astype(str).str.startswith('pt'))
     ].index, inplace=True)
+
     
-    # eventsDataframe.sort_values(by=['link','time'], inplace=True)
+    # Adding link to the events where the link is stored in facility column where link type is VehicleDepartsAtFacility
+    # ex facility="SNCF:87590331.link:pt_SNCF:87590331" -> link="pt_SNCF:87590331"
+    # ex facility="22167-R.link:40411" -> link="40411"
+    eventsDataframe.loc[(eventsDataframe['type'] == 'VehicleDepartsAtFacility') &
+                        (eventsDataframe['vehicle'].str.split('_').str[-1] != 'tram'), 'link'] = eventsDataframe['facility'].str.split(':').str[-1]
+    
+    eventsDataframe.loc[(eventsDataframe['type'] == 'VehicleDepartsAtFacility') &
+                        (eventsDataframe['vehicle'].str.split('_').str[-1] == 'tram'), 'link'] = eventsDataframe['facility'].str.split('link:').str[-1]
+        
     eventsDataframe.reset_index(drop=True, inplace=True)
     print(eventsDataframe)
     
@@ -287,36 +298,39 @@ def importEvents():
     enteredLinksQueueDict = collections.defaultdict(list)
     meanSpeedInLinksDict = collections.defaultdict(list)
     vehiclesPerLinkDict = collections.defaultdict(int)
-    
-    resultsDict = {'linkId': [], 'timeSpan': [], 'totalVehicle': [], 'meanSpeed': []}
+    resultsDict = collections.defaultdict(list)
     
     # Parsing the events
     for row in eventsDataframe.itertuples():
-        if row.type in ['entered link', 'departure']:
+        if row.time > currentEndingTime:
+            for linkId, speeds in meanSpeedInLinksDict.items():
+                vehicleCount = vehiclesPerLinkDict[linkId]
+                speeds = [i for i in speeds if i != 0] # removing 0 values
+                meanSpeed = sum(speeds) / vehicleCount if vehicleCount > 0 else 0
+                timespan = f'{int(currentStartingTime)}_{int(currentEndingTime)}'
+                
+                # Checking if meanspeed is above links freespeed limit
+                if meanSpeed > networkLinksFreespeedDict[linkId]:
+                    meanSpeed = networkLinksFreespeedDict[linkId]                    
+                
+                resultsDict['linkId'].append(linkId)
+                resultsDict['timeSpan'].append(timespan)
+                resultsDict['totalVehicle'].append(vehicleCount)
+                resultsDict['meanSpeed'].append(meanSpeed)
+            
+            meanSpeedInLinksDict.clear()
+            vehiclesPerLinkDict.clear()
+            currentStartingTime = currentEndingTime
+            currentEndingTime = currentEndingTime + timeRangeInSeconds
+        
+        if row.type in ['entered link', 'departure', 'VehicleDepartsAtFacility']:
             enteredLinksQueueDict[row.link].append(row.time)
         else:
-            if row.time > currentEndingTime:
-                for linkId, speeds in meanSpeedInLinksDict.items():
-                    vehicleCount = vehiclesPerLinkDict[linkId]
-                    speeds = [i for i in speeds if i != 0] # removing 0 values
-                    meanSpeed = sum(speeds) / vehicleCount if vehicleCount > 0 else 0
-                    timespan = f'{int(currentStartingTime)}_{int(currentEndingTime)}'
-                    
-                    # Checking if meanspeed is above links freespeed limit
-                    if meanSpeed > networkLinksFreespeedDict[linkId]:
-                        meanSpeed = networkLinksFreespeedDict[linkId]                    
-                    
-                    resultsDict['linkId'].append(linkId)
-                    resultsDict['timeSpan'].append(timespan)
-                    resultsDict['totalVehicle'].append(vehicleCount)
-                    resultsDict['meanSpeed'].append(meanSpeed)
-
-                break
             if row.link in enteredLinksQueueDict:
                 # Calculating time spent in the link
                 try: 
                     startingTimeInLink = enteredLinksQueueDict[row.link].pop(0)
-                except:
+                except Exception:
                     startingTimeInLink = row.time
                     print(f'Error: link {row.link} has an empty queue')
                 
@@ -326,7 +340,7 @@ def importEvents():
                 linkLength = networkLinksLengthDict[row.link]
                 try:
                     speed = linkLength / secondsSpentInLink
-                except:
+                except Exception:
                     speed = 0
                     # print(f'Error: \nlink => {row.link} \nlinkLength => {linkLength} \nsecondsSpentInLink => {secondsSpentInLink} \nstartingTimeInLink => {startingTimeInLink} \nrow.time => {row.time} \ntype => {row.type} \nlegMode => {row.legMode}')
                 meanSpeedInLinksDict[row.link].append(speed)
@@ -334,6 +348,7 @@ def importEvents():
                 
             else:
                 print(f'Error: link {row.link} not found in the queue person: {row.person} / legMode: {row.legMode}')
+                print(row)
 
     resultsDict = pd.DataFrame(resultsDict)
     print(resultsDict)
