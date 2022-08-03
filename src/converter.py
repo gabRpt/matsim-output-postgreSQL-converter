@@ -251,30 +251,20 @@ def importEvents():
     networkLinksLengthDict = dict(zip(networkLinksDataframe['link_id'], networkLinksDataframe['length']))
     networkLinksFreespeedDict = dict(zip(networkLinksDataframe['link_id'], networkLinksDataframe['freespeed']))
     
-    # TODO : Simplify data formating
     # Removing unused rows
-    eventsDataframe.drop(eventsDataframe[
-        (eventsDataframe['type'] != 'left link') &
-        (eventsDataframe['type'] != 'entered link') &
-        (eventsDataframe['type'] != 'departure') &
-        (eventsDataframe['type'] != 'arrival') &
-        (eventsDataframe['type'] != 'VehicleDepartsAtFacility')].index, inplace=True)
+    eventsDataframe = eventsDataframe[eventsDataframe['type'].isin([
+        'left link',
+        'entered link',
+        'departure',
+        'arrival',
+        'VehicleDepartsAtFacility'
+    ])]
 
     # Removing starting and ending events not using car as mode
+    # and events using pt
     eventsDataframe.drop(eventsDataframe[
-        (eventsDataframe['type'] == 'departure') &
-        (eventsDataframe['legMode'] != 'car')
-    ].index, inplace=True)
-    
-    eventsDataframe.drop(eventsDataframe[
-        (eventsDataframe['type'] == 'arrival') &
-        (eventsDataframe['legMode'] != 'car')
-    ].index, inplace=True)
-    
-    # removing rows using public transport
-    eventsDataframe.drop(eventsDataframe[
-        (eventsDataframe['type'] == 'departure') &
-        (eventsDataframe['person'].astype(str).str.startswith('pt'))
+        ((eventsDataframe['type'] == 'departure') | (eventsDataframe['type'] == 'arrival')) &
+        ((eventsDataframe['legMode'] != 'car') | (eventsDataframe['person'].astype(str).str.startswith('pt')))
     ].index, inplace=True)
 
     
@@ -315,7 +305,7 @@ def importEvents():
                 
                 resultsDict['linkId'].append(linkId)
                 resultsDict['timeSpan'].append(timespan)
-                resultsDict['totalVehicle'].append(vehicleCount)
+                resultsDict['vehicleCount'].append(vehicleCount)
                 resultsDict['meanSpeed'].append(meanSpeed)
             
             meanSpeedInLinksDict.clear()
@@ -348,7 +338,6 @@ def importEvents():
                 
             else:
                 print(f'Error: link {row.link} not found in the queue person: {row.person} / legMode: {row.legMode}')
-                print(row)
 
     resultsDict = pd.DataFrame(resultsDict)
     print(resultsDict)
