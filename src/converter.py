@@ -248,7 +248,8 @@ def importEvents():
     
     network = matsim.Network.read_network(config.PATH_NETWORK)
     networkLinksDataframe = network.links
-    networkLinksDict = dict(zip(networkLinksDataframe['link_id'], networkLinksDataframe['length']))
+    networkLinksLengthDict = dict(zip(networkLinksDataframe['link_id'], networkLinksDataframe['length']))
+    networkLinksFreespeedDict = dict(zip(networkLinksDataframe['link_id'], networkLinksDataframe['freespeed']))
     
     # Removing unused rows
     eventsDataframe.drop(eventsDataframe[
@@ -291,9 +292,6 @@ def importEvents():
     
     # Parsing the events
     for row in eventsDataframe.itertuples():
-        if row.link == '147185':
-            print(row)
-            print(networkLinksDict[row.link])
         if row.type in ['entered link', 'departure']:
             enteredLinksQueueDict[row.link].append(row.time)
         else:
@@ -304,11 +302,9 @@ def importEvents():
                     meanSpeed = sum(speeds) / vehicleCount if vehicleCount > 0 else 0
                     timespan = f'{int(currentStartingTime)}_{int(currentEndingTime)}'
                     
-                    # TODO Checking if meanspeed is above links freespeed limit
-                    
-                    
-                    if linkId == '147185':
-                        print(f'{linkId} => {speeds}')
+                    # Checking if meanspeed is above links freespeed limit
+                    if meanSpeed > networkLinksFreespeedDict[linkId]:
+                        meanSpeed = networkLinksFreespeedDict[linkId]                    
                     
                     resultsDict['linkId'].append(linkId)
                     resultsDict['timeSpan'].append(timespan)
@@ -326,8 +322,8 @@ def importEvents():
                 
                 secondsSpentInLink = row.time - startingTimeInLink
                 
-                # Calculating the mean speed in the link
-                linkLength = networkLinksDict[row.link]
+                # Calculating the mean speed in the link (in meter/second)
+                linkLength = networkLinksLengthDict[row.link]
                 try:
                     speed = linkLength / secondsSpentInLink
                 except:
