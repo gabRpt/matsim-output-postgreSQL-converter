@@ -238,10 +238,17 @@ def importActivities():
 
 
 
-def importEvents():
-    print('') # TODO: remove this line 
-    timeRangeInMinutes = 60 #* 10
-    timeRangeInSeconds = timeRangeInMinutes * 60
+def importEvents(timeStepInMinutes):
+    eventsResultsDataframe = _getEventsVehicleCountAndMeanSpeed(timeStepInMinutes)
+    print(eventsResultsDataframe)
+
+
+
+
+
+# returns a datframe with, for each link, the vehiclecount and meanspeed every x minutes set in parameter
+def _getEventsVehicleCountAndMeanSpeed(timeStepInMinutes):
+    timeStepInSeconds = timeStepInMinutes * 60
     
     events = matsim.Events.event_reader(config.PATH_EVENTS)    
     eventsDataframe = pd.DataFrame(events)
@@ -251,14 +258,11 @@ def importEvents():
     networkLinksLengthDict = dict(zip(networkLinksDataframe['link_id'], networkLinksDataframe['length']))
     networkLinksFreespeedDict = dict(zip(networkLinksDataframe['link_id'], networkLinksDataframe['freespeed']))
     
-    # Removing unused rows
-    eventsDataframe = eventsDataframe[eventsDataframe['type'].isin([
-        'left link',
-        'entered link',
-        'departure',
-        'arrival',
-        'VehicleDepartsAtFacility'
-    ])]
+    linksEntryKeyWords = ['entered link', 'departure', 'VehicleDepartsAtFacility']
+    linksExitKeyWords = ['left link', 'arrival']
+    
+    # keeping only useful events
+    eventsDataframe = eventsDataframe[eventsDataframe['type'].isin(linksEntryKeyWords + linksExitKeyWords)]
 
     # Removing starting and ending events not using car as mode
     # and events using pt
@@ -278,12 +282,11 @@ def importEvents():
                         (eventsDataframe['vehicle'].str.split('_').str[-1] == 'tram'), 'link'] = eventsDataframe['facility'].str.split('link:').str[-1]
         
     eventsDataframe.reset_index(drop=True, inplace=True)
-    print(eventsDataframe)
     
     # Calculating the number of vehicles in each link at each time step
     # Calculating the mean speed of each link at each time step
     currentStartingTime = eventsDataframe['time'][0]
-    currentEndingTime = currentStartingTime + timeRangeInSeconds
+    currentEndingTime = currentStartingTime + timeStepInSeconds
 
     enteredLinksQueueDict = collections.defaultdict(list)
     meanSpeedInLinksDict = collections.defaultdict(list)
@@ -292,6 +295,8 @@ def importEvents():
     
     # Parsing the events
     for row in eventsDataframe.itertuples():
+        
+        # Checking if we are still in the current time span
         if row.time > currentEndingTime:
             for linkId, speeds in meanSpeedInLinksDict.items():
                 vehicleCount = vehiclesPerLinkDict[linkId]
@@ -311,9 +316,9 @@ def importEvents():
             meanSpeedInLinksDict.clear()
             vehiclesPerLinkDict.clear()
             currentStartingTime = currentEndingTime
-            currentEndingTime = currentEndingTime + timeRangeInSeconds
+            currentEndingTime = currentEndingTime + timeStepInSeconds
         
-        if row.type in ['entered link', 'departure', 'VehicleDepartsAtFacility']:
+        if row.type in linksEntryKeyWords:
             enteredLinksQueueDict[row.link].append(row.time)
         else:
             if row.link in enteredLinksQueueDict:
@@ -330,7 +335,7 @@ def importEvents():
                 linkLength = networkLinksLengthDict[row.link]
                 try:
                     speed = linkLength / secondsSpentInLink
-                except Exception:
+                except Exception:   # Case if a vehicle leaves the link at the same time it enters
                     speed = 0
                     # print(f'Error: \nlink => {row.link} \nlinkLength => {linkLength} \nsecondsSpentInLink => {secondsSpentInLink} \nstartingTimeInLink => {startingTimeInLink} \nrow.time => {row.time} \ntype => {row.type} \nlegMode => {row.legMode}')
                 meanSpeedInLinksDict[row.link].append(speed)
@@ -340,4 +345,4 @@ def importEvents():
                 print(f'Error: link {row.link} not found in the queue person: {row.person} / legMode: {row.legMode}')
 
     resultsDict = pd.DataFrame(resultsDict)
-    print(resultsDict)
+    return resultsDict
