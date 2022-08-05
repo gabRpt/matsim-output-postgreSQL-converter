@@ -8,11 +8,11 @@ def main():
         # "vehicles",
         # "households",
         # "persons",
-        # "networkLinks",
+        "networkLinks",
         # "facilities",
         # "trips",
         # "activities",
-        "events",
+        # "events",
     ]
     
     print("========== STARTING IMPORTATIONS ==========")

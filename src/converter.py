@@ -7,7 +7,6 @@ from geoalchemy2 import Geometry
 from shapely.geometry import LineString
 import collections
 import math
-from datetime import timedelta
 
 def importVehicles():
     vehicleDataframes = matsim.Vehicle.vehicle_reader(config.PATH_ALLVEHICLE)
@@ -72,33 +71,47 @@ def importPersons():
 
 # TODO Optimize this function by modifying matsim package
 # -> Modify Network.py to return add or modify network reader, to return links links with their attributes in the same dataframe
-def importNetworkLinks():
+# if useDetailedNetworkFile is True, the geometry of the links found in the detailed network file will replace the geometry of the links found in the network file
+def importNetworkLinks(useDetailedNetworkFile=True):
     network = matsim.Network.read_network(config.PATH_NETWORK)
     nodes = gpd.GeoDataFrame(network.nodes)
     links = network.links
-    nodeAttributes = network.node_attrs
     linkAttributes = network.link_attrs
     
-    # Creating lines in links from "from_node" and "to_node" coordinates
-    # attach xy to links
-    full_net = (links
-    .merge(nodes,
-            left_on='from_node',
-            right_on='node_id')
-    .merge(nodes,
-            left_on='to_node',
-            right_on='node_id',
-            suffixes=('_from_node', '_to_node'))
-    )
+    if useDetailedNetworkFile:
+        detailedNetworkDataframe = pd.read_csv(config.PATH_DETAILED_NETWORK, sep=',')
+        
+        # Removing rows where the linestring has less than 2 coordinates
+        detailedNetworkDataframe = detailedNetworkDataframe[detailedNetworkDataframe['Geometry'].apply(lambda x: len(x.split(',')) > 1)]
+        
+        detailedNetworkDict = dict(zip(detailedNetworkDataframe['LinkId'], detailedNetworkDataframe['Geometry']))
+        
+        # adding the geometry of the links found in the detailed network file to the links found in the network file
+        for link in links.itertuples():
+            if link.link_id.isdigit() and int(link.link_id) in detailedNetworkDict:
+                links.loc[link.Index, 'geometry'] = detailedNetworkDict[int(link.link_id)]
+        print(links.loc[links['link_id'] == '100002'])
+    else:
+        # Creating lines in links from "from_node" and "to_node" coordinates
+        # attach xy to links
+        full_net = (links
+        .merge(nodes,
+                left_on='from_node',
+                right_on='node_id')
+        .merge(nodes,
+                left_on='to_node',
+                right_on='node_id',
+                suffixes=('_from_node', '_to_node'))
+        )
 
-    # create the geometry column from coordinates
-    geometry = [LineString([(ox,oy), (dx,dy)]) for ox, oy, dx, dy in zip(full_net.x_from_node, full_net.y_from_node, full_net.x_to_node, full_net.y_to_node)]
+        # create the geometry column from coordinates
+        geometry = [LineString([(ox,oy), (dx,dy)]) for ox, oy, dx, dy in zip(full_net.x_from_node, full_net.y_from_node, full_net.x_to_node, full_net.y_to_node)]
 
-    # build the geopandas geodataframe
-    links = (gpd.GeoDataFrame(full_net,
-        geometry=geometry)
-        .drop(columns=['x_from_node','y_from_node','node_id_from_node','node_id_to_node','x_to_node','y_to_node'])
-    )
+        # build the geopandas geodataframe
+        links = (gpd.GeoDataFrame(full_net,
+            geometry=geometry)
+            .drop(columns=['x_from_node','y_from_node','node_id_from_node','node_id_to_node','x_to_node','y_to_node'])
+        )
     
     
     # Renaming the attributes columns to match the database
@@ -144,7 +157,8 @@ def importNetworkLinks():
     
     
     # Conversion of the geometry column to object
-    links['geom'] = links['geom'].apply(lambda x: x.wkt)
+    if not useDetailedNetworkFile:
+        links['geom'] = links['geom'].apply(lambda x: x.wkt)
     
     
     # Importing the data to the database
@@ -253,6 +267,8 @@ def importEvents(timeStepInMinutes=60, useRoundedTime=True, displayHoursInsteadO
 # TODO: Review the case where a vehicle enters a link at the same time as it leaves it
 # TODO: Review the case where the mean speed of a vehicle is greater than the speed limit of the link it is on
 # TODO: Review the case where the mean speed is 0
+# TODO: Take into account public transport events
+# TODO: Implement vehicle filter option, (e.g. same output but with vehicleCount and meanSpeed for specified vehicle type)
 # returns a dataframe with, for each link, the vehicle count and mean speed every x minutes set in parameter
 # if useRoundedTime is True => if the first event is at time '12613' (3.5h) => it will start at time '10800' (3h)
 # if displayHoursInsteadOfSeconds is True => for a timespan between '10800' and '12600' => it will display '3:00:00' and '3:30:00'
