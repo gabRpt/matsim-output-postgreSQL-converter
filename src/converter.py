@@ -242,14 +242,20 @@ def importActivities():
 
 def importEvents(timeStepInMinutes=60, useRoundedTime=True, displayHoursInsteadOfSeconds=True):
     eventsResultsDataframe = _getEventsVehicleCountAndMeanSpeed(timeStepInMinutes, useRoundedTime, displayHoursInsteadOfSeconds)
-    print(eventsResultsDataframe)
+    
+    # Importing the data to the database
+    conn = tools.connectToDatabase()
+    eventsResultsDataframe.to_sql('networkLinkTraffic', con=conn, if_exists='append', index=False)
+    
 
 
 
-
-
+# TODO: Review the case where a vehicle enters a link at the same time as it leaves it
+# TODO: Review the case where the mean speed of a vehicle is greater than the speed limit of the link it is on
+# TODO: Review the case where the mean speed is 0
 # returns a dataframe with, for each link, the vehicle count and mean speed every x minutes set in parameter
 # if useRoundedTime is True => if the first event is at time '12613' (3.5h) => it will start at time '10800' (3h)
+# if displayHoursInsteadOfSeconds is True => for a timespan between '10800' and '12600' => it will display '3:00:00' and '3:30:00'
 def _getEventsVehicleCountAndMeanSpeed(timeStepInMinutes=60, useRoundedTime=True, displayHoursInsteadOfSeconds=True):
     timeStepInSeconds = timeStepInMinutes * 60
     
@@ -319,7 +325,7 @@ def _getEventsVehicleCountAndMeanSpeed(timeStepInMinutes=60, useRoundedTime=True
                 
                 # Checking if meanspeed is above links freespeed limit
                 if meanSpeed > networkLinksFreespeedDict[linkId]:
-                    meanSpeed = networkLinksFreespeedDict[linkId]                    
+                    meanSpeed = networkLinksFreespeedDict[linkId]
                 
                 resultsDict['linkId'].append(linkId)
                 resultsDict['timeSpan'].append(timespan)

@@ -42,7 +42,7 @@ def launchImport(name):
     elif name == "activities":
         converter.importActivities()
     elif name == "events":
-        converter.importEvents(timeStepInMinutes=60)
+        converter.importEvents()
     
     print(f" Done in {str(datetime.now() - currentStartTime)[:-5]} !")
 
