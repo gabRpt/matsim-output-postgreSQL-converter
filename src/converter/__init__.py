@@ -6,3 +6,4 @@ import converter.networkLinks
 import converter.persons
 import converter.trips
 import converter.vehicles
+import converter.buildings

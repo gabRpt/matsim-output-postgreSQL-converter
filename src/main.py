@@ -7,14 +7,15 @@ def main():
     
     # Imports in the right order to avoid foreign key constraints
     tablesToImport = [
-        "vehicles",
-        "households",
-        "persons",
-        "networkLinks",
-        "facilities",
-        "trips",
-        "activities",
-        "events",
+        # "vehicles",
+        # "households",
+        # "persons",
+        # "networkLinks",
+        # "facilities",
+        # "trips",
+        # "activities",
+        # "events",
+        "buildings",
     ]
     
     print("========== STARTING IMPORTATIONS ==========")
@@ -45,6 +46,8 @@ def launchImport(name):
         converter.activities.importActivities()
     elif name == "events":
         converter.events.importEvents()
+    elif name == "buildings":
+        converter.buildings.importBuildings()
     
     print(f" Done in {str(datetime.now() - currentStartTime)[:-5]} !")
 
