@@ -1,25 +1,20 @@
-import Vehicles
-import Households
-import Persons
-import NetworkLinks
-import Facilities
-import Trips
-import Activities
-import Events
+import converter as converter
 from datetime import datetime
 
 
 def main():
     overallStartTime = datetime.now()
+    
+    # Imports in the right order to avoid foreign key constraints
     tablesToImport = [
-        # "vehicles",
-        # "households",
-        # "persons",
+        "vehicles",
+        "households",
+        "persons",
         "networkLinks",
-        # "facilities",
-        # "trips",
-        # "activities",
-        # "events",
+        "facilities",
+        "trips",
+        "activities",
+        "events",
     ]
     
     print("========== STARTING IMPORTATIONS ==========")
@@ -35,21 +30,21 @@ def launchImport(name):
     print(f"Importing {name}...", end="", flush=True)
     
     if name == "vehicles":
-        Vehicles.importVehicles()
+        converter.vehicles.importVehicles()
     elif name == "households":
-        Households.importHouseholds()
+        converter.households.importHouseholds()
     elif name == "persons":
-        Persons.importPersons()
+        converter.persons.importPersons()
     elif name == "networkLinks":
-        NetworkLinks.importNetworkLinks()
+        converter.networkLinks.importNetworkLinks()
     elif name == "facilities":
-        Facilities.importFacilities()
+        converter.facilities.importFacilities()
     elif name == "trips":
-        Trips.importTrips()
+        converter.trips.importTrips()
     elif name == "activities":
-        Activities.importActivities()
+        converter.activities.importActivities()
     elif name == "events":
-        Events.importEvents()
+        converter.events.importEvents()
     
     print(f" Done in {str(datetime.now() - currentStartTime)[:-5]} !")
 
