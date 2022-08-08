@@ -1,4 +1,11 @@
-import converter
+import Vehicles
+import Households
+import Persons
+import NetworkLinks
+import Facilities
+import Trips
+import Activities
+import Events
 from datetime import datetime
 
 
@@ -28,21 +35,21 @@ def launchImport(name):
     print(f"Importing {name}...", end="", flush=True)
     
     if name == "vehicles":
-        converter.importVehicles()
+        Vehicles.importVehicles()
     elif name == "households":
-        converter.importHouseholds()
+        Households.importHouseholds()
     elif name == "persons":
-        converter.importPersons()
+        Persons.importPersons()
     elif name == "networkLinks":
-        converter.importNetworkLinks()
+        NetworkLinks.importNetworkLinks()
     elif name == "facilities":
-        converter.importFacilities()
+        Facilities.importFacilities()
     elif name == "trips":
-        converter.importTrips()
+        Trips.importTrips()
     elif name == "activities":
-        converter.importActivities()
+        Activities.importActivities()
     elif name == "events":
-        converter.importEvents()
+        Events.importEvents()
     
     print(f" Done in {str(datetime.now() - currentStartTime)[:-5]} !")
 
