@@ -7,7 +7,6 @@ import json
 from geoalchemy2 import Geometry
 
 def importBuildings():
-    print('') #TODO remove this line
     
     with open(config.PATH_BUILDINGS, 'r') as buildingsJson:
         buildings = json.load(buildingsJson)        
@@ -33,8 +32,8 @@ def importBuildings():
             polygonFeaturesDict['geometry'].append(polygonString)
             
         polygonDataframe = pd.DataFrame(polygonFeaturesDict)
-        print(polygonDataframe)
         
+        # Importing the data to the database        
         conn = tools.connectToDatabase()
         polygonDataframe.to_sql('building', con=conn, if_exists='append', index=False, dtype={'geom': Geometry('POLYGON', srid=config.DB_SRID)})
 
@@ -42,6 +41,8 @@ def importBuildings():
 
 # Polygon coordinates structure in the json file is: [[[x,y], [x,y], [x,y], [x,y], [x,y]]]
 # We need to convert it to POLYGON((x y, x y, x y, x y, x y))
+# if coordinates array has more than one element, we need to convert it to 
+# MULTIPOLYGON(((x y, x y, x y, x y, x y), (x y, x y, x y, x y, x y)))
 def _convertCoordinatesToPolygon(coordinates):
     if len(coordinates) == 1:
         polygonString = 'POLYGON(('
@@ -49,8 +50,6 @@ def _convertCoordinatesToPolygon(coordinates):
         for coordinate in coordinates[0]:
             polygonString += f'{coordinate[0]} {coordinate[1]}, '
     
-        polygonString = polygonString[:-2] + '))'
-
     else:
         polygonString = 'MULTIPOLYGON(('
         
@@ -61,6 +60,8 @@ def _convertCoordinatesToPolygon(coordinates):
                 polygonString += f'{coordinate[0]} {coordinate[1]}, '
             
             polygonString = polygonString[:-2] + '), '
-        polygonString = polygonString[:-2] + '))'
+
+    # Removing the last comma and space before closing the brackets
+    polygonString = polygonString[:-2] + '))'
     
     return polygonString
