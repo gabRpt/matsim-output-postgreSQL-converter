@@ -12,7 +12,7 @@ def importEvents(timeStepInMinutes=60, useRoundedTime=True, displayHoursInsteadO
     
     # Importing the data to the database
     conn = tools.connectToDatabase()
-    eventsResultsDataframe.to_sql('networkLinkTraffic', con=conn, if_exists='append', index=False)
+    eventsResultsDataframe.to_sql(config.DB_EVENTS_TABLE, con=conn, if_exists='append', index=False)
     
 
 

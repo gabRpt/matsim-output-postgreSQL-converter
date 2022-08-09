@@ -20,4 +20,4 @@ def importPersons():
         
     # Importing the data to the database
     conn = tools.connectToDatabase()
-    personGeoDataframe.to_sql('person', con=conn, if_exists='append', index=False, dtype={'first_act_coord': Geometry('POINT', srid=config.DB_SRID)})
+    personGeoDataframe.to_sql(config.DB_PERSONS_TABLE, con=conn, if_exists='append', index=False, dtype={'first_act_coord': Geometry('POINT', srid=config.DB_SRID)})

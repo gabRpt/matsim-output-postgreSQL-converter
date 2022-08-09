@@ -33,4 +33,4 @@ def importActivities():
     
     # Importing the data to the database
     conn = tools.connectToDatabase()
-    activitiesDataframe.to_sql('activity', con=conn, if_exists='append', index=False, dtype={'location': Geometry('POINT', srid=config.DB_SRID)})
+    activitiesDataframe.to_sql(config.DB_PLANS_TABLE, con=conn, if_exists='append', index=False, dtype={'location': Geometry('POINT', srid=config.DB_SRID)})

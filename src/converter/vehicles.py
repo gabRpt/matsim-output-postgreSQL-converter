@@ -3,7 +3,7 @@ import config
 import tools
 
 def importVehicles():
-    vehicleDataframes = Vehicle.vehicle_reader(config.PATH_ALLVEHICLE)
+    vehicleDataframes = Vehicle.vehicle_reader(config.PATH_ALLVEHICLES)
     vehicleTypes = vehicleDataframes.vehicle_types
     vehicles = vehicleDataframes.vehicles
     
@@ -20,5 +20,5 @@ def importVehicles():
     
     # Importing the data to the database
     conn = tools.connectToDatabase()
-    vehicleTypes.to_sql('vehicleType', con=conn, if_exists='append', index=False)
-    vehicles.to_sql('vehicle', con=conn, if_exists='append', index=False)
+    vehicleTypes.to_sql(config.DB_ALLVEHICLES_TYPES_TABLE, con=conn, if_exists='append', index=False)
+    vehicles.to_sql(config.DB_ALLVEHICLES_TABLE, con=conn, if_exists='append', index=False)
