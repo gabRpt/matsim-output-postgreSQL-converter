@@ -12,3 +12,4 @@ def importHouseholds():
     # Importing the data to the database
     conn = tools.connectToDatabase()
     householdDataframe.to_sql(config.DB_HOUSEHOLDS_TABLE, con=conn, if_exists='append', index=False)
+    conn.close()

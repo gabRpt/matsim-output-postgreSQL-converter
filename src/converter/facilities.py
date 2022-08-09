@@ -21,3 +21,4 @@ def importFacilities():
     # Importing the data to the database
     conn = tools.connectToDatabase()
     facilities.to_sql(config.DB_FACILITIES_TABLE, con=conn, if_exists='append', index=False, dtype={'location': Geometry('POINT', srid=config.DB_SRID)})
+    conn.close()

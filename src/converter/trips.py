@@ -27,3 +27,4 @@ def importTrips():
     # Importing the data to the database
     conn = tools.connectToDatabase()
     tripsDataframe.to_sql(config.DB_TRIPS_TABLE, con=conn, if_exists='append', index=False)
+    conn.close()

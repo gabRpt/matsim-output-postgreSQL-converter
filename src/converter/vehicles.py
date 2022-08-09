@@ -22,3 +22,4 @@ def importVehicles():
     conn = tools.connectToDatabase()
     vehicleTypes.to_sql(config.DB_ALLVEHICLES_TYPES_TABLE, con=conn, if_exists='append', index=False)
     vehicles.to_sql(config.DB_ALLVEHICLES_TABLE, con=conn, if_exists='append', index=False)
+    conn.close()
