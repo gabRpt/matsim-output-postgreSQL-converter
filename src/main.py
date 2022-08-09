@@ -7,14 +7,14 @@ def main():
     
     # Imports in the right order to avoid foreign key constraints
     tablesToImport = [
-        # "vehicles",
-        # "households",
-        # "persons",
-        # "networkLinks",
-        # "facilities",
-        # "trips",
-        # "activities",
-        # "events",
+        "vehicles",
+        "households",
+        "persons",
+        "networkLinks",
+        "facilities",
+        "trips",
+        "activities",
+        "events",
         "buildings",
     ]
     
