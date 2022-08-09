@@ -68,7 +68,8 @@ dependencies:
   - munkres=1.1.4=py_0
   - networkx=2.8.4=py39haa95532_0
   - numexpr=2.8.3=py39hb80d3ca_0
-  - numpy-base=1.22.3=py39hca35cd5_0
+  - numpy=1.23.1=py39h7a0a035_0
+  - numpy-base=1.23.1=py39hca35cd5_0
   - openjpeg=2.4.0=h4fc8c34_0
   - openssl=1.1.1q=h2bbff1b_0
   - packaging=21.3=pyhd3eb1b0_0
@@ -104,7 +105,6 @@ dependencies:
     - geoalchemy2==0.12.2
     - greenlet==1.1.2
     - isal==0.11.1
-    - numpy==1.23.1
     - protobuf==3.20.0
     - psycopg2==2.9.3
     - sqlalchemy==1.4.39

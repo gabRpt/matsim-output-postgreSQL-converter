@@ -11,6 +11,7 @@ PATH_PERSONS = PATH_SIMULATION_OUTPUT + '/output_persons.csv'
 PATH_PLANS = PATH_SIMULATION_OUTPUT + '/output_plans.xml.gz'
 PATH_TRIPS = PATH_SIMULATION_OUTPUT + '/output_trips.csv'
 PATH_DETAILED_NETWORK = PATH_SIMULATION_OUTPUT + '/detailed_network.csv'
+PATH_BUILDINGS = PATH_SIMULATION_OUTPUT + '/BUILDINGS.geojson'
 
 DB_CONNECTION_STRING = 'postgresql+psycopg2://<username>:<password>@<location>:<port>/<databaseName>' # Connection string to the database (eg: postgresql+psycopg2://postgres:admin@localhost:5432/test)
 DB_SRID = '2154' # SRID used in matsim
