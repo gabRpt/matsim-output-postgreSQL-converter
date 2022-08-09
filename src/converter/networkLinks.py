@@ -42,7 +42,7 @@ def importNetworkLinks(useDetailedNetworkFile=True):
     links.drop(columns=['geometry'], inplace=True)
     
     if useDetailedNetworkFile:
-        detailedNetworkDataframe = pd.read_csv(config.PATH_DETAILED_NETWORK, sep=',')
+        detailedNetworkDataframe = pd.read_csv(config.PATH_DETAILED_NETWORK, sep=config.DETAILED_NETWORK_CSV_SEPARATOR)
         
         # Removing rows where the linestring has less than 2 coordinates
         detailedNetworkDataframe = detailedNetworkDataframe[detailedNetworkDataframe['Geometry'].apply(lambda x: len(x.split(',')) > 1)]

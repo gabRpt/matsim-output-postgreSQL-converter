@@ -15,3 +15,20 @@ PATH_BUILDINGS = PATH_SIMULATION_OUTPUT + '/BUILDINGS.geojson'
 
 DB_CONNECTION_STRING = 'postgresql+psycopg2://<username>:<password>@<location>:<port>/<databaseName>' # Connection string to the database (eg: postgresql+psycopg2://postgres:admin@localhost:5432/test)
 DB_SRID = '2154' # SRID used in matsim
+
+# Names of the tables in the database
+DB_ALLVEHICLES_TABLE = 'vehicle' 
+DB_ALLVEHICLES_TYPES_TABLE = 'vehicleType'
+DB_EVENTS_TABLE = 'networkLinkTraffic'
+DB_FACILITIES_TABLE = 'facility'
+DB_HOUSEHOLDS_TABLE = 'household'
+DB_NETWORK_TABLE = 'networkLink'
+DB_PERSONS_TABLE = 'person'
+DB_PLANS_TABLE = 'activity'
+DB_TRIPS_TABLE = 'trip'
+DB_BUILDINGS_TABLE = 'building'
+
+# Separators for the csv files
+PERSONS_CSV_SEPARATOR = ';'
+TRIPS_CSV_SEPARATOR = ';'
+DETAILED_NETWORK_CSV_SEPARATOR = ','

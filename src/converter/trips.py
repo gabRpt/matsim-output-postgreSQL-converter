@@ -4,7 +4,7 @@ import pandas as pd
 
 
 def importTrips():
-    tripsDataframe = pd.read_csv(config.PATH_TRIPS, sep=';')   
+    tripsDataframe = pd.read_csv(config.PATH_TRIPS, sep=config.TRIPS_CSV_SEPARATOR)
     
     tripsDataframe.drop(columns=[
         'start_activity_type',
