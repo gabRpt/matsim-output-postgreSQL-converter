@@ -18,9 +18,6 @@ def importEvents(timeStepInMinutes=60, useRoundedTime=True, displayHoursInsteadO
 
 
 
-# TODO: Review the case where a vehicle enters a link at the same time as it leaves it
-# TODO: Review the case where the mean speed of a vehicle is greater than the speed limit of the link it is on
-# TODO: Review the case where the mean speed is 0
 # TODO: Take into account public transport events
 # TODO: Implement vehicle filter option, (e.g. same output but with vehicleCount and meanSpeed for specified vehicle type)
 # returns a dataframe with, for each link, the vehicle count and mean speed every x minutes set in parameter
@@ -37,31 +34,13 @@ def _getEventsVehicleCountAndMeanSpeed(timeStepInMinutes=60, useRoundedTime=True
     networkLinksLengthDict = dict(zip(networkLinksDataframe['link_id'], networkLinksDataframe['length']))
     networkLinksFreespeedDict = dict(zip(networkLinksDataframe['link_id'], networkLinksDataframe['freespeed']))
     
-    linksEntryKeyWords = ['entered link', 'departure', 'VehicleDepartsAtFacility']
-    linksExitKeyWords = ['left link', 'arrival']
+    linksEntryKeyWords = ['entered link']
+    linksExitKeyWords = ['left link']
     
     # keeping only useful events
     eventsDataframe = eventsDataframe[eventsDataframe['type'].isin(linksEntryKeyWords + linksExitKeyWords)]
-
-    # Removing starting and ending events not using car as mode
-    # and events using pt
-    eventsDataframe.drop(eventsDataframe[
-        ((eventsDataframe['type'] == 'departure') | (eventsDataframe['type'] == 'arrival')) &
-        ((eventsDataframe['legMode'] != 'car') | (eventsDataframe['person'].astype(str).str.startswith('pt')))
-    ].index, inplace=True)
-
-    
-    # Adding link to the events where the link is stored in facility column where link type is VehicleDepartsAtFacility
-    # ex facility="SNCF:87590331.link:pt_SNCF:87590331" -> link="pt_SNCF:87590331"
-    # ex facility="22167-R.link:40411" -> link="40411"
-    eventsDataframe.loc[(eventsDataframe['type'] == 'VehicleDepartsAtFacility') &
-                        (eventsDataframe['vehicle'].str.split('_').str[-1] != 'tram'), 'link'] = eventsDataframe['facility'].str.split(':').str[-1]
-    
-    eventsDataframe.loc[(eventsDataframe['type'] == 'VehicleDepartsAtFacility') &
-                        (eventsDataframe['vehicle'].str.split('_').str[-1] == 'tram'), 'link'] = eventsDataframe['facility'].str.split('link:').str[-1]
-        
     eventsDataframe.reset_index(drop=True, inplace=True)
-    
+        
     # Calculating the number of vehicles in each link at each time step
     # Calculating the mean speed of each link at each time step
     if useRoundedTime:
@@ -93,10 +72,6 @@ def _getEventsVehicleCountAndMeanSpeed(timeStepInMinutes=60, useRoundedTime=True
                 else:
                     timespan = f'{int(currentStartingTime)}_{int(currentEndingTime)}'
                 
-                # Checking if meanspeed is above links freespeed limit
-                if meanSpeed > networkLinksFreespeedDict[linkId]:
-                    meanSpeed = networkLinksFreespeedDict[linkId]
-                
                 resultsDict['linkId'].append(linkId)
                 resultsDict['timeSpan'].append(timespan)
                 resultsDict['vehicleCount'].append(vehicleCount)
@@ -114,24 +89,34 @@ def _getEventsVehicleCountAndMeanSpeed(timeStepInMinutes=60, useRoundedTime=True
                 # Calculating time spent in the link
                 try: 
                     startingTimeInLink = enteredLinksQueueDict[row.link].pop(0)
+                    secondsSpentInLink = row.time - startingTimeInLink
+            
+                    # Calculating the mean speed in the link (in meter/second)
+                    linkLength = networkLinksLengthDict[row.link]
+                    try:
+                        speed = linkLength / secondsSpentInLink
+                        
+                        # Checking if meanspeed is above links freespeed limit
+                        if speed > networkLinksFreespeedDict[row.link]:
+                            # print(f'Warning: speed {speed} > freespeed {networkLinksFreespeedDict[row.link]} for link {row.link}')
+                            raise ValueError('Speed above freespeed limit')
+                        
+                    except Exception:
+                        # Case if a vehicle leaves the link at the same time it enters
+                        # print(f'Error: \nlink => {row.link} \nlinkLength => {linkLength} \nsecondsSpentInLink => {secondsSpentInLink} \nstartingTimeInLink => {startingTimeInLink} \nrow.time => {row.time} \ntype => {row.type} \nlegMode => {row.legMode}')
+                        continue
+                    
+                    meanSpeedInLinksDict[row.link].append(speed)
+                    vehiclesPerLinkDict[row.link] += 1
+
                 except Exception:
-                    startingTimeInLink = row.time
-                    print(f'Error: link {row.link} has an empty queue')
-                
-                secondsSpentInLink = row.time - startingTimeInLink
-                
-                # Calculating the mean speed in the link (in meter/second)
-                linkLength = networkLinksLengthDict[row.link]
-                try:
-                    speed = linkLength / secondsSpentInLink
-                except Exception:   # Case if a vehicle leaves the link at the same time it enters
-                    speed = 0
-                    # print(f'Error: \nlink => {row.link} \nlinkLength => {linkLength} \nsecondsSpentInLink => {secondsSpentInLink} \nstartingTimeInLink => {startingTimeInLink} \nrow.time => {row.time} \ntype => {row.type} \nlegMode => {row.legMode}')
-                meanSpeedInLinksDict[row.link].append(speed)
-                vehiclesPerLinkDict[row.link] += 1
-                
+                    # skipping the event if the vehicle has not entered the link
+                    # print(f'Error: link {row.link} has an empty queue at time {row.time}')
+                    continue
             else:
-                print(f'Error: link {row.link} not found in the queue person: {row.person} / legMode: {row.legMode}')
+                # skipping the event if the vehicle has not entered the link yet
+                # print(f'Error: link {row.link} not found in the queue person: {row.person} / legMode: {row.legMode}')
+                continue
 
     resultsDict = pd.DataFrame(resultsDict)
     return resultsDict
