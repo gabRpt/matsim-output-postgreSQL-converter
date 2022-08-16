@@ -7,8 +7,8 @@ import collections
 import math
 
 
-def importEvents(timeStepInMinutes=60, useRoundedTime=True, displayHoursInsteadOfSeconds=True):
-    eventsResultsDataframe = _getEventsVehicleCountAndMeanSpeed(timeStepInMinutes, useRoundedTime, displayHoursInsteadOfSeconds)
+def importEvents(timeStepInMinutes=60, useRoundedTime=True):
+    eventsResultsDataframe = _getEventsVehicleCountAndMeanSpeed(timeStepInMinutes, useRoundedTime)
     
     # Importing the data to the database
     conn = tools.connectToDatabase()
@@ -21,9 +21,7 @@ def importEvents(timeStepInMinutes=60, useRoundedTime=True, displayHoursInsteadO
 # TODO: Take into account public transport events
 # TODO: Implement vehicle filter option, (e.g. same output but with vehicleCount and meanSpeed for specified vehicle type)
 # returns a dataframe with, for each link, the vehicle count and mean speed every x minutes set in parameter
-# if useRoundedTime is True => if the first event is at time '12613' (3.5h) => it will start at time '10800' (3h)
-# if displayHoursInsteadOfSeconds is True => for a timespan between '10800' and '12600' => it will display '3:00:00' and '3:30:00'
-def _getEventsVehicleCountAndMeanSpeed(timeStepInMinutes=60, useRoundedTime=True, displayHoursInsteadOfSeconds=True):
+def _getEventsVehicleCountAndMeanSpeed(timeStepInMinutes=60, useRoundedTime=True):
     timeStepInSeconds = timeStepInMinutes * 60
     
     events = Events.event_reader(config.PATH_EVENTS)    
@@ -63,17 +61,13 @@ def _getEventsVehicleCountAndMeanSpeed(timeStepInMinutes=60, useRoundedTime=True
         # Checking if we are still in the current time span
         if row.time > currentEndingTime:
             for linkId, speeds in meanSpeedInLinksDict.items():
-                vehicleCount = vehiclesPerLinkDict[linkId]
+                vehicleCount = vehiclesPerLinkDict[linkId] 
                 speeds = [i for i in speeds if i != 0] # removing 0 values
                 meanSpeed = sum(speeds) / vehicleCount if vehicleCount > 0 else 0
 
-                if displayHoursInsteadOfSeconds:
-                    timespan = f'{tools.getFormattedTime(currentStartingTime)}_{tools.getFormattedTime(currentEndingTime)}'
-                else:
-                    timespan = f'{int(currentStartingTime)}_{int(currentEndingTime)}'
-                
                 resultsDict['linkId'].append(linkId)
-                resultsDict['timeSpan'].append(timespan)
+                resultsDict['startTime'].append(tools.getFormattedTime(currentStartingTime))
+                resultsDict['endTime'].append(tools.getFormattedTime(currentEndingTime))
                 resultsDict['vehicleCount'].append(vehicleCount)
                 resultsDict['meanSpeed'].append(meanSpeed)
             
