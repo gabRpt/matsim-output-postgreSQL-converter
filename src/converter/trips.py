@@ -22,7 +22,7 @@ def importTrips():
     }, inplace = True)
     
     # Correcting dep_time format
-    tripsDataframe['dep_time'] = tripsDataframe['dep_time'].apply(lambda x: tools.checkAndCorrectTime(x))
+    tripsDataframe['dep_time'] = tripsDataframe['dep_time'].apply(lambda x: tools.formatTimeToIntervalType(x))
     
     # Importing the data to the database
     conn = tools.connectToDatabase()

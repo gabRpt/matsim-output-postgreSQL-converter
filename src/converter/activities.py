@@ -11,8 +11,8 @@ def importActivities():
     plans = plansDataframes.plans
     
     # Correcting start_time and end_time format
-    activitiesDataframe['start_time'] = activitiesDataframe['start_time'].apply(lambda x: tools.checkAndCorrectTime(x))
-    activitiesDataframe['end_time'] = activitiesDataframe['end_time'].apply(lambda x: tools.checkAndCorrectTime(x))
+    activitiesDataframe['start_time'] = activitiesDataframe['start_time'].apply(lambda x: tools.formatTimeToIntervalType(x))
+    activitiesDataframe['end_time'] = activitiesDataframe['end_time'].apply(lambda x: tools.formatTimeToIntervalType(x))
     
     # Creating a point from coordinates
     activitiesDataframe['location'] = activitiesDataframe.apply(lambda row: 'POINT({} {})'.format(row['x'], row['y']), axis=1)

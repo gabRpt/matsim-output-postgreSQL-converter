@@ -65,8 +65,8 @@ def _getEventsVehicleCountAndMeanSpeed(timeStepInMinutes=60, useRoundedTime=True
                 speeds = [i for i in speeds if i != 0] # removing 0 values
                 meanSpeed = sum(speeds) / vehicleCount if vehicleCount > 0 else 0
                 
-                formattedStartingTime = tools.formatTimeToIntervalType(currentStartingTime)
-                formattedEndingTime = tools.formatTimeToIntervalType(currentEndingTime)
+                formattedStartingTime = tools.formatTimeToIntervalType(tools.getFormattedTime(currentStartingTime))
+                formattedEndingTime = tools.formatTimeToIntervalType(tools.getFormattedTime(currentEndingTime))
 
                 resultsDict['linkId'].append(linkId)
                 resultsDict['startTime'].append(formattedStartingTime)
