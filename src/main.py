@@ -45,7 +45,7 @@ def launchImport(name):
     elif name == "activities":
         converter.activities.importActivities()
     elif name == "events":
-        converter.events.importEvents()
+        converter.events.importEvents(timeStepInMinutes=10)
     elif name == "buildings":
         converter.buildings.importBuildings()
     
