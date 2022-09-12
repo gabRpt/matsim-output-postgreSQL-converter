@@ -5,7 +5,7 @@ from sqlalchemy.sql import text
 
 
 
-def matrixOD(filePath):
+def odMatrix(filePath):
     conn = tools.connectToDatabase()
     
     with open(filePath) as f:
