@@ -1,6 +1,6 @@
 import tools
 import geojson
-import re
+import tools
 from sqlalchemy.sql import text
 
 
@@ -21,7 +21,7 @@ def matrixOD(filePath):
             startingGeometry = startingFeature["geometry"]
             startingCoordinates = startingGeometry["coordinates"]
             startingGeometryType = startingGeometry["type"]
-            startingPolygon = formatPolygon(startingCoordinates, startingGeometryType)
+            startingPolygon = tools.formatGeoJSONPolygonToPostgisPolygon(startingCoordinates, startingGeometryType)
 
             # creating OD matrix of count of trips between each points
             for j in range(nbFeatures):
@@ -30,7 +30,7 @@ def matrixOD(filePath):
                 endingCoordinates = endingGeometry["coordinates"]
                 endingGeometryType = endingGeometry["type"]
 
-                endingPolygon = formatPolygon(endingCoordinates, endingGeometryType)                    
+                endingPolygon = tools.formatGeoJSONPolygonToPostgisPolygon(endingCoordinates, endingGeometryType)                    
                 
                 query = text("""SELECT count(*)
                                 from trip
@@ -51,29 +51,3 @@ def matrixOD(filePath):
 
     print(finalODMatrix)
     conn.close()
-
-
-# converts a list of x lists to a string and replace Angle bracket with parenthesis
-# [[[1, 2], [3,4], [5,6]]] -> "(((1,2) (3,4) (5,6)))"
-def convertListToString(listToConvert):
-    if isinstance(listToConvert, list):
-        return " ".join(map(convertListToString, listToConvert)) + ")"
-    else:
-        return str(listToConvert)
-
-def formatPolygon(coordinates, geometryType):
-    polygon = convertListToString(coordinates)
-    polygon = polygon.replace(") ", ", ")
-    
-    # limiting to 3 levels of nesting
-    nbEndingParenthesis = polygon.count(")")
-    if nbEndingParenthesis > 3:
-        nbParenthesisToRemove = nbEndingParenthesis - 3
-        polygon = polygon[:-nbParenthesisToRemove]
-        nbEndingParenthesis = 3
-    
-    # adding nbEndingParenthesis parenthesis at the beggining
-    polygon = "(" * nbEndingParenthesis + polygon
-    polygon = geometryType + polygon
-    
-    return polygon

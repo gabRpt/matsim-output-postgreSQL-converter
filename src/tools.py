@@ -35,3 +35,32 @@ def getFormattedTime(timeInSeconds):
         return f'{h}:{m:02d}:{s:02d}'
     else:
         return None
+
+
+
+# converts a list of x lists to a string and replace Angle bracket with parenthesis
+# [[[1, 2], [3,4], [5,6]]] -> "(((1,2) (3,4) (5,6)))"
+def convertListToString(listToConvert):
+    if isinstance(listToConvert, list):
+        return " ".join(map(convertListToString, listToConvert)) + ")"
+    else:
+        return str(listToConvert)
+
+
+# format geojson polygon to a postgis polygon
+def formatGeoJSONPolygonToPostgisPolygon(coordinates, geometryType):
+    polygon = convertListToString(coordinates)
+    polygon = polygon.replace(") ", ", ")
+    
+    # limiting to 3 levels of nesting
+    nbEndingParenthesis = polygon.count(")")
+    if nbEndingParenthesis > 3:
+        nbParenthesisToRemove = nbEndingParenthesis - 3
+        polygon = polygon[:-nbParenthesisToRemove]
+        nbEndingParenthesis = 3
+    
+    # adding nbEndingParenthesis parenthesis at the beggining
+    polygon = "(" * nbEndingParenthesis + polygon
+    polygon = geometryType + polygon
+    
+    return polygon
