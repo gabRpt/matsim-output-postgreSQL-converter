@@ -29,14 +29,7 @@ def agentActivity(filePath, startTime='00:00:00', endTime='23:59:59', strictTime
         features = gjson["features"]
         nbFeatures = len(features)
         
-        for i in range(nbFeatures):
-            currentFeature = features[i]
-            currentGeometry = currentFeature["geometry"]
-            currentCoordinates = currentGeometry["coordinates"]
-            currentGeometryType = currentGeometry["type"]
-            currentPolygon = tools.formatGeoJSONPolygonToPostgisPolygon(currentCoordinates, currentGeometryType)
-            
-            query = text("""SELECT *, end_time - start_time as total_time_spent, 
+        queryTemplate = """SELECT *, end_time - start_time as total_time_spent, 
                                 CASE
                                     WHEN :startTime <= start_time and :endTime >= end_time then end_time - start_time
                                     WHEN :startTime >= start_time and :endTime >= end_time then end_time - :startTime
@@ -45,13 +38,28 @@ def agentActivity(filePath, startTime='00:00:00', endTime='23:59:59', strictTime
                                 END as time_spent_in_interval
                             from activity 
                             where ST_Contains(ST_GeomFromText(:currentPolygon), "location")
-                            and start_time < :endTime
-                            and (end_time > :startTime or end_time is null)
-                        """)
-
-            query = query.bindparams(currentPolygon=currentPolygon, startTime=startTime, endTime=endTime)            
+                        """
+        # Changing query depending on strictTime option
+        if strictTime:
+            query = text(queryTemplate + """and start_time between :startTime and :endTime
+                                            and end_time between :startTime and :endTime""")
+        else:
+            query = text(queryTemplate + """and start_time < :endTime
+                                            and (end_time > :startTime or end_time is null)""")
+        
+        for i in range(nbFeatures):
+            currentFeature = features[i]
+            currentGeometry = currentFeature["geometry"]
+            currentCoordinates = currentGeometry["coordinates"]
+            currentGeometryType = currentGeometry["type"]
+            currentPolygon = tools.formatGeoJSONPolygonToPostgisPolygon(currentCoordinates, currentGeometryType)
+            
+            query = query.bindparams(currentPolygon=currentPolygon, startTime=startTime, endTime=endTime)
+            
             dataframe = pd.read_sql(query, conn)
             allZonesDataframes.append(dataframe)
     
     conn.close()
+    
+    print(allZonesDataframes)
     return allZonesDataframes
