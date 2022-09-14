@@ -9,7 +9,7 @@ from sqlalchemy.sql import text
 # Return an array of dataframes for each zone
 #
 # Options:
-# eg: startTime = :startTime and endTime = '19:00:00'
+# eg: startTime = '18:00:00' and endTime = '19:00:00'
 # strictTime :  if true, only activities that start and end in the time interval are considered
 #                   eg: an activity starting at 18:30:00 and ending at 19:00:00 is considered
 #                       an activity starting at 18:30:00 and ending at 19:15:00 is NOT considered
