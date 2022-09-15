@@ -114,18 +114,22 @@ def _getArabesqueDataframesFromODMatrix(odMatrix, zonesCentroids, geojsonEpsg):
     nbZones = len(zonesCentroids)
     
     # config for the transformation of the coordinates
+    outEpsg = f'epsg:{config.DEFAULT_ARABESQUE_SRID}'
     inProj = Proj(geojsonEpsg)
-    outProj = Proj(f'epsg:{config.DEFAULT_ARABESQUE_SRID}')
+    outProj = Proj(outEpsg)
     
     for startZone in range(nbZones):
         locationDict["id"].append(startZone)
         
         # transform the coordinates
-        if geojsonEpsg != config.DEFAULT_ARABESQUE_SRID:
+        if geojsonEpsg != outEpsg:
             x1, y1 = zonesCentroids[startZone].x, zonesCentroids[startZone].y
             x2, y2 = transform(inProj, outProj, x1, y1)
             locationDict["lat"].append(x2)
             locationDict["lng"].append(y2)
+        else:
+            locationDict["lat"].append(zonesCentroids[startZone].x)
+            locationDict["lng"].append(zonesCentroids[startZone].y)
         
         for endZone in range(nbZones):
             if odMatrix[startZone][endZone] > 0:
