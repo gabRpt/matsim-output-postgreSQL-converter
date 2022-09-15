@@ -25,7 +25,7 @@ def odMatrix(filePath, startTime='00:00:00', endTime='23:59:59', ignoreArrivalTi
         gjson = geojson.load(f)
         features = gjson["features"]
         
-        geojsonEpsg = _getEPSGFromGeoJSON(gjson)
+        geojsonEpsg = tools.getEPSGFromGeoJSON(gjson)
         # print(f"GeoJSON EPSG : {gjsonEpsg}")
 
         # init OD matrix
@@ -82,9 +82,6 @@ def odMatrix(filePath, startTime='00:00:00', endTime='23:59:59', ignoreArrivalTi
                 result = conn.execute(query)
                 
                 finalODMatrix[i][j] = result.fetchone()[0]
-
-    for i in finalODMatrix:
-        print('\t'.join(map(str, i)))
  
     conn.close()
     
@@ -148,27 +145,3 @@ def _generateArabesqueFiles(filePath, locationDf, flowDf):
     flowDf.to_csv(filePath + "flow.csv", index=False)
     
     return 1
-
-
-# Return the EPSG of the geojson
-# if not found return the Arabesque default EPSG
-def _getEPSGFromGeoJSON(gjson):
-    epsg = None
-
-    try:
-        crs = gjson['crs']['properties']['name']
-        
-        # get the EPSG code
-        for i in crs.split(':'):
-            if i.isdigit():
-                epsg = int(i)
-                break
-        
-        if epsg is None:
-            raise Exception("No EPSG code found in the GeoJSON file")
-
-    except:
-        print("No EPSG code found in the GeoJSON file")
-        epsg = config.ARABESQUE_DEFAULT_SRID
-
-    return epsg

@@ -1,6 +1,6 @@
 import tools
+import config
 import geojson
-import tools
 import pandas as pd
 from sqlalchemy.sql import text
 
@@ -29,7 +29,9 @@ def agentActivity(filePath, startTime='00:00:00', endTime='23:59:59', strictTime
         features = gjson["features"]
         nbFeatures = len(features)
         
-        queryTemplate = """SELECT *, end_time - start_time as total_time_spent, 
+        geojsonEpsg = tools.getEPSGFromGeoJSON(gjson)
+        
+        queryTemplate = f"""SELECT *, end_time - start_time as total_time_spent, 
                                 CASE
                                     WHEN :startTime <= start_time and :endTime >= end_time then end_time - start_time
                                     WHEN :startTime >= start_time and :endTime >= end_time then end_time - :startTime
@@ -37,7 +39,7 @@ def agentActivity(filePath, startTime='00:00:00', endTime='23:59:59', strictTime
                                     WHEN :startTime <= start_time and :endTime <= end_time then :endTime - start_time
                                 END as time_spent_in_interval
                             from activity 
-                            where ST_Contains(ST_GeomFromText(:currentPolygon), "location")
+                            where ST_Contains(ST_Transform(ST_GeomFromText(:currentPolygon, {geojsonEpsg}), {config.DB_SRID}), ST_SetSRID("location", {config.DB_SRID}))
                         """
         # Changing query depending on strictTime option
         if strictTime:
@@ -52,7 +54,7 @@ def agentActivity(filePath, startTime='00:00:00', endTime='23:59:59', strictTime
             currentGeometry = currentFeature["geometry"]
             currentCoordinates = currentGeometry["coordinates"]
             currentGeometryType = currentGeometry["type"]
-            currentPolygon = tools.formatGeoJSONPolygonToPostgisPolygon(currentCoordinates, currentGeometryType)
+            currentPolygon = tools.formatGeoJSONPolygonToPostgisPolygon(currentCoordinates, currentGeometryType, geojsonEpsg)
             
             query = query.bindparams(currentPolygon=currentPolygon, startTime=startTime, endTime=endTime)
             
