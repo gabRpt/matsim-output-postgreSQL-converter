@@ -25,7 +25,7 @@ def odMatrix(filePath, startTime='00:00:00', endTime='23:59:59', ignoreArrivalTi
         gjson = geojson.load(f)
         features = gjson["features"]
         
-        gjsonEpsg = _getEPSGFromGeoJSON(gjson)
+        geojsonEpsg = _getEPSGFromGeoJSON(gjson)
         # print(f"GeoJSON EPSG : {gjsonEpsg}")
 
         # init OD matrix
@@ -40,11 +40,11 @@ def odMatrix(filePath, startTime='00:00:00', endTime='23:59:59', ignoreArrivalTi
                     where trip.id IN (SELECT t.id
                             from facility f
                             join trip t ON t.start_facility_id = f.id
-                            where ST_Contains(ST_Transform(ST_GeomFromText(:startingPolygon, {gjsonEpsg}), {config.DB_SRID}), ST_SetSRID("location", {config.DB_SRID})))
+                            where ST_Contains(ST_Transform(ST_GeomFromText(:startingPolygon, {geojsonEpsg}), {config.DB_SRID}), ST_SetSRID("location", {config.DB_SRID})))
                     AND trip.id IN  (SELECT t.id
                             from facility f
                             join trip t ON t.end_facility_id = f.id
-                            where ST_Contains(ST_Transform(ST_GeomFromText(:endingPolygon, {gjsonEpsg}), {config.DB_SRID}), ST_SetSRID("location", {config.DB_SRID})))
+                            where ST_Contains(ST_Transform(ST_GeomFromText(:endingPolygon, {geojsonEpsg}), {config.DB_SRID}), ST_SetSRID("location", {config.DB_SRID})))
                     AND dep_time < :endTime
                 """
         
@@ -59,7 +59,7 @@ def odMatrix(filePath, startTime='00:00:00', endTime='23:59:59', ignoreArrivalTi
             startingGeometry = startingFeature["geometry"]
             startingCoordinates = startingGeometry["coordinates"]
             startingGeometryType = startingGeometry["type"]
-            startingPolygon = tools.formatGeoJSONPolygonToPostgisPolygon(startingCoordinates, startingGeometryType, gjsonEpsg)
+            startingPolygon = tools.formatGeoJSONPolygonToPostgisPolygon(startingCoordinates, startingGeometryType, geojsonEpsg)
 
             # Adding coordinates of the centroid of the zone
             zonesCentroids.append(wkt.loads(startingPolygon).centroid)
@@ -72,7 +72,7 @@ def odMatrix(filePath, startTime='00:00:00', endTime='23:59:59', ignoreArrivalTi
                 endingCoordinates = endingGeometry["coordinates"]
                 endingGeometryType = endingGeometry["type"]
 
-                endingPolygon = tools.formatGeoJSONPolygonToPostgisPolygon(endingCoordinates, endingGeometryType, gjsonEpsg)                    
+                endingPolygon = tools.formatGeoJSONPolygonToPostgisPolygon(endingCoordinates, endingGeometryType, geojsonEpsg)                    
                 
                 if ignoreArrivalTime:
                     query = query.bindparams(startingPolygon=startingPolygon, endingPolygon=endingPolygon, endTime=endTime)
@@ -89,15 +89,16 @@ def odMatrix(filePath, startTime='00:00:00', endTime='23:59:59', ignoreArrivalTi
     conn.close()
     
     if generateArabesqueFiles:
-        gjsonEpsg = f'epsg:{gjsonEpsg}'
-        locationDf, flowDf = _getArabesqueDataframesFromODMatrix(finalODMatrix, zonesCentroids, gjsonEpsg)
-        _generateArabesqueFiles('./generated/', locationDf, flowDf)
+        locationDf, flowDf = _getArabesqueDataframesFromODMatrix(finalODMatrix, zonesCentroids, geojsonEpsg)
+        _generateArabesqueFiles(config.ARABESQUE_GENERATED_FILES_DIRECTORY_PATH, locationDf, flowDf)
     
     return finalODMatrix
+
 
 # return two dataframes from the odMatrix
 # locationDf : contains the centroids of the zones with their latitudes and longitudes
 # flowDf : contains the flows between each zones
+# converts the coordinates to the Arabesque default EPSG
 def _getArabesqueDataframesFromODMatrix(odMatrix, zonesCentroids, geojsonEpsg):
     locationDict = {
         "id": [],
@@ -114,22 +115,20 @@ def _getArabesqueDataframesFromODMatrix(odMatrix, zonesCentroids, geojsonEpsg):
     nbZones = len(zonesCentroids)
     
     # config for the transformation of the coordinates
-    outEpsg = f'epsg:{config.DEFAULT_ARABESQUE_SRID}'
-    inProj = Proj(geojsonEpsg)
+    inEpsg = f'epsg:{geojsonEpsg}'
+    outEpsg = f'epsg:{config.ARABESQUE_DEFAULT_SRID}'
+    inProj = Proj(inEpsg)
     outProj = Proj(outEpsg)
     
     for startZone in range(nbZones):
-        locationDict["id"].append(startZone)
-        
         # transform the coordinates
-        if geojsonEpsg != outEpsg:
-            x1, y1 = zonesCentroids[startZone].x, zonesCentroids[startZone].y
-            x2, y2 = transform(inProj, outProj, x1, y1)
-            locationDict["lat"].append(x2)
-            locationDict["lng"].append(y2)
-        else:
-            locationDict["lat"].append(zonesCentroids[startZone].x)
-            locationDict["lng"].append(zonesCentroids[startZone].y)
+        x, y = zonesCentroids[startZone].x, zonesCentroids[startZone].y
+        if inEpsg != outEpsg:
+            x, y = transform(inProj, outProj, x, y)
+        
+        locationDict["id"].append(startZone)
+        locationDict["lat"].append(x)
+        locationDict["lng"].append(y)
         
         for endZone in range(nbZones):
             if odMatrix[startZone][endZone] > 0:
@@ -143,6 +142,7 @@ def _getArabesqueDataframesFromODMatrix(odMatrix, zonesCentroids, geojsonEpsg):
     return locationDf, flowDf
 
 
+# generate the files for Arabesque
 def _generateArabesqueFiles(filePath, locationDf, flowDf):
     locationDf.to_csv(filePath + "location.csv", index=False)
     flowDf.to_csv(filePath + "flow.csv", index=False)
@@ -169,6 +169,6 @@ def _getEPSGFromGeoJSON(gjson):
 
     except:
         print("No EPSG code found in the GeoJSON file")
-        epsg = config.DEFAULT_ARABESQUE_SRID
+        epsg = config.ARABESQUE_DEFAULT_SRID
 
     return epsg

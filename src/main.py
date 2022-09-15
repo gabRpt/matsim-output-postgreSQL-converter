@@ -1,4 +1,5 @@
 import converter as converter
+import queries as queries
 from datetime import datetime
 
 
@@ -20,8 +21,11 @@ def main():
     
     print("========== STARTING IMPORTATIONS ==========")
     
-    for table in tablesToImport:
-        launchImport(table)
+    # for table in tablesToImport:
+    #     launchImport(table)
+    
+    queries.odMatrix.odMatrix("C:/Users/raapoto/Documents/244400404_quartiers-communes-nantes-metropole_minimised.geojson", startTime='14:30:00', endTime='15:00:00', ignoreArrivalTime=True, generateArabesqueFiles=True)
+    # queries.agentActivity.agentActivity("C:/Users/raapoto/Documents/2zones.geojson", startTime='18:00:00', endTime='19:00:00', strictTime=False)
     
     print(f"========== IMPORTED IN {str(datetime.now() - overallStartTime)[:-5]} ==========")
 
