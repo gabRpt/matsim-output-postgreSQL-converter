@@ -1,7 +1,8 @@
 import tools
+import config
 import geojson
-import tools
 import pandas as pd
+from pyproj import Proj, transform
 from sqlalchemy.sql import text
 from shapely import wkt
 
@@ -85,7 +86,9 @@ def odMatrix(filePath, startTime='00:00:00', endTime='23:59:59', ignoreArrivalTi
     conn.close()
     
     if generateArabesqueFiles:
-        locationDf, flowDf = _getArabesqueDataframesFromODMatrix(finalODMatrix, zonesCentroids)
+        epsg = _getEPSGFromGeoJSON(gjson)
+        epsg = f'epsg:{epsg}'
+        locationDf, flowDf = _getArabesqueDataframesFromODMatrix(finalODMatrix, zonesCentroids, epsg)
         _generateArabesqueFiles('./generated/', locationDf, flowDf)
     
     return finalODMatrix
@@ -93,7 +96,7 @@ def odMatrix(filePath, startTime='00:00:00', endTime='23:59:59', ignoreArrivalTi
 # return two dataframes from the odMatrix
 # locationDf : contains the centroids of the zones with their latitudes and longitudes
 # flowDf : contains the flows between each zones
-def _getArabesqueDataframesFromODMatrix(odMatrix, zonesCentroids):
+def _getArabesqueDataframesFromODMatrix(odMatrix, zonesCentroids, epsg):
     locationDict = {
         "id": [],
         "lat": [],
@@ -108,15 +111,24 @@ def _getArabesqueDataframesFromODMatrix(odMatrix, zonesCentroids):
     
     nbZones = len(zonesCentroids)
     
+    # config for the transformation of the coordinates
+    inProj = Proj(epsg)
+    outProj = Proj(config.DEFAULT_ARABESQUE_EPSG)
+    
     for startZone in range(nbZones):
         locationDict["id"].append(startZone)
-        locationDict["lat"].append(zonesCentroids[startZone].x)
-        locationDict["lng"].append(zonesCentroids[startZone].y)
+        
+        # transform the coordinates
+        x1, y1 = zonesCentroids[startZone].x, zonesCentroids[startZone].y
+        x2, y2 = transform(inProj, outProj, x1, y1)
+        locationDict["lat"].append(x2)
+        locationDict["lng"].append(y2)
         
         for endZone in range(nbZones):
-            flowDict["origin"].append(startZone)
-            flowDict["destination"].append(endZone)
-            flowDict["value"].append(odMatrix[startZone][endZone])
+            if odMatrix[startZone][endZone] > 0:
+                flowDict["origin"].append(startZone)
+                flowDict["destination"].append(endZone)
+                flowDict["value"].append(odMatrix[startZone][endZone])
     
     locationDf = pd.DataFrame(locationDict)
     flowDf = pd.DataFrame(flowDict)
@@ -129,3 +141,17 @@ def _generateArabesqueFiles(filePath, locationDf, flowDf):
     flowDf.to_csv(filePath + "flow.csv", index=False)
     
     return 1
+
+
+def _getEPSGFromGeoJSON(gjson):
+    epsg = None
+
+    crs = gjson['crs']['properties']['name']
+    
+    # get the EPSG code
+    for i in crs.split(':'):
+        if i.isdigit():
+            epsg = int(i)
+            break
+        
+    return epsg
