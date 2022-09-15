@@ -48,19 +48,36 @@ def convertListToString(listToConvert):
 
 
 # format geojson polygon to a postgis polygon
-def formatGeoJSONPolygonToPostgisPolygon(coordinates, geometryType):
+def formatGeoJSONPolygonToPostgisPolygon(coordinates, geometryType, epsg):
+    # print(coordinates)
+    # coordinates = convertCoordinatesToDatabaseCRS(coordinates, epsg)
     polygon = convertListToString(coordinates)
     polygon = polygon.replace(") ", ", ")
     
-    # limiting to 3 levels of nesting
+    # Removing 1 level of parenthesis
+    # (((1,2) (3,4) (5,6))) -> ((1,2) (3,4) (5,6))
+    # this caused an error while creating the geometry
     nbEndingParenthesis = polygon.count(")")
-    if nbEndingParenthesis > 3:
-        nbParenthesisToRemove = nbEndingParenthesis - 3
-        polygon = polygon[:-nbParenthesisToRemove]
-        nbEndingParenthesis = 3
+    polygon = polygon[:-1]
+    nbEndingParenthesis -= 1
     
-    # adding nbEndingParenthesis parenthesis at the beggining
-    polygon = "(" * nbEndingParenthesis + polygon
+    # adding nbEndingParenthesis parenthesis at the beginning
+    polygon = "(" * nbEndingParenthesis + polygon    
     polygon = geometryType + polygon
     
+    print(polygon)
+    # quit()
     return polygon
+
+def convertCoordinatesToDatabaseCRS(coordinates, epsg):    
+    getNestingLevel = lambda l: isinstance(l, list) and max(map(getNestingLevel, l))+1
+    nestingLevel = getNestingLevel(coordinates)
+    
+    if nestingLevel == 3:
+        for i in range(len(coordinates)):
+            for j in range(len(coordinates[i])):
+                print(coordinates[i][j])
+                coordinates[i][j] = f"ST_Transform(ST_SetSRID(ST_MakePoint({coordinates[i][j][0]}, {coordinates[i][j][1]}), {epsg}), {config.DB_SRID})"
+                print(coordinates[i][j])
+    
+    return coordinates
