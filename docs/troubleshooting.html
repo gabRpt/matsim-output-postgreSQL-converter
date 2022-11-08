@@ -3,7 +3,7 @@
 <html lang="" >
     <head>
         <meta charset="UTF-8">
-        <title>Queries · HonKit</title>
+        <title>Troubleshooting · HonKit</title>
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="description" content="">
         <meta name="generator" content="HonKit 4.0.0">
@@ -55,8 +55,6 @@
     <link rel="apple-touch-icon-precomposed" sizes="152x152" href="gitbook/images/apple-touch-icon-precomposed-152.png">
     <link rel="shortcut icon" href="gitbook/images/favicon.ico" type="image/x-icon">
 
-    
-    <link rel="next" href="troubleshooting.html" />
     
     
     <link rel="prev" href="./" />
@@ -204,7 +202,7 @@
             
         </li>
     
-        <li class="chapter " data-level="1.5" data-path="troubleshooting.html">
+        <li class="chapter active" data-level="1.5" data-path="troubleshooting.html">
             
                 <a href="troubleshooting.html">
             
@@ -247,7 +245,7 @@
     <!-- Title -->
     <h1>
         <i class="fa fa-circle-o-notch fa-spin"></i>
-        <a href="." >Queries</a>
+        <a href="." >Troubleshooting</a>
     </h1>
 </div>
 
@@ -262,56 +260,8 @@
     
                                 <section class="normal markdown-section">
                                 
-                                <h1 id="queries">Queries</h1>
-<hr>
-<h2 id="agent-activity">agent-activity</h2>
-<p>Get dataframes of the activities of agents in each zone during given timespan
-In <a href="https://github.com/gabRpt/matsim-output-postgreSQL-converter/blob/main/src/main.py" title="main.py" target="_blank">main.py</a> uncomment the lines below <code>========= Agents activities dataframes =========</code>.
-Edit the parameters of the function <code>queries.agentActivity.agentActivity</code> :</p>
-<ul>
-<li><code>filepath</code> : Path to the <strong>geojson</strong> file containing the different zones to consider (eg: <a href="https://github.com/gabRpt/matsim-output-postgreSQL-converter/blob/main/resources/5zones.geojson" target="_blank">5zones.geojson</a>)</li>
-<li><code>start_time</code> : start time of the timespan</li>
-<li><code>end_time</code> : end time of the timespan</li>
-<li><code>strictTime</code> :<pre><code>  if true, only activities that start and end in the time interval are considered
-      eg: an activity starting at 18:30:00 and ending at 19:00:00 is considered
-          an activity starting at 18:30:00 and ending at 19:15:00 is NOT considered
-          an activity starting at 17:00:00 and ending at 19:00:00 is NOT considered
-  if false, if an activity starts before the time interval or ends after the time interval, it is considered
-      eg: an activity starting at 18:00:00 and ending at xx:xx:xx is considered
-          an activity starting at 18:00:00 and ending at null is considered
-          an activity starting at 17:00:00 and ending at 18:00:00 or later is considered
-          an activity starting at 19:00:00 and ending at xx:xx:xx is NOT considered
-</code></pre></li>
-</ul>
-<p>Returns a list of dataframes, one dataframe per zone.</p>
-<hr>
-<h2 id="od-matrix">od-matrix</h2>
-<p>Get od matrix of trips between zones during given timespan</p>
-<h5 id="generate-the-od-matrix">Generate the od matrix</h5>
-<p>In <a href="https://github.com/gabRpt/matsim-output-postgreSQL-converter/blob/main/src/main.py" title="main.py" target="_blank">main.py</a> uncomment the lines below <code>========= OD Matrix =========</code>.
-Edit the parameters of the function <code>queries.odMatrix.odMatrix</code> :</p>
-<ul>
-<li><code>filepath</code> : Path to the <strong>geojson</strong> file containing the different zones to consider (eg: <a href="https://github.com/gabRpt/matsim-output-postgreSQL-converter/blob/main/resources/5zones.geojson" target="_blank">5zones.geojson</a>)</li>
-<li><code>start_time</code> : start time of the timespan</li>
-<li><code>end_time</code> : end time of the timespan</li>
-<li><code>ignoreArrivalTime</code> :<pre><code>  if true, only startTime is considered
-  eg: a trip having dep_time = 18:00:00 and trav_time = 00:30:00 is considered
-      a trip having dep_time = 18:00:00 and trav_time = 01:30:00 is NOT considered (arrivalTime = 19:30:00 is not in interval)
-  if False:
-  eg : a trip having dep_time = 18:00:00 and trav_time = 00:30:00 is considered
-          a trip having dep_time = 18:00:00 and trav_time = 01:30:00 is considered
-  in both cases, if a trip has a dep_time &lt; 18:00:00 it will not be considered
-</code></pre></li>
-<li><code>generateArabesqueFiles</code> : if true, generates the files needed to create a scheme in <a href="http://arabesque.ifsttar.fr/" target="_blank">Arabesque</a></li>
-</ul>
-<h5 id="use-generated-files-in-arabesque">Use generated files in Arabesque</h5>
-<p>If <code>generateArabesqueFiles</code> is set to true, the files needed to create a scheme in <a href="http://arabesque.ifsttar.fr/" target="_blank">Arabesque</a> are generated in the folder <code>./generated</code>.
-You will get 2 files :</p>
-<ul>
-<li><code>flow.csv</code> : contains the od matrix of the trips between zones</li>
-<li><code>location.csv</code> : contains the zones with their coordinates</li>
-</ul>
-<p><em><strong>A detailed documentation on how to create a scheme in Arabesque can be found <a href="https://gflowiz.github.io/arabesque/" target="_blank">here</a>.</strong></em></p>
+                                <h1 id="troubleshooting">Troubleshooting</h1>
+<p>Please create an <a href="https://github.com/gabRpt/matsim-output-postgreSQL-converter/issues" target="_blank">issue</a> if you encounter any problem.</p>
 
                                 
                                 </section>
@@ -339,14 +289,10 @@ You will get 2 files :</p>
 
             
                 
-                <a href="./" class="navigation navigation-prev " aria-label="Previous page: Introduction">
+                <a href="./" class="navigation navigation-prev navigation-unique" aria-label="Previous page: Introduction">
                     <i class="fa fa-angle-left"></i>
                 </a>
                 
-                
-                <a href="troubleshooting.html" class="navigation navigation-next " aria-label="Next page: Troubleshooting">
-                    <i class="fa fa-angle-right"></i>
-                </a>
                 
             
         
@@ -355,7 +301,7 @@ You will get 2 files :</p>
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Queries","level":"1.4","depth":1,"next":{"title":"Troubleshooting","level":"1.5","depth":1,"path":"troubleshooting.md","ref":"troubleshooting.md","articles":[]},"previous":{"title":"Introduction","level":"1.1","depth":1,"path":"README.md","ref":"README.md","articles":[]},"articles":[{"title":"Agent Activity","level":"1.4.1","depth":2,"anchor":"#agent-activity","path":"queries.md","ref":"queries.md#agent-activity","articles":[]},{"title":"OD Matrix","level":"1.4.2","depth":2,"anchor":"#od-matrix","path":"queries.md","ref":"queries.md#od-matrix","articles":[]}],"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":[],"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"embedFonts":false},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"queries.md","mtime":"2022-11-08T14:25:16.225Z","type":"markdown"},"gitbook":{"version":"4.0.0","time":"2022-11-08T14:34:17.111Z"},"basePath":".","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Troubleshooting","level":"1.5","depth":1,"previous":{"title":"Introduction","level":"1.1","depth":1,"path":"README.md","ref":"README.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":[],"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"embedFonts":false},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"troubleshooting.md","mtime":"2022-11-08T14:27:19.326Z","type":"markdown"},"gitbook":{"version":"4.0.0","time":"2022-11-08T14:34:17.111Z"},"basePath":".","book":{"language":""}});
         });
     </script>
 </div>

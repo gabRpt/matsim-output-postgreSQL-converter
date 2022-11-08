@@ -56,6 +56,8 @@
     <link rel="shortcut icon" href="gitbook/images/favicon.ico" type="image/x-icon">
 
     
+    <link rel="next" href="troubleshooting.html" />
+    
     
     <link rel="prev" href="./" />
     
@@ -128,49 +130,10 @@
     
         <li class="chapter " data-level="1.2.2" data-path="getting-started.html">
             
-                <a href="getting-started.html#usage">
-            
-                    
-                    Usage
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="1.2.3" data-path="getting-started.html">
-            
                 <a href="getting-started.html#configuration">
             
                     
                     Configuration
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="1.2.4" data-path="getting-started.html">
-            
-                <a href="getting-started.html#customization">
-            
-                    
-                    Customization
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="1.2.5" data-path="getting-started.html">
-            
-                <a href="getting-started.html#troubleshooting">
-            
-                    
-                    Troubleshooting
             
                 </a>
             
@@ -193,129 +156,6 @@
                 </a>
             
 
-            
-            <ul class="articles">
-                
-    
-        <li class="chapter " data-level="1.3.1" data-path="converter.html">
-            
-                <a href="converter.html#activities">
-            
-                    
-                    Activities
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="1.3.2" data-path="converter.html">
-            
-                <a href="converter.html#buildings">
-            
-                    
-                    Buildings
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="1.3.3" data-path="converter.html">
-            
-                <a href="converter.html#events">
-            
-                    
-                    Events
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="1.3.4" data-path="converter.html">
-            
-                <a href="converter.html#facilities">
-            
-                    
-                    Facilities
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="1.3.5" data-path="converter.html">
-            
-                <a href="converter.html#households">
-            
-                    
-                    Households
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="1.3.6" data-path="converter.html">
-            
-                <a href="converter.html#networklink">
-            
-                    
-                    NetworkLink
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="1.3.7" data-path="converter.html">
-            
-                <a href="converter.html#persons">
-            
-                    
-                    Persons
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="1.3.8" data-path="converter.html">
-            
-                <a href="converter.html#trips">
-            
-                    
-                    Trips
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="1.3.9" data-path="converter.html">
-            
-                <a href="converter.html#vehicles">
-            
-                    
-                    Vehicles
-            
-                </a>
-            
-
-            
-        </li>
-    
-
-            </ul>
             
         </li>
     
@@ -361,6 +201,19 @@
     
 
             </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5" data-path="troubleshooting.html">
+            
+                <a href="troubleshooting.html">
+            
+                    
+                    Troubleshooting
+            
+                </a>
+            
+
             
         </li>
     
@@ -410,11 +263,35 @@
                                 <section class="normal markdown-section">
                                 
                                 <h1 id="getting-started">Getting-started</h1>
+<hr>
 <h2 id="installation">Installation</h2>
-<h2 id="usage">Usage</h2>
+<h4 id="setup-the-database">Setup the database</h4>
+<ul>
+<li>Install <a href="https://www.postgresql.org/" target="_blank">postgeSQL</a> database with <a href="https://postgis.net/" target="_blank">postGIS extension</a> using postgreSQL Stack Builder</li>
+<li>If using pgAdmin4, setup the binary paths. File &gt; Preferences &gt; Paths &gt; Binary paths &gt; PostgreSQL Binary Path</li>
+<li>Create a new database<ul>
+<li>Right click on the created database &gt; restore</li>
+<li>Format : Custom</li>
+<li>Filename : select the file located in ./resources/<a href="https://github.com/gabRpt/matsim-output-postgreSQL-converter/blob/main/resources/databaseBackupPostgresCustom" title="databaseBackupPostgresCustom" target="_blank">databaseBackupPostgresCustom</a></li>
+</ul>
+</li>
+</ul>
+<h4 id="setup-the-environment">Setup the environment</h4>
+<ul>
+<li><code>git clone https://github.com/gabRpt/matsim-output-postgreSQL-converter.git</code> </li>
+<li>Install <a href="https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html" target="_blank">conda</a> (Anaconda recommended)</li>
+<li>In environments tab, create a new environment by importing <a href="https://github.com/gabRpt/matsim-output-postgreSQL-converter/blob/main/resources/matsimConverterEnv.yaml" title="matsimConverterEnv.yaml" target="_blank">matsimConverterEnv.yaml</a></li>
+<li>Launch an IDE like VS Code from Anaconda Navigator</li>
+<li><code>pip install ./resources/matsim_tools-1.0.0-py3-none-any.whl</code></li>
+</ul>
+<hr>
 <h2 id="configuration">Configuration</h2>
-<h2 id="customization">Customization</h2>
-<h2 id="troubleshooting">Troubleshooting</h2>
+<p>In <a href="https://github.com/gabRpt/matsim-output-postgreSQL-converter/blob/main/src/config.py" title="config.py" target="_blank">config.py</a> file, edit the commented constants</p>
+<ul>
+<li>PATH_SIMULATION_OUTPUT</li>
+<li>DB_CONNECTION_STRING</li>
+<li>DB_SRID</li>
+</ul>
 
                                 
                                 </section>
@@ -442,10 +319,14 @@
 
             
                 
-                <a href="./" class="navigation navigation-prev navigation-unique" aria-label="Previous page: Introduction">
+                <a href="./" class="navigation navigation-prev " aria-label="Previous page: Introduction">
                     <i class="fa fa-angle-left"></i>
                 </a>
                 
+                
+                <a href="troubleshooting.html" class="navigation navigation-next " aria-label="Next page: Troubleshooting">
+                    <i class="fa fa-angle-right"></i>
+                </a>
                 
             
         
@@ -454,7 +335,7 @@
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Getting Started","level":"1.2","depth":1,"previous":{"title":"Introduction","level":"1.1","depth":1,"path":"README.md","ref":"README.md","articles":[]},"articles":[{"title":"Installation","level":"1.2.1","depth":2,"anchor":"#installation","path":"getting-started.md","ref":"getting-started.md#installation","articles":[]},{"title":"Usage","level":"1.2.2","depth":2,"anchor":"#usage","path":"getting-started.md","ref":"getting-started.md#usage","articles":[]},{"title":"Configuration","level":"1.2.3","depth":2,"anchor":"#configuration","path":"getting-started.md","ref":"getting-started.md#configuration","articles":[]},{"title":"Customization","level":"1.2.4","depth":2,"anchor":"#customization","path":"getting-started.md","ref":"getting-started.md#customization","articles":[]},{"title":"Troubleshooting","level":"1.2.5","depth":2,"anchor":"#troubleshooting","path":"getting-started.md","ref":"getting-started.md#troubleshooting","articles":[]}],"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["livereload"],"pluginsConfig":{"livereload":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"embedFonts":false},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"getting-started.md","mtime":"2022-09-16T10:03:08.848Z","type":"markdown"},"gitbook":{"version":"4.0.0","time":"2022-09-16T10:05:59.218Z"},"basePath":".","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Getting Started","level":"1.2","depth":1,"next":{"title":"Troubleshooting","level":"1.5","depth":1,"path":"troubleshooting.md","ref":"troubleshooting.md","articles":[]},"previous":{"title":"Introduction","level":"1.1","depth":1,"path":"README.md","ref":"README.md","articles":[]},"articles":[{"title":"Installation","level":"1.2.1","depth":2,"anchor":"#installation","path":"getting-started.md","ref":"getting-started.md#installation","articles":[]},{"title":"Configuration","level":"1.2.2","depth":2,"anchor":"#configuration","path":"getting-started.md","ref":"getting-started.md#configuration","articles":[]}],"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":[],"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"embedFonts":false},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"getting-started.md","mtime":"2022-11-08T14:29:15.992Z","type":"markdown"},"gitbook":{"version":"4.0.0","time":"2022-11-08T14:34:17.111Z"},"basePath":".","book":{"language":""}});
         });
     </script>
 </div>
@@ -506,10 +387,6 @@
     </script>
     <script src="gitbook/gitbook.js"></script>
     <script src="gitbook/theme.js"></script>
-    
-        
-        <script src="gitbook/gitbook-plugin-livereload/plugin.js"></script>
-        
     
         
         <script src="gitbook/gitbook-plugin-search/search-engine.js"></script>
