@@ -3,7 +3,7 @@
 <html lang="" >
     <head>
         <meta charset="UTF-8">
-        <title>Troubleshooting · HonKit</title>
+        <title>Getting Started · HonKit</title>
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="description" content="">
         <meta name="generator" content="HonKit 4.0.0">
@@ -55,6 +55,8 @@
     <link rel="apple-touch-icon-precomposed" sizes="152x152" href="gitbook/images/apple-touch-icon-precomposed-152.png">
     <link rel="shortcut icon" href="gitbook/images/favicon.ico" type="image/x-icon">
 
+    
+    <link rel="next" href="troubleshooting.html" />
     
     
     <link rel="prev" href="./" />
@@ -247,7 +249,7 @@
             
         </li>
     
-        <li class="chapter active" data-level="1.6" data-path="troubleshooting.html">
+        <li class="chapter " data-level="1.6" data-path="troubleshooting.html">
             
                 <a href="troubleshooting.html">
             
@@ -290,7 +292,7 @@
     <!-- Title -->
     <h1>
         <i class="fa fa-circle-o-notch fa-spin"></i>
-        <a href="." >Troubleshooting</a>
+        <a href="." >Getting Started</a>
     </h1>
 </div>
 
@@ -305,8 +307,36 @@
     
                                 <section class="normal markdown-section">
                                 
-                                <h1 id="troubleshooting">Troubleshooting</h1>
-<p>Please create an <a href="https://github.com/gabRpt/matsim-output-postgreSQL-converter/issues" target="_blank">issue</a> if you encounter any problem.</p>
+                                <h1 id="getting-started">Getting-started</h1>
+<hr>
+<h2 id="installation">Installation</h2>
+<h4 id="setup-the-database">Setup the database</h4>
+<ul>
+<li>Install <a href="https://www.postgresql.org/" target="_blank">postgeSQL</a> database with <a href="https://postgis.net/" target="_blank">postGIS extension</a> using postgreSQL Stack Builder</li>
+<li>If using pgAdmin4, setup the binary paths. File &gt; Preferences &gt; Paths &gt; Binary paths &gt; PostgreSQL Binary Path</li>
+<li>Create a new database<ul>
+<li>Right click on the created database &gt; restore</li>
+<li>Format : Custom</li>
+<li>Filename : select the file located in ./resources/<a href="https://github.com/gabRpt/matsim-output-postgreSQL-converter/blob/main/resources/databaseBackupPostgresCustom" title="databaseBackupPostgresCustom" target="_blank">databaseBackupPostgresCustom</a></li>
+</ul>
+</li>
+</ul>
+<h4 id="setup-the-environment">Setup the environment</h4>
+<ul>
+<li><code>git clone https://github.com/gabRpt/matsim-output-postgreSQL-converter.git</code> </li>
+<li>Install <a href="https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html" target="_blank">conda</a> (Anaconda recommended)</li>
+<li>In environments tab, create a new environment by importing <a href="https://github.com/gabRpt/matsim-output-postgreSQL-converter/blob/main/resources/matsimConverterEnv.yaml" title="matsimConverterEnv.yaml" target="_blank">matsimConverterEnv.yaml</a></li>
+<li>Launch an IDE like VS Code from Anaconda Navigator</li>
+<li><code>pip install ./resources/matsim_tools-1.0.0-py3-none-any.whl</code></li>
+</ul>
+<hr>
+<h2 id="configuration">Configuration</h2>
+<p>In <a href="https://github.com/gabRpt/matsim-output-postgreSQL-converter/blob/main/src/config.py" title="config.py" target="_blank">config.py</a> file, edit the commented constants</p>
+<ul>
+<li>PATH_SIMULATION_OUTPUT</li>
+<li>DB_CONNECTION_STRING</li>
+<li>DB_SRID</li>
+</ul>
 
                                 
                                 </section>
@@ -334,10 +364,14 @@
 
             
                 
-                <a href="./" class="navigation navigation-prev navigation-unique" aria-label="Previous page: Introduction">
+                <a href="./" class="navigation navigation-prev " aria-label="Previous page: Introduction">
                     <i class="fa fa-angle-left"></i>
                 </a>
                 
+                
+                <a href="troubleshooting.html" class="navigation navigation-next " aria-label="Next page: Troubleshooting">
+                    <i class="fa fa-angle-right"></i>
+                </a>
                 
             
         
@@ -346,7 +380,7 @@
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Troubleshooting","level":"1.6","depth":1,"previous":{"title":"Introduction","level":"1.1","depth":1,"path":"README.md","ref":"README.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":[],"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"embedFonts":false},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"troubleshooting.md","mtime":"2022-11-08T14:27:19.326Z","type":"markdown"},"gitbook":{"version":"4.0.0","time":"2022-11-08T15:30:34.429Z"},"basePath":".","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Getting Started","level":"1.2","depth":1,"next":{"title":"Troubleshooting","level":"1.6","depth":1,"path":"troubleshooting.md","ref":"troubleshooting.md","articles":[]},"previous":{"title":"Introduction","level":"1.1","depth":1,"path":"README.md","ref":"README.md","articles":[]},"articles":[{"title":"Installation","level":"1.2.1","depth":2,"anchor":"#installation","path":"getting-started.md","ref":"getting-started.md#installation","articles":[]},{"title":"Configuration","level":"1.2.2","depth":2,"anchor":"#configuration","path":"getting-started.md","ref":"getting-started.md#configuration","articles":[]}],"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":[],"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"embedFonts":false},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"getting-started.md","mtime":"2022-11-08T14:29:15.992Z","type":"markdown"},"gitbook":{"version":"4.0.0","time":"2022-11-08T15:38:03.216Z"},"basePath":".","book":{"language":""}});
         });
     </script>
 </div>
