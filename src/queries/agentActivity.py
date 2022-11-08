@@ -63,5 +63,4 @@ def agentActivity(filePath, startTime='00:00:00', endTime='23:59:59', strictTime
     
     conn.close()
     
-    print(allZonesDataframes)
     return allZonesDataframes
