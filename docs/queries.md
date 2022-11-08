@@ -5,7 +5,7 @@ ___
 
 
 
-## agent-activity
+## Agent activity
 Get dataframes of the activities of agents in each zone during given timespan
 In [main.py](https://github.com/gabRpt/matsim-output-postgreSQL-converter/blob/main/src/main.py "main.py") uncomment the lines below `========= Agents activities dataframes =========`.
 Edit the parameters of the function `queries.agentActivity.agentActivity` :
@@ -30,7 +30,7 @@ ___
 
 
 
-## od-matrix
+## OD Matrix
 Get od matrix of trips between zones during given timespan
 ##### Generate the od matrix
 In [main.py](https://github.com/gabRpt/matsim-output-postgreSQL-converter/blob/main/src/main.py "main.py") uncomment the lines below `========= OD Matrix =========`.
