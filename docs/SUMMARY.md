@@ -4,9 +4,8 @@
 
 * [Getting Started](getting-started.md#getting-started)
     * [Installation](getting-started.md#installation)
-    * [Usage](getting-started.md#usage)
     * [Configuration](getting-started.md#configuration)
-    * [Customization](getting-started.md#customization)
+    * [Usage](getting-started.md#usage)
     * [Troubleshooting](getting-started.md#troubleshooting)
 
 * [Converter](converter.md#converter)
