@@ -9,7 +9,7 @@ ___
 Get dataframes of the activities of agents in each zone during given timespan
 In [main.py](https://github.com/gabRpt/matsim-output-postgreSQL-converter/blob/main/src/main.py "main.py") uncomment the lines below `========= Agents activities dataframes =========`.
 Edit the parameters of the function `queries.agentActivity.agentActivity` :
-* `filepath` : Path to the **geojson** file containing the different zones to consider (eg: [5zones.geojson](https://github.com/gabRpt/matsim-output-postgreSQL-converter/blob/main/resources/5zones.geojson))
+* `filepath` : Path to the **geojson** file containing the different zones to consider (eg: [5zones.geojson](https://github.com/gabRpt/matsim-output-postgreSQL-converter/blob/main/resources/sample/5zones.geojson))
 * `start_time` : start time of the timespan
 * `end_time` : end time of the timespan
 * `strictTime` :
@@ -35,7 +35,7 @@ Get od matrix of trips between zones during given timespan
 ##### Generate the od matrix
 In [main.py](https://github.com/gabRpt/matsim-output-postgreSQL-converter/blob/main/src/main.py "main.py") uncomment the lines below `========= OD Matrix =========`.
 Edit the parameters of the function `queries.odMatrix.odMatrix` :
-* `filepath` : Path to the **geojson** file containing the different zones to consider (eg: [5zones.geojson](https://github.com/gabRpt/matsim-output-postgreSQL-converter/blob/main/resources/5zones.geojson))
+* `filepath` : Path to the **geojson** file containing the different zones to consider (eg: [5zones.geojson](https://github.com/gabRpt/matsim-output-postgreSQL-converter/blob/main/resources/sample/5zones.geojson))
 * `start_time` : start time of the timespan
 * `end_time` : end time of the timespan
 * `ignoreArrivalTime` :
@@ -49,7 +49,7 @@ Edit the parameters of the function `queries.odMatrix.odMatrix` :
 * `generateArabesqueFiles` : if true, generates the files needed to create a scheme in [Arabesque](http://arabesque.ifsttar.fr/)
 
 ##### Use generated files in Arabesque
-If `generateArabesqueFiles` is set to true, the files needed to create a scheme in [Arabesque](http://arabesque.ifsttar.fr/) are generated in the folder `./generated`.
+If `generateArabesqueFiles` is set to true, the files needed to create a scheme in [Arabesque](http://arabesque.ifsttar.fr/) are generated in the folder `/output`.
 You will get 2 files :
 * `flow.csv` : contains the od matrix of the trips between zones
 * `location.csv` : contains the zones with their coordinates

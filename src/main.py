@@ -28,14 +28,14 @@ def main():
     
     # ========= Agents activities dataframes =========
     # Get dataframes of the activities of agents in each zone during given timespan
-    allZonesDataframes = queries.agentActivity.agentActivity("./resources/5zones.geojson", startTime='18:00:00', endTime='19:00:00', strictTime=False)
+    allZonesDataframes = queries.agentActivity.agentActivity("./resources/sample/5zones.geojson", startTime='18:00:00', endTime='19:00:00', strictTime=False)
     
     
     
     # ========= OD Matrix =========
     # Get od matrix of trips between zones during given timespan
-    # Generates csv files in "generated" folder compatible with Arabesque http://arabesque.ifsttar.fr/  ->  https://github.com/gflowiz/arabesque
-    finalODMatrix = queries.odMatrix.odMatrix("./resources/5zones.geojson", startTime='14:30:00', endTime='15:00:00', ignoreArrivalTime=True, generateArabesqueFiles=True)
+    # Generates csv files in "output" folder compatible with Arabesque http://arabesque.ifsttar.fr/  ->  https://github.com/gflowiz/arabesque
+    finalODMatrix = queries.odMatrix.odMatrix("./resources/sample/5zones.geojson", startTime='14:30:00', endTime='15:00:00', ignoreArrivalTime=True, generateArabesqueFiles=True)
     for i in finalODMatrix:
         print('\t'.join(map(str, i)))
 

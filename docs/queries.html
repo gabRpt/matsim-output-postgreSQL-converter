@@ -314,7 +314,7 @@
 In <a href="https://github.com/gabRpt/matsim-output-postgreSQL-converter/blob/main/src/main.py" title="main.py" target="_blank">main.py</a> uncomment the lines below <code>========= Agents activities dataframes =========</code>.
 Edit the parameters of the function <code>queries.agentActivity.agentActivity</code> :</p>
 <ul>
-<li><code>filepath</code> : Path to the <strong>geojson</strong> file containing the different zones to consider (eg: <a href="https://github.com/gabRpt/matsim-output-postgreSQL-converter/blob/main/resources/5zones.geojson" target="_blank">5zones.geojson</a>)</li>
+<li><code>filepath</code> : Path to the <strong>geojson</strong> file containing the different zones to consider (eg: <a href="https://github.com/gabRpt/matsim-output-postgreSQL-converter/blob/main/resources/sample/5zones.geojson" target="_blank">5zones.geojson</a>)</li>
 <li><code>start_time</code> : start time of the timespan</li>
 <li><code>end_time</code> : end time of the timespan</li>
 <li><code>strictTime</code> :<pre><code>  if true, only activities that start and end in the time interval are considered
@@ -336,7 +336,7 @@ Edit the parameters of the function <code>queries.agentActivity.agentActivity</c
 <p>In <a href="https://github.com/gabRpt/matsim-output-postgreSQL-converter/blob/main/src/main.py" title="main.py" target="_blank">main.py</a> uncomment the lines below <code>========= OD Matrix =========</code>.
 Edit the parameters of the function <code>queries.odMatrix.odMatrix</code> :</p>
 <ul>
-<li><code>filepath</code> : Path to the <strong>geojson</strong> file containing the different zones to consider (eg: <a href="https://github.com/gabRpt/matsim-output-postgreSQL-converter/blob/main/resources/5zones.geojson" target="_blank">5zones.geojson</a>)</li>
+<li><code>filepath</code> : Path to the <strong>geojson</strong> file containing the different zones to consider (eg: <a href="https://github.com/gabRpt/matsim-output-postgreSQL-converter/blob/main/resources/sample/5zones.geojson" target="_blank">5zones.geojson</a>)</li>
 <li><code>start_time</code> : start time of the timespan</li>
 <li><code>end_time</code> : end time of the timespan</li>
 <li><code>ignoreArrivalTime</code> :<pre><code>  if true, only startTime is considered
@@ -350,7 +350,7 @@ Edit the parameters of the function <code>queries.odMatrix.odMatrix</code> :</p>
 <li><code>generateArabesqueFiles</code> : if true, generates the files needed to create a scheme in <a href="http://arabesque.ifsttar.fr/" target="_blank">Arabesque</a></li>
 </ul>
 <h5 id="use-generated-files-in-arabesque">Use generated files in Arabesque</h5>
-<p>If <code>generateArabesqueFiles</code> is set to true, the files needed to create a scheme in <a href="http://arabesque.ifsttar.fr/" target="_blank">Arabesque</a> are generated in the folder <code>./generated</code>.
+<p>If <code>generateArabesqueFiles</code> is set to true, the files needed to create a scheme in <a href="http://arabesque.ifsttar.fr/" target="_blank">Arabesque</a> are generated in the folder <code>/output</code>.
 You will get 2 files :</p>
 <ul>
 <li><code>flow.csv</code> : contains the od matrix of the trips between zones</li>
@@ -400,7 +400,7 @@ You will get 2 files :</p>
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Queries","level":"1.5","depth":1,"next":{"title":"Troubleshooting","level":"1.6","depth":1,"path":"troubleshooting.md","ref":"troubleshooting.md","articles":[]},"previous":{"title":"Introduction","level":"1.1","depth":1,"path":"README.md","ref":"README.md","articles":[]},"articles":[{"title":"Agent Activity","level":"1.5.1","depth":2,"anchor":"#agent-activity","path":"queries.md","ref":"queries.md#agent-activity","articles":[]},{"title":"OD Matrix","level":"1.5.2","depth":2,"anchor":"#od-matrix","path":"queries.md","ref":"queries.md#od-matrix","articles":[]}],"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":[],"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"embedFonts":false},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"queries.md","mtime":"2022-11-08T15:03:37.292Z","type":"markdown"},"gitbook":{"version":"4.0.0","time":"2022-11-09T10:04:57.171Z"},"basePath":".","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Queries","level":"1.5","depth":1,"next":{"title":"Troubleshooting","level":"1.6","depth":1,"path":"troubleshooting.md","ref":"troubleshooting.md","articles":[]},"previous":{"title":"Introduction","level":"1.1","depth":1,"path":"README.md","ref":"README.md","articles":[]},"articles":[{"title":"Agent Activity","level":"1.5.1","depth":2,"anchor":"#agent-activity","path":"queries.md","ref":"queries.md#agent-activity","articles":[]},{"title":"OD Matrix","level":"1.5.2","depth":2,"anchor":"#od-matrix","path":"queries.md","ref":"queries.md#od-matrix","articles":[]}],"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":[],"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"embedFonts":false},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"queries.md","mtime":"2022-11-09T10:21:32.667Z","type":"markdown"},"gitbook":{"version":"4.0.0","time":"2022-11-09T10:22:12.306Z"},"basePath":".","book":{"language":""}});
         });
     </script>
 </div>
