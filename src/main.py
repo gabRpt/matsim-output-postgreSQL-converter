@@ -42,7 +42,7 @@ def main():
     
         
     # ========= Activity Sequences =========
-    result = queries.activitySequences.activitySequences("./resources/sample/1zone.geojson", startTime='00:00:00', endTime='09:00:00', interval=15)
+    result = queries.activitySequences.activitySequences("./resources/sample/1zone.geojson", startTime='00:00:00', endTime='09:00:00', interval=30)
     
 
     
