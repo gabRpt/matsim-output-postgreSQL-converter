@@ -3,6 +3,10 @@ This tool converts matsim's output to [postgreSQL](https://www.postgresql.org/) 
 
 The tool also provides various queries to extract data from the database (check the [documentation](https://gabrpt.github.io/matsim-output-postgreSQL-converter/)).
 
+## How to start
+
+Online documentation [here](https://gabrpt.github.io/matsim-output-postgreSQL-converter/)
+
 ___
 
 [<img src="https://raw.githubusercontent.com/gabRpt/matsim-output-postgreSQL-converter/main/resources/docs/logo_univ_gustave_eiffel_rvb.svg" width=256>](https://www.univ-gustave-eiffel.fr/)
@@ -12,6 +16,3 @@ ___
 [<img src="https://raw.githubusercontent.com/gabRpt/matsim-output-postgreSQL-converter/main/resources/docs/logo_UMRAE.png" width=96>](https://www.umrae.fr/en/)
 
 
-## How to start
-
-Online documentation [here](https://gabrpt.github.io/matsim-output-postgreSQL-converter/)
