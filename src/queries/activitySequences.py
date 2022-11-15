@@ -49,7 +49,11 @@ def activitySequences(filePath, startTime='00:00:00', endTime='32:00:00', interv
         
         # get all activities of all agents in the zone during the given timespan
         print("Getting all activities of all agents in the zone during the given timespan...")
-        activityDfList = []
+        
+        # take the first 200 agents
+        allAgentsInZone = allAgentsInZoneDf["personId"].tolist()
+        allAgentsInZone = allAgentsInZone[:200]
+        
         while startTimeInSeconds < endTimeInSeconds:
             currentEndTimeInSeconds = startTimeInSeconds + intervalInSeconds
             currentStartTimeFormatted = tools.getFormattedTime(startTimeInSeconds)
@@ -65,39 +69,21 @@ def activitySequences(filePath, startTime='00:00:00', endTime='32:00:00', interv
                                         currentStartTimeFormatted=currentStartTimeFormatted, 
                                         currentEndTimeFormatted=currentEndTimeFormatted)
             
-            dataframe = pd.read_sql(query, conn)
-            activityDfList.append(dataframe)
+            currentActivityDf = pd.read_sql(query, conn)
+            
+            # Retrieve the activity sequences for each agent in the current interval
+            for currentAgent in allAgentsInZone:
+                currentAgentActivityDf = currentActivityDf[currentActivityDf["personId"] == currentAgent]
+
+                if currentAgentActivityDf.empty:
+                    continue
+                
+                print(currentAgentActivityDf)
+                nbAgentsProcessed += 1
+                
             
             # add interval to startTime
             startTimeInSeconds += intervalInSeconds
-            
-        
-        
-        print("Merging all activities of all agents in the zone during the given timespan...")
-        # take the first 200 agents
-        allAgentsInZone = allAgentsInZoneDf["personId"].tolist()
-        allAgentsInZone = allAgentsInZone[:200]
-        
-        for currentAgent in allAgentsInZone:
-            startTimeInSeconds = tools.getTimeInSeconds(startTime)
-            endTimeInSeconds = tools.getTimeInSeconds(endTime)
-            currentActivityDfIndex = 0
-            
-            while startTimeInSeconds < endTimeInSeconds:
-                currentEndTimeInSeconds = startTimeInSeconds + intervalInSeconds
-                currentStartTimeFormatted = tools.getFormattedTime(startTimeInSeconds)
-                currentEndTimeFormatted = tools.getFormattedTime(currentEndTimeInSeconds)
                 
-                # get all activities of the current agent during the current interval
-                currentActivityDf = activityDfList[currentActivityDfIndex]
-                concernedAgentActivityDf = currentActivityDf[currentActivityDf["personId"] == currentAgent]
-                
-                currentActivityDfIndex += 1
-                startTimeInSeconds += intervalInSeconds
-            
-            nbAgentsProcessed += 1
-        
-        print(f"Processed {nbAgentsProcessed} agents in {datetime.now() - agentProcessTimer}")
-                
-    
+    print(f"Processed {nbAgentsProcessed} agents in {datetime.now() - agentProcessTimer}")
     return 1
