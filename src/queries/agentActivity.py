@@ -20,7 +20,7 @@ from sqlalchemy.sql import text
 #                   eg: an activity starting at 17:00:00 and ending at 18:00:00 or later is considered
 #                   eg: an activity starting at 19:00:00 and ending at xx:xx:xx is NOT considered
 
-def agentActivity(filePath, startTime='00:00:00', endTime='23:59:59', strictTime=False):
+def agentActivity(filePath, startTime='00:00:00', endTime='32:00:00', strictTime=False):
     conn = tools.connectToDatabase()
     allZonesDataframes = [] # list dataframes for all zones
     

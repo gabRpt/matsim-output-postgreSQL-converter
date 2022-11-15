@@ -18,7 +18,7 @@ from shapely import wkt
 #   eg : a trip having dep_time = 18:00:00 and trav_time = 00:30:00 is considered
 #        a trip having dep_time = 18:00:00 and trav_time = 01:30:00 is considered
 # in both cases, if a trip has a dep_time < 18:00:00 it will not be considered
-def odMatrix(filePath, startTime='00:00:00', endTime='23:59:59', ignoreArrivalTime=True, generateArabesqueFiles=False):
+def odMatrix(filePath, startTime='00:00:00', endTime='32:00:00', ignoreArrivalTime=True, generateArabesqueFiles=False):
     conn = tools.connectToDatabase()
     
     with open(filePath) as f:

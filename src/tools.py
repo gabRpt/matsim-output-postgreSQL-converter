@@ -36,7 +36,13 @@ def getFormattedTime(timeInSeconds):
     else:
         return None
 
-
+# Receive a time in a string with 'hh:mm:ss' format and return the time in seconds (int)
+def getTimeInSeconds(time):
+    if time is not None and isinstance(time, str):
+        time = time.split(':')
+        return int(time[0]) * 3600 + int(time[1]) * 60 + int(time[2])
+    else:
+        return None
 
 # converts a list of x lists to a string and replace Angle bracket with parenthesis
 # [[[1, 2], [3,4], [5,6]]] -> "(((1,2) (3,4) (5,6)))"
