@@ -1,11 +1,11 @@
-import tools
 import config
+import tools
 import geojson
 import pandas as pd
-from sqlalchemy.sql import text
+import collections
 from datetime import datetime
 from dask import delayed
-
+from sqlalchemy.sql import text
 
 
 # TODO change default interval to 15 minutes
@@ -14,10 +14,6 @@ from dask import delayed
 # in the given zone (geojson file)
 
 def activitySequences(filePath, startTime='00:00:00', endTime='32:00:00', interval=60):
-    agentProcessTimer = datetime.now() # timer to measure the time it takes to process all agents
-    nbAgentsProcessed = 0
-    
-    
     conn = tools.connectToDatabase()
     
     startTimeInSeconds = tools.getTimeInSeconds(startTime)
@@ -49,20 +45,19 @@ def activitySequences(filePath, startTime='00:00:00', endTime='32:00:00', interv
         allAgentsInZoneDf = pd.read_sql(queryAllAgentsInZone, conn)
         
         
+        agentProcessTimer = datetime.now() # timer to measure the time it takes to process all agents
+        nbAgentsProcessed = 0
+        
+        # TODO Remove these lines
         # take the first 200 agents
         allAgentsInZone = allAgentsInZoneDf["personId"].tolist()
         allAgentsInZone = allAgentsInZone[:200]
         
         
-        # Dataframe to store the results
+        # dictionnary to store the activity sequences for each agent
         # the main activity is the activity that takes the most time in the timespan
-        activitySequencesDf = pd.DataFrame(columns=["agentId",
-                                                    "periodStart",
-                                                    "periodEnd",
-                                                    "mainActivityId",
-                                                    "startActivityId",
-                                                    "endActivityId",
-                                                    "timeSpentInMainActivity"])
+        # the keys are: agentId, periodStart, periodEnd, mainActivityId, startActivityId, endActivityId, maintActivityStartTime, maintActivityEndTime, timeSpentInMainActivity
+        activitySequencesDict = collections.defaultdict(list)
         
         
         # get all activities of all agents in the zone during the given timespan
@@ -91,16 +86,18 @@ def activitySequences(filePath, startTime='00:00:00', endTime='32:00:00', interv
                                     currentEndTimeFormatted=currentEndTimeFormatted)
             
             currentActivityDf = pd.read_sql(query, conn)
-            
+            a = 0
             # Retrieve the activity sequences for each agent in the current interval
             # if the agent has no activity in the current interval, we consider that he is doing the same activity as the previous interval
             # if two activities have the same duration, we consider that the first one is the main activity
-            for currentAgent in allAgentsInZone:
-                currentAgentActivities = currentActivityDf[currentActivityDf["personId"] == currentAgent]
+            for currentAgentId in allAgentsInZone:
+                currentAgentActivities = currentActivityDf[currentActivityDf["personId"] == currentAgentId]
                 currentAgentStartActivity = None
                 currentAgentEndActivity = None
                 currentAgentMainActivity = None
-                currentAgentTimeSpentInMainActivity = 0
+                currentAgentMainActivityStartTime = None
+                currentAgentMainActivityEndTime = None
+                currentAgentTimeSpentInMainActivity = '00:00:00'
 
                 if not currentAgentActivities.empty:
                     currentAgentStartActivity = currentAgentActivities.iloc[0]["id"]
@@ -108,12 +105,51 @@ def activitySequences(filePath, startTime='00:00:00', endTime='32:00:00', interv
                     currentAgentActivities = currentAgentActivities.sort_values(by=["activity_time_spent_in_interval", "start_time"], ascending=[False, True])
                     currentAgentMainActivity = currentAgentActivities.iloc[0]["id"]
                     currentAgentTimeSpentInMainActivity = currentAgentActivities.iloc[0]["activity_time_spent_in_interval"]
-                
+                    currentAgentMainActivityStartTime = currentAgentActivities.iloc[0]["start_time"]
+                    currentAgentMainActivityEndTime = currentAgentActivities.iloc[0]["end_time"]
+                    
+                elif currentAgentId in activitySequencesDict["agentId"]:
+                    index = len(activitySequencesDict["agentId"]) - 1 - activitySequencesDict["agentId"][::-1].index(currentAgentId)
+                    
+                    # check if the previous main activity end time is in the current interval
+                    # if yes, we consider that the agent is doing the same activity as the previous interval
+                    previousMainActivityEndTime = activitySequencesDict["maintActivityEndTime"][index]
+                    
+                    if previousMainActivityEndTime is not None:
+                        previousMainActivityEndTimeInSeconds = tools.getTimeInSeconds(previousMainActivityEndTime)
+                        if previousMainActivityEndTimeInSeconds is not None and previousMainActivityEndTimeInSeconds >= startTimeInSeconds and previousMainActivityEndTimeInSeconds <= endTimeInSeconds:
+                            timeSpentInMainActivityInSeconds = previousMainActivityEndTimeInSeconds - startTimeInSeconds
+                            currentAgentMainActivity = activitySequencesDict["mainActivityId"][index]
+                            currentAgentTimeSpentInMainActivity = activitySequencesDict["timeSpentInMainActivity"][index]
+                            currentAgentStartActivity = activitySequencesDict["startActivityId"][index]
+                            currentAgentMainActivityEndTime = activitySequencesDict["maintActivityEndTime"][index]
+                            currentAgentMainActivityStartTime = activitySequencesDict["maintActivityStartTime"][index]
+                            
+                            if timeSpentInMainActivityInSeconds is not None and timeSpentInMainActivityInSeconds > 0: 
+                                currentAgentEndActivity = activitySequencesDict["endActivityId"][index]
+                            else:
+                                currentAgentEndActivity = None
+                    
+                                
+                activitySequencesDict["agentId"].append(currentAgentId)
+                activitySequencesDict["periodStart"].append(currentStartTimeFormatted)
+                activitySequencesDict["periodEnd"].append(currentEndTimeFormatted)
+                activitySequencesDict["mainActivityId"].append(currentAgentMainActivity)
+                activitySequencesDict["startActivityId"].append(currentAgentStartActivity)
+                activitySequencesDict["endActivityId"].append(currentAgentEndActivity)
+                activitySequencesDict["timeSpentInMainActivity"].append(currentAgentTimeSpentInMainActivity)
+                activitySequencesDict["maintActivityStartTime"].append(currentAgentMainActivityStartTime)
+                activitySequencesDict["maintActivityEndTime"].append(currentAgentMainActivityEndTime)        
                 
                 
             
             # add interval to startTime
             startTimeInSeconds += intervalInSeconds
-                
+    
+    activitySequencesDf = pd.DataFrame(activitySequencesDict)
+    agent95254Activities = activitySequencesDf[activitySequencesDf["agentId"] == 95254]
+    
+    print(activitySequencesDf)
+    print(agent95254Activities)
     print(f"Processed {nbAgentsProcessed} agents in {datetime.now() - agentProcessTimer}")
     return 1
