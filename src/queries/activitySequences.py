@@ -87,16 +87,16 @@ def activitySequences(filePath, startTime='00:00:00', endTime='32:00:00', interv
             
             currentActivityDf = pd.read_sql(query, conn)
 
+            
+            
             # get activity sequences for each agent
             for currentAgentId in allAgentsInZone:
-                activitySequencesDict = delayed(_retrieveActivitiesOfEachAgentsDuringGivenInterval)(currentAgentId, currentActivityDf, activitySequencesDict, startTimeInSeconds, endTimeInSeconds, currentStartTimeFormatted, currentEndTimeFormatted)
+                activitySequencesDict = _retrieveActivitiesOfEachAgentsDuringGivenInterval(currentAgentId, currentActivityDf, activitySequencesDict, startTimeInSeconds, endTimeInSeconds, currentStartTimeFormatted, currentEndTimeFormatted)
                 
-                
-            
             # add interval to startTime
             startTimeInSeconds += intervalInSeconds
     
-    activitySequencesDict = activitySequencesDict.compute()
+    # activitySequencesDict = activitySequencesDict.compute()
     activitySequencesDf = pd.DataFrame(activitySequencesDict)
     agent95254Activities = activitySequencesDf[activitySequencesDf["agentId"] == 95254]
     
