@@ -4,7 +4,6 @@ import geojson
 import pandas as pd
 import collections
 from datetime import datetime
-from dask import delayed
 from sqlalchemy.sql import text
 
 
@@ -22,31 +21,40 @@ def activitySequences(filePath, startTime='00:00:00', endTime='32:00:00', interv
     
     with open(filePath) as f:
         gjson = geojson.load(f)
-        features = gjson["features"]
-        nbFeatures = len(features)
         
         geojsonEpsg = tools.getEPSGFromGeoJSON(gjson)
+                
+        geometry = gjson["features"][0]["geometry"]
+        coordinates = geometry["coordinates"]
+        geometryType = geometry["type"]
+        polygon = tools.formatGeoJSONPolygonToPostgisPolygon(coordinates, geometryType, geojsonEpsg)
         
-        queryTemplate = None
-        
-        currentFeature = features[0]
-        currentGeometry = currentFeature["geometry"]
-        currentCoordinates = currentGeometry["coordinates"]
-        currentGeometryType = currentGeometry["type"]
-        currentPolygon = tools.formatGeoJSONPolygonToPostgisPolygon(currentCoordinates, currentGeometryType, geojsonEpsg)
-        
+        # QUERIES
         queryAllAgentsInZone = text(f"""SELECT distinct "personId"
                                         from activity
                                         where ST_Contains(ST_Transform(ST_GeomFromText(:currentPolygon, {geojsonEpsg}), {config.DB_SRID}), ST_SetSRID("location", {config.DB_SRID}))
                                     """)
         
+        queryGetActivitiesDuringTimeSpanAndZone = text(f"""SELECT *, 
+                                CASE
+                                    WHEN :currentStartTimeFormatted <= start_time and :currentEndTimeFormatted >= end_time then end_time - start_time
+                                    WHEN :currentStartTimeFormatted >= start_time and :currentEndTimeFormatted >= end_time then end_time - :currentStartTimeFormatted
+                                    WHEN :currentStartTimeFormatted > start_time and :currentEndTimeFormatted < end_time then TIME :currentEndTimeFormatted - TIME :currentStartTimeFormatted
+                                    WHEN :currentStartTimeFormatted <= start_time and :currentEndTimeFormatted <= end_time then :currentEndTimeFormatted - start_time
+                                END as activity_time_spent_in_interval
+                            from activity 
+                            where ST_Contains(ST_Transform(ST_GeomFromText(:currentPolygon, {geojsonEpsg}), {config.DB_SRID}), ST_SetSRID("location", {config.DB_SRID}))
+                            and (start_time between :currentStartTimeFormatted and :currentEndTimeFormatted or start_time is null)
+                            and (end_time between :currentStartTimeFormatted and :currentEndTimeFormatted or end_time is null)
+                            order by start_time asc
+                        """)
+        
         print("Getting all agents in zone...")
-        queryAllAgentsInZone = queryAllAgentsInZone.bindparams(currentPolygon=currentPolygon)
+        queryAllAgentsInZone = queryAllAgentsInZone.bindparams(currentPolygon=polygon)
         allAgentsInZoneDf = pd.read_sql(queryAllAgentsInZone, conn)
         
         
         agentProcessTimer = datetime.now() # timer to measure the time it takes to process all agents
-        nbAgentsProcessed = 0
         
         # TODO Remove these lines
         # take the first 200 agents
@@ -66,30 +74,16 @@ def activitySequences(filePath, startTime='00:00:00', endTime='32:00:00', interv
             currentEndTimeInSeconds = startTimeInSeconds + intervalInSeconds
             currentStartTimeFormatted = tools.getFormattedTime(startTimeInSeconds)
             currentEndTimeFormatted = tools.getFormattedTime(currentEndTimeInSeconds)
-                            
-            query = text(f"""SELECT *, 
-                                CASE
-                                    WHEN :currentStartTimeFormatted <= start_time and :currentEndTimeFormatted >= end_time then end_time - start_time
-                                    WHEN :currentStartTimeFormatted >= start_time and :currentEndTimeFormatted >= end_time then end_time - :currentStartTimeFormatted
-                                    WHEN :currentStartTimeFormatted > start_time and :currentEndTimeFormatted < end_time then TIME :currentEndTimeFormatted - TIME :currentStartTimeFormatted
-                                    WHEN :currentStartTimeFormatted <= start_time and :currentEndTimeFormatted <= end_time then :currentEndTimeFormatted - start_time
-                                END as activity_time_spent_in_interval
-                            from activity 
-                            where ST_Contains(ST_Transform(ST_GeomFromText(:currentPolygon, {geojsonEpsg}), {config.DB_SRID}), ST_SetSRID("location", {config.DB_SRID}))
-                            and (start_time between :currentStartTimeFormatted and :currentEndTimeFormatted or start_time is null)
-                            and (end_time between :currentStartTimeFormatted and :currentEndTimeFormatted or end_time is null)
-                            order by start_time asc
-                        """)
             
-            query = query.bindparams(currentPolygon=currentPolygon, 
-                                    currentStartTimeFormatted=currentStartTimeFormatted, 
-                                    currentEndTimeFormatted=currentEndTimeFormatted)
+            # Querying the database for all agents in the zone
+            queryGetActivitiesDuringTimeSpanAndZone = queryGetActivitiesDuringTimeSpanAndZone.bindparams(
+                currentPolygon=polygon, 
+                currentStartTimeFormatted=currentStartTimeFormatted, 
+                currentEndTimeFormatted=currentEndTimeFormatted
+            )
+            currentActivityDf = pd.read_sql(queryGetActivitiesDuringTimeSpanAndZone, conn)
             
-            currentActivityDf = pd.read_sql(query, conn)
-
-            
-            
-            # get activity sequences for each agent
+            # retrieve activity sequences for each agent
             for currentAgentId in allAgentsInZone:
                 activitySequencesDict = _retrieveActivitiesOfEachAgentsDuringGivenInterval(currentAgentId, currentActivityDf, activitySequencesDict, startTimeInSeconds, endTimeInSeconds, currentStartTimeFormatted, currentEndTimeFormatted)
                 
@@ -102,7 +96,7 @@ def activitySequences(filePath, startTime='00:00:00', endTime='32:00:00', interv
     
     print(activitySequencesDf)
     print(agent95254Activities)
-    print(f"Processed {nbAgentsProcessed} agents in {datetime.now() - agentProcessTimer}")
+    print(f"Time: {datetime.now() - agentProcessTimer}")
     return 1
 
 
@@ -148,7 +142,7 @@ def _retrieveActivitiesOfEachAgentsDuringGivenInterval(currentAgentId, currentAc
                     currentAgentEndActivity = activitySequencesDict["endActivityId"][index]
                 else:
                     currentAgentEndActivity = None
-                    
+    
     activitySequencesDict["agentId"].append(currentAgentId)
     activitySequencesDict["periodStart"].append(currentStartTimeFormatted)
     activitySequencesDict["periodEnd"].append(currentEndTimeFormatted)
