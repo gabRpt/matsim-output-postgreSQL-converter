@@ -36,6 +36,7 @@ def activitySequences(filePath, startTime='00:00:00', endTime='32:00:00', interv
                                                                     WHEN '{startTime}' >= start_time and '{endTime}' >= end_time then end_time - '{startTime}'
                                                                     WHEN '{startTime}' > start_time and '{endTime}' < end_time then TIME '{endTime}' - TIME '{startTime}'
                                                                     WHEN '{startTime}' <= start_time and '{endTime}' <= end_time then '{endTime}' - start_time
+                                                                    ELSE '{endTime}' - start_time
                                                                 END as activity_time_spent_in_interval
                                                             from activity 
                                                             where ST_Contains(ST_Transform(ST_GeomFromText(:currentPolygon, {geojsonEpsg}), {config.DB_SRID}), ST_SetSRID("location", {config.DB_SRID}))
@@ -112,7 +113,12 @@ def activitySequences(filePath, startTime='00:00:00', endTime='32:00:00', interv
                 currentAgentTimeSpentInMainActivity = None
                 
                 if currentAgentPreviousEndActivityEndTime is not None:
-                    currentAgentPreviousEndActivityEndTimeInSeconds = tools.getTimeInSeconds(currentAgentPreviousEndActivityEndTime)
+                    if type(currentAgentPreviousEndActivityEndTime) is str:
+                        currentAgentPreviousEndActivityEndTimeInSeconds = tools.getTimeInSeconds(currentAgentPreviousEndActivityEndTime)
+                    elif type(currentAgentPreviousEndActivityEndTime) is pd._libs.tslibs.timedeltas.Timedelta:
+                        currentAgentPreviousEndActivityEndTimeInSeconds = int(currentAgentPreviousEndActivityEndTime.total_seconds())
+                    else:
+                        print(f"unknown type: {type(currentAgentPreviousEndActivityEndTime)}")
                 else:
                     currentAgentPreviousEndActivityEndTimeInSeconds = tools.getTimeInSeconds(startTime)
                 
@@ -147,32 +153,25 @@ def activitySequences(filePath, startTime='00:00:00', endTime='32:00:00', interv
                 else:
                     # use the activity that takes the most time in the interval as the main activity
                     mostTimeSpentActivity = activitiesDf[activitiesDf["activity_time_spent_in_interval"] == activitiesDf["activity_time_spent_in_interval"].max()]
-                    print(mostTimeSpentActivity)
-                    print(activitiesDf)
-                    print("=======================================")
+
                     currentAgentMainActivityId = mostTimeSpentActivity["id"].iloc[0]
                     currentAgentMainActivityStartTime = mostTimeSpentActivity["start_time"].iloc[0]
                     currentAgentMainActivityEndTime = mostTimeSpentActivity["end_time"].iloc[0]
                     currentAgentTimeSpentInMainActivity = mostTimeSpentActivity["activity_time_spent_in_interval"].iloc[0]
-                    
                     currentAgentStartActivityId = activitiesDf["id"].iloc[0]
                     currentAgentEndActivityId = activitiesDf["id"].iloc[-1]
-                    currentAgentEndActivityEndTime = activitiesDf["end_time"].iloc[-1]                
-                
+                    currentAgentEndActivityEndTime = activitiesDf["end_time"].iloc[-1]
                 
                 # add the current activity sequence to the dataframe
-                # activitySequencesDf = activitySequencesDf.append({
-                #     "agentId": currentAgentId,
-                #     "periodStart": currentStartTimeFormatted,
-                #     "periodEnd": currentEndTimeFormatted,
-                #     "mainActivityId": currentAgentMainActivityId,
-                #     "startActivityId": currentAgentStartActivityId,
-                #     "endActivityId": currentAgentEndActivityId,
-                #     "endActivityEndTime": currentAgentEndActivityEndTime,
-                #     "mainActivityStartTime": currentAgentMainActivityStartTime,
-                #     "mainActivityEndTime": currentAgentMainActivityEndTime,
-                #     "timeSpentInMainActivity": currentAgentTimeSpentInMainActivity
-                # }, ignore_index=True)
+                
+                # update the previous values
+                currentAgentPreviousStartActivityId = currentAgentStartActivityId
+                currentAgentPreviousEndActivityId = currentAgentEndActivityId
+                currentAgentPreviousEndActivityEndTime = currentAgentEndActivityEndTime
+                currentAgentPreviousMainActivityId = currentAgentMainActivityId
+                currentAgentPreviousMainActivityStartTime = currentAgentMainActivityStartTime
+                currentAgentPreviousMainActivityEndTime = currentAgentMainActivityEndTime
+                currentAgentPreviousTimeSpentInMainActivity = currentAgentTimeSpentInMainActivity
                 
                 # add interval to startTime
                 startTimeInSeconds += intervalInSeconds            
@@ -183,6 +182,9 @@ def activitySequences(filePath, startTime='00:00:00', endTime='32:00:00', interv
     print(activitySequencesDf)
     print(agent95254Activities)
     print(f"Time: {datetime.now() - agentProcessTimer}")
+    
+    # TODO start_time at None
+    # TODO remove unsued variables
     return 1
 
 
