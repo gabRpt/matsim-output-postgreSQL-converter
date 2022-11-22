@@ -105,7 +105,6 @@ def activitySequences(filePath, startTime='00:00:00', endTime='32:00:00', interv
 
 
 def _getActivitySequencesOfAgentInZoneInTimespan(allActivitiesDf, currentAgentId, startTime, endTimeInSeconds, intervalInSeconds):
-    functionTimer = datetime.now()
     # get all activities of the current agent in the zone during the given timespan
     currentActivityDf = allActivitiesDf[allActivitiesDf["personId"] == currentAgentId]
     
@@ -116,13 +115,9 @@ def _getActivitySequencesOfAgentInZoneInTimespan(allActivitiesDf, currentAgentId
     startTimeInSeconds = tools.getTimeInSeconds(startTime)
     
     # Parse the activities
-    currentAgentPreviousStartActivityId = None
     currentAgentPreviousEndActivityId = None
     currentAgentPreviousEndActivityEndTime = None
-    currentAgentPreviousMainActivityId = None
-    currentAgentPreviousMainActivityStartTime = None
-    currentAgentPreviousMainActivityEndTime = None
-    currentAgentPreviousTimeSpentInMainActivity = None
+
     while startTimeInSeconds < endTimeInSeconds:
         currentEndTimeInSeconds = startTimeInSeconds + intervalInSeconds
         currentStartTimeFormatted = tools.getFormattedTime(startTimeInSeconds)
@@ -198,19 +193,13 @@ def _getActivitySequencesOfAgentInZoneInTimespan(allActivitiesDf, currentAgentId
         agentActivitySequencesDict["timeSpentInMainActivity"].append(currentAgentTimeSpentInMainActivity)
         
         # update the previous values
-        currentAgentPreviousStartActivityId = currentAgentStartActivityId
         currentAgentPreviousEndActivityId = currentAgentEndActivityId
         currentAgentPreviousEndActivityEndTime = currentAgentEndActivityEndTime
-        currentAgentPreviousMainActivityId = currentAgentMainActivityId
-        currentAgentPreviousMainActivityStartTime = currentAgentMainActivityStartTime
-        currentAgentPreviousMainActivityEndTime = currentAgentMainActivityEndTime
-        currentAgentPreviousTimeSpentInMainActivity = currentAgentTimeSpentInMainActivity
         
         # add interval to startTime
         startTimeInSeconds += intervalInSeconds
     
     # create the dataframe
-    print(f"Function took {datetime.now() - functionTimer} to run")
     return agentActivitySequencesDict
 
 # Merge a list of activity sequences dictionaries into a single dictionary
