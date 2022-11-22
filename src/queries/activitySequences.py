@@ -42,7 +42,6 @@ def activitySequences(filePath, startTime='00:00:00', endTime='32:00:00', interv
                                                             where ST_Contains(ST_Transform(ST_GeomFromText(:currentPolygon, {geojsonEpsg}), {config.DB_SRID}), ST_SetSRID("location", {config.DB_SRID}))
                                                             and (start_time between '{startTime}' and '{endTime}' or start_time is null)
                                                             and (end_time between '{startTime}' and '{endTime}' or end_time is null)
-                                                            and "personId" = :currentPersonId
                                                             order by start_time asc
                                                         """)
         
@@ -50,9 +49,13 @@ def activitySequences(filePath, startTime='00:00:00', endTime='32:00:00', interv
         queryAllAgentsInZone = queryAllAgentsInZone.bindparams(currentPolygon=polygon)
         allAgentsInZoneDf = pd.read_sql(queryAllAgentsInZone, conn)
         
-        print(allAgentsInZoneDf)
-        # quit()
-        
+        print("Getting all activities during time span and zone...")
+        # Querying the database to get all activities of the current agent in the zone
+        queryGetActivitiesDuringTimeSpanAndZone = queryGetActivitiesDuringTimeSpanAndZone.bindparams(
+            currentPolygon=polygon,
+        )
+        allActivitiesDf = pd.read_sql(queryGetActivitiesDuringTimeSpanAndZone, conn)
+                
         agentProcessTimer = datetime.now() # timer to measure the time it takes to process all agents
         
         # TODO Remove these lines
@@ -84,7 +87,7 @@ def activitySequences(filePath, startTime='00:00:00', endTime='32:00:00', interv
         intervalInSeconds = interval * 60
         
         for currentAgentId in allAgentsInZone:
-            currentAgentActivitySequencesDict = delayed(_getActivitySequencesOfAgentInZoneInTimespan)(polygon, currentAgentId, conn, startTime, endTimeInSeconds, intervalInSeconds, queryGetActivitiesDuringTimeSpanAndZone)
+            currentAgentActivitySequencesDict = delayed(_getActivitySequencesOfAgentInZoneInTimespan)(allActivitiesDf, currentAgentId, startTime, endTimeInSeconds, intervalInSeconds)
             activitySequencesDict = delayed(_mergeActivitySequencesDicts)([activitySequencesDict, currentAgentActivitySequencesDict])
             
     # wait for all the delayed functions to finish
@@ -101,14 +104,11 @@ def activitySequences(filePath, startTime='00:00:00', endTime='32:00:00', interv
     return 1
 
 
-def _getActivitySequencesOfAgentInZoneInTimespan(polygon, currentAgentId, conn, startTime, endTimeInSeconds, intervalInSeconds, queryGetActivitiesDuringTimeSpanAndZone):
+def _getActivitySequencesOfAgentInZoneInTimespan(allActivitiesDf, currentAgentId, startTime, endTimeInSeconds, intervalInSeconds):
+    functionTimer = datetime.now()
     # get all activities of the current agent in the zone during the given timespan
-    # Querying the database to get all activities of the current agent in the zone
-    queryGetActivitiesDuringTimeSpanAndZone = queryGetActivitiesDuringTimeSpanAndZone.bindparams(
-        currentPolygon=polygon,
-        currentPersonId=currentAgentId
-    )
-    currentActivityDf = pd.read_sql(queryGetActivitiesDuringTimeSpanAndZone, conn)
+    currentActivityDf = allActivitiesDf[allActivitiesDf["personId"] == currentAgentId]
+    
     
     # dictionary with the same structure as the activitySequencesDf
     # the keys are: agentId, periodStart, periodEnd, mainActivityId, startActivityId, endActivityId, mainActivityStartTime, mainActivityEndTime, timeSpentInMainActivity
@@ -210,13 +210,11 @@ def _getActivitySequencesOfAgentInZoneInTimespan(polygon, currentAgentId, conn, 
         startTimeInSeconds += intervalInSeconds
     
     # create the dataframe
+    print(f"Function took {datetime.now() - functionTimer} to run")
     return agentActivitySequencesDict
 
-
+# Merge a list of activity sequences dictionaries into a single dictionary
 def _mergeActivitySequencesDicts(activitySequencesDicts):
-    """
-    Merge a list of activity sequences dictionaries into a single dictionary
-    """
     mergedActivitySequencesDict = collections.defaultdict(list)
     for activitySequencesDict in activitySequencesDicts:
         for key, value in activitySequencesDict.items():
