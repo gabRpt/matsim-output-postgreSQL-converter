@@ -87,11 +87,11 @@ def activitySequences(filePath, startTime='00:00:00', endTime='32:00:00', interv
         intervalInSeconds = interval * 60
         
         for currentAgentId in allAgentsInZone:
-            currentAgentActivitySequencesDict = delayed(_getActivitySequencesOfAgentInZoneInTimespan)(allActivitiesDf, currentAgentId, startTime, endTimeInSeconds, intervalInSeconds)
-            activitySequencesDict = delayed(_mergeActivitySequencesDicts)([activitySequencesDict, currentAgentActivitySequencesDict])
+            currentAgentActivitySequencesDict = _getActivitySequencesOfAgentInZoneInTimespan(allActivitiesDf, currentAgentId, startTime, endTimeInSeconds, intervalInSeconds)
+            activitySequencesDict = _mergeActivitySequencesDicts([activitySequencesDict, currentAgentActivitySequencesDict])
             
     # wait for all the delayed functions to finish
-    activitySequencesDict = activitySequencesDict.compute()
+    # activitySequencesDict = activitySequencesDict.compute()
     activitySequencesDf = pd.DataFrame(activitySequencesDict)
     agent95254Activities = activitySequencesDf[activitySequencesDf["agentId"] == 95254]
     
@@ -106,8 +106,7 @@ def activitySequences(filePath, startTime='00:00:00', endTime='32:00:00', interv
 
 def _getActivitySequencesOfAgentInZoneInTimespan(allActivitiesDf, currentAgentId, startTime, endTimeInSeconds, intervalInSeconds):
     # get all activities of the current agent in the zone during the given timespan
-    currentActivityDf = allActivitiesDf[allActivitiesDf["personId"] == currentAgentId]
-    
+    agentActivitiesDf = allActivitiesDf[allActivitiesDf["personId"] == currentAgentId]
     
     # dictionary with the same structure as the activitySequencesDf
     # the keys are: agentId, periodStart, periodEnd, mainActivityId, startActivityId, endActivityId, mainActivityStartTime, mainActivityEndTime, timeSpentInMainActivity
@@ -136,14 +135,16 @@ def _getActivitySequencesOfAgentInZoneInTimespan(allActivitiesDf, currentAgentId
                 currentAgentPreviousEndActivityEndTimeInSeconds = tools.getTimeInSeconds(currentAgentPreviousEndActivityEndTime)
             elif type(currentAgentPreviousEndActivityEndTime) is pd._libs.tslibs.timedeltas.Timedelta:
                 currentAgentPreviousEndActivityEndTimeInSeconds = int(currentAgentPreviousEndActivityEndTime.total_seconds())
+            elif type(currentAgentPreviousEndActivityEndTime) is pd._libs.tslibs.nattype.NaTType:
+                currentAgentPreviousEndActivityEndTimeInSeconds = tools.getTimeInSeconds(startTime)
             else:
+                # print(f"{currentStartTimeFormatted} - {currentEndTimeFormatted}")
+                print(f"{currentAgentId} - {currentAgentPreviousEndActivityEndTime}")
                 print(f"unknown type: {type(currentAgentPreviousEndActivityEndTime)}")
         else:
             currentAgentPreviousEndActivityEndTimeInSeconds = tools.getTimeInSeconds(startTime)
-        
-        # print(f"Processing agent {currentAgentId} from {currentStartTimeFormatted} to {currentEndTimeFormatted}")
-        
-        activitiesDf = currentActivityDf[(currentActivityDf["start_time"] >= currentStartTimeFormatted) & (currentActivityDf["start_time"] < currentEndTimeFormatted)]
+                
+        activitiesDf = agentActivitiesDf[(agentActivitiesDf["start_time"] >= currentStartTimeFormatted) & (agentActivitiesDf["start_time"] < currentEndTimeFormatted)]
         
         # if the agent has no activity in the current interval, we check if the previous end activity ends during or after
         # the current interval. If it does, we use the previous end activity as the current activity
@@ -200,6 +201,8 @@ def _getActivitySequencesOfAgentInZoneInTimespan(allActivitiesDf, currentAgentId
         startTimeInSeconds += intervalInSeconds
     
     # create the dataframe
+    # if currentAgentId == 12538:
+    #     print(pd.DataFrame(agentActivitySequencesDict))
     return agentActivitySequencesDict
 
 # Merge a list of activity sequences dictionaries into a single dictionary
