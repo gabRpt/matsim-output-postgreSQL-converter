@@ -5,12 +5,13 @@ import pandas as pd
 import collections
 from datetime import datetime
 from sqlalchemy.sql import text
+import dask
 
 # TODO change default interval to 15 minutes
 # Return the activity sequences for a every users during a given timespan (by default, 00:00:00 to 32:00:00) 
 # with the given interval (by default, 60 minutes)
 # in the given zone (geojson file)
- 
+
 def activitySequences(filePath, startTime='00:00:00', endTime='32:00:00', interval=60):
     with open(filePath) as f:
         conn = tools.connectToDatabase()
@@ -62,7 +63,6 @@ def activitySequences(filePath, startTime='00:00:00', endTime='32:00:00', interv
         allAgentsInZone = allAgentsInZoneDf["personId"].tolist()
         allAgentsInZone = allAgentsInZone[:200]
         
-        
         # dictionnary to store the activity sequences for each agent
         # the main activity is the activity that takes the most time in the timespan
         # the keys are: agentId, periodStart, periodEnd, mainActivityId, startActivityId, endActivityId, mainActivityStartTime, mainActivityEndTime, timeSpentInMainActivity
@@ -94,16 +94,20 @@ def activitySequences(filePath, startTime='00:00:00', endTime='32:00:00', interv
         # Create a dictionary with the start time of the interval as key and the formatted start time as value
         timeDict = dict(zip(timeList, formattedTimeList))
         
-        for currentAgentId in allAgentsInZone:
-            currentAgentActivitySequencesDict = _getActivitySequencesOfAgentInZoneInTimespan(allActivitiesDf, currentAgentId, firstStartTimeInSeconds, endTimeInSeconds, intervalInSeconds, formattedInterval, timeDict)
+        allAgentsInZone = [95254]
+        
+        for agent in allAgentsInZone:
+            currentAgentActivitySequencesDict = _getActivitySequencesOfAgentInZoneInTimespan(allActivitiesDf, agent, firstStartTimeInSeconds, endTimeInSeconds, intervalInSeconds, formattedInterval, timeDict)
             activitySequencesDict = _mergeActivitySequencesDicts([activitySequencesDict, currentAgentActivitySequencesDict])
+        
             
     # wait for all the delayed functions to finish
     # activitySequencesDict = activitySequencesDict.compute()
     activitySequencesDf = pd.DataFrame(activitySequencesDict)
     agent95254Activities = activitySequencesDf[activitySequencesDf["agentId"] == 95254]
+    # wait for all all the processes to finish
     
-    print(activitySequencesDf)
+    # print(activitySequencesDf)
     print(agent95254Activities)
     print(f"Time: {datetime.now() - agentProcessTimer}")
     
@@ -111,6 +115,13 @@ def activitySequences(filePath, startTime='00:00:00', endTime='32:00:00', interv
     # TODO remove unsued variables
     return 1
 
+
+def _testFunction(agentsIdList, allActivitiesDf, firstStartTimeInSeconds, endTimeInSeconds, intervalInSeconds, formattedInterval, timeDict):
+    activitySequencesDict = collections.defaultdict(list)
+    for currentAgentId in agentsIdList:
+        currentAgentActivitySequencesDict = _getActivitySequencesOfAgentInZoneInTimespan(allActivitiesDf, currentAgentId, firstStartTimeInSeconds, endTimeInSeconds, intervalInSeconds, formattedInterval, timeDict)
+        activitySequencesDict = _mergeActivitySequencesDicts([activitySequencesDict, currentAgentActivitySequencesDict])
+    return activitySequencesDict
 
 def _getActivitySequencesOfAgentInZoneInTimespan(allActivitiesDf, currentAgentId, firstStartTimeInSeconds, endTimeInSeconds, intervalInSeconds, formattedInterval, timeDict):
     # get all activities of the current agent in the zone during the given timespan
@@ -144,14 +155,14 @@ def _getActivitySequencesOfAgentInZoneInTimespan(allActivitiesDf, currentAgentId
             elif type(currentAgentPreviousEndActivityEndTime) is pd._libs.tslibs.timedeltas.Timedelta:
                 currentAgentPreviousEndActivityEndTimeInSeconds = int(currentAgentPreviousEndActivityEndTime.total_seconds())
             elif type(currentAgentPreviousEndActivityEndTime) is pd._libs.tslibs.nattype.NaTType:
-                currentAgentPreviousEndActivityEndTimeInSeconds = firstStartTimeInSeconds
+                currentAgentPreviousEndActivityEndTimeInSeconds = -1
             else:
                 print(f"{currentStartTimeFormatted} - {currentEndTimeFormatted}")
                 print(f"{currentAgentId} - {currentAgentPreviousEndActivityEndTime}")
                 print(f"unknown type: {type(currentAgentPreviousEndActivityEndTime)}")
         else:
-            currentAgentPreviousEndActivityEndTimeInSeconds = firstStartTimeInSeconds
-                
+            currentAgentPreviousEndActivityEndTimeInSeconds = -1
+            
         activitiesDf = agentActivitiesDf[(agentActivitiesDf["start_time"] >= currentStartTimeFormatted) & (agentActivitiesDf["start_time"] < currentEndTimeFormatted)]
         
         # if the agent has no activity in the current interval, we check if the previous end activity ends during or after
@@ -160,14 +171,14 @@ def _getActivitySequencesOfAgentInZoneInTimespan(allActivitiesDf, currentAgentId
             if currentAgentPreviousEndActivityEndTimeInSeconds >= currentStartTimeInSeconds:
                 currentAgentStartActivityId = currentAgentPreviousEndActivityId
                 currentAgentMainActivityId = currentAgentPreviousEndActivityId
-                currentAgentMainActivityStartTime = currentEndTimeFormatted
+                currentAgentMainActivityStartTime = currentStartTimeFormatted
                 
                 if currentAgentPreviousEndActivityEndTimeInSeconds >= currentEndTimeInSeconds:
                     # case where the previous end activity ends after the current interval
                     currentAgentTimeSpentInMainActivity = formattedInterval
                     currentAgentEndActivityId = currentAgentPreviousEndActivityId
-                    currentAgentEndActivityEndTime = currentEndTimeFormatted
-                    currentAgentMainActivityEndTime = currentEndTimeFormatted
+                    currentAgentEndActivityEndTime = currentAgentPreviousEndActivityEndTime
+                    currentAgentMainActivityEndTime = currentAgentPreviousEndActivityEndTime
                 else:
                     # case where the previous end activity ends during the current interval
                     currentAgentTimeSpentInMainActivity = tools.getFormattedTime(currentAgentPreviousEndActivityEndTimeInSeconds - currentStartTimeInSeconds)
@@ -181,14 +192,20 @@ def _getActivitySequencesOfAgentInZoneInTimespan(allActivitiesDf, currentAgentId
         else:
             # use the activity that takes the most time in the interval as the main activity
             mostTimeSpentActivity = activitiesDf[activitiesDf["activity_time_spent_in_interval"] == activitiesDf["activity_time_spent_in_interval"].max()]
-
+            
             currentAgentMainActivityId = mostTimeSpentActivity["id"].iloc[0]
             currentAgentMainActivityStartTime = mostTimeSpentActivity["start_time"].iloc[0]
-            currentAgentMainActivityEndTime = mostTimeSpentActivity["end_time"].iloc[0]
-            currentAgentTimeSpentInMainActivity = mostTimeSpentActivity["activity_time_spent_in_interval"].iloc[0]
+            currentAgentMainActivityEndTime = mostTimeSpentActivity["end_time"].iloc[0]            
             currentAgentStartActivityId = activitiesDf["id"].iloc[0]
             currentAgentEndActivityId = activitiesDf["id"].iloc[-1]
             currentAgentEndActivityEndTime = activitiesDf["end_time"].iloc[-1]
+            
+            if currentAgentMainActivityEndTime.total_seconds() >= currentEndTimeInSeconds:
+                currentAgentTimeSpentInMainActivity = tools.getFormattedTime(currentEndTimeInSeconds - currentAgentMainActivityStartTime.total_seconds())
+            else:
+                currentAgentTimeSpentInMainActivity = tools.getFormattedTime(currentAgentMainActivityEndTime.total_seconds() - currentAgentMainActivityStartTime.total_seconds())
+                
+
         
         # add the current activity sequence to the dictionary
         agentActivitySequencesDict["agentId"].append(currentAgentId)
