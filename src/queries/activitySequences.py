@@ -5,14 +5,12 @@ import pandas as pd
 import collections
 from datetime import datetime
 from sqlalchemy.sql import text
-import dask
 
-# TODO change default interval to 15 minutes
+
 # Return the activity sequences for a every users during a given timespan (by default, 00:00:00 to 32:00:00) 
 # with the given interval (by default, 60 minutes)
 # in the given zone (geojson file)
-
-def activitySequences(filePath, startTime='00:00:00', endTime='32:00:00', interval=60):
+def activitySequences(filePath, startTime='00:00:00', endTime='32:00:00', interval=15):
     with open(filePath) as f:
         conn = tools.connectToDatabase()
         gjson = geojson.load(f)
@@ -94,35 +92,25 @@ def activitySequences(filePath, startTime='00:00:00', endTime='32:00:00', interv
         # Create a dictionary with the start time of the interval as key and the formatted start time as value
         timeDict = dict(zip(timeList, formattedTimeList))
         
-        allAgentsInZone = [6486]
         
         for agent in allAgentsInZone:
             currentAgentActivitySequencesDict = _getActivitySequencesOfAgentInZoneInTimespan(allActivitiesDf, agent, firstStartTimeInSeconds, endTimeInSeconds, intervalInSeconds, formattedInterval, timeDict)
             activitySequencesDict = _mergeActivitySequencesDicts([activitySequencesDict, currentAgentActivitySequencesDict])
         
-            
-    # wait for all the delayed functions to finish
-    # activitySequencesDict = activitySequencesDict.compute()
-    activitySequencesDf = pd.DataFrame(activitySequencesDict)
-    agent95254Activities = activitySequencesDf[activitySequencesDf["agentId"] == 6486]
-    # wait for all all the processes to finish
     
-    # print all rows of agent 95254
-    with pd.option_context('display.max_rows', None):  # more options can be specified also
+    activitySequencesDf = pd.DataFrame(activitySequencesDict)
+    agent95254Activities = activitySequencesDf[activitySequencesDf["agentId"] == 233]
+    
+    with pd.option_context('display.max_rows', None):
         print(agent95254Activities)
     
+    print(activitySequencesDf)
     print(f"Time: {datetime.now() - agentProcessTimer}")
-    # TODO start_time at None
-    # TODO remove unsued variables
+    # TODO handle case when start_time is null
+    # TODO handle case when start_time and end_time are null
+    # TODO remove unused variables
     return 1
 
-
-def _testFunction(agentsIdList, allActivitiesDf, firstStartTimeInSeconds, endTimeInSeconds, intervalInSeconds, formattedInterval, timeDict):
-    activitySequencesDict = collections.defaultdict(list)
-    for currentAgentId in agentsIdList:
-        currentAgentActivitySequencesDict = _getActivitySequencesOfAgentInZoneInTimespan(allActivitiesDf, currentAgentId, firstStartTimeInSeconds, endTimeInSeconds, intervalInSeconds, formattedInterval, timeDict)
-        activitySequencesDict = _mergeActivitySequencesDicts([activitySequencesDict, currentAgentActivitySequencesDict])
-    return activitySequencesDict
 
 def _getActivitySequencesOfAgentInZoneInTimespan(allActivitiesDf, currentAgentId, firstStartTimeInSeconds, endTimeInSeconds, intervalInSeconds, formattedInterval, timeDict):
     # get all activities of the current agent in the zone during the given timespan
@@ -189,6 +177,7 @@ def _getActivitySequencesOfAgentInZoneInTimespan(allActivitiesDf, currentAgentId
             else:
                 # case where the agent has no activity in the current interval and the previous end activity ends before the current interval
                 # we keep all values to None
+                print("==================================== Should not happen ====================================")
                 pass
         else:
             # use the activity that takes the most time in the interval as the main activity
@@ -204,8 +193,6 @@ def _getActivitySequencesOfAgentInZoneInTimespan(allActivitiesDf, currentAgentId
             if currentAgentMainActivityEndTime.total_seconds() >= currentEndTimeInSeconds or type(currentAgentMainActivityEndTime) is pd._libs.tslibs.nattype.NaTType:
                 currentAgentTimeSpentInMainActivity = tools.getFormattedTime(currentEndTimeInSeconds - currentAgentMainActivityStartTime.total_seconds())
             else:
-                print(currentAgentMainActivityEndTime)
-                print(currentAgentMainActivityStartTime)
                 currentAgentTimeSpentInMainActivity = tools.getFormattedTime(currentAgentMainActivityEndTime.total_seconds() - currentAgentMainActivityStartTime.total_seconds())
                 
 
