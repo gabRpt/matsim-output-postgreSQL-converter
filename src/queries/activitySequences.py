@@ -5,7 +5,7 @@ import pandas as pd
 import collections
 from datetime import datetime
 from sqlalchemy.sql import text
-
+import multiprocessing as mp
 
 # Return the activity sequences for a every users during a given timespan (by default, 00:00:00 to 32:00:00) 
 # with the given interval (by default, 60 minutes)
@@ -92,11 +92,18 @@ def activitySequences(filePath, startTime='00:00:00', endTime='32:00:00', interv
         # Create a dictionary with the start time of the interval as key and the formatted start time as value
         timeDict = dict(zip(timeList, formattedTimeList))
         
+        # for agent in allAgentsInZone:
+        #     currentAgentActivitySequencesDict = _getActivitySequencesOfAgentInZoneInTimespan(allActivitiesDf, agent, firstStartTimeInSeconds, endTimeInSeconds, intervalInSeconds, formattedInterval, timeDict)
+        #     activitySequencesDict = _mergeActivitySequencesDicts([activitySequencesDict, currentAgentActivitySequencesDict])
         
-        for agent in allAgentsInZone:
-            currentAgentActivitySequencesDict = _getActivitySequencesOfAgentInZoneInTimespan(allActivitiesDf, agent, firstStartTimeInSeconds, endTimeInSeconds, intervalInSeconds, formattedInterval, timeDict)
-            activitySequencesDict = _mergeActivitySequencesDicts([activitySequencesDict, currentAgentActivitySequencesDict])
+        # process all agents in parallel
+        pool = mp.Pool(mp.cpu_count())
+        results = [pool.apply_async(_getActivitySequencesOfAgentInZoneInTimespan, args=(allActivitiesDf, agent, firstStartTimeInSeconds, endTimeInSeconds, intervalInSeconds, formattedInterval, timeDict)) for agent in allAgentsInZone]
+        output = [p.get() for p in results]
+        pool.close()
+        pool.join()
         
+    activitySequencesDict = _mergeActivitySequencesDicts(output)
     
     activitySequencesDf = pd.DataFrame(activitySequencesDict)
     agent95254Activities = activitySequencesDf[activitySequencesDf["agentId"] == 233]
