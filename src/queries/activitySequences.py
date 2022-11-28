@@ -10,7 +10,7 @@ import multiprocessing as mp
 # Return the activity sequences for a every users during a given timespan (by default, 00:00:00 to 32:00:00) 
 # with the given interval (by default, 60 minutes)
 # in the given zone (geojson file)
-def activitySequences(filePath, startTime='00:00:00', endTime='32:00:00', interval=15):
+def activitySequences(filePath, startTime='00:00:00', endTime='32:00:00', interval=15, batchSize=10):
     with open(filePath) as f:
         conn = tools.connectToDatabase()
         gjson = geojson.load(f)
@@ -59,7 +59,7 @@ def activitySequences(filePath, startTime='00:00:00', endTime='32:00:00', interv
         # TODO Remove these lines
         # take the first 200 agents
         allAgentsInZone = allAgentsInZoneDf["personId"].tolist()
-        allAgentsInZone = allAgentsInZone[:5000]
+        allAgentsInZone = allAgentsInZone[:100]
         
         # dictionnary to store the activity sequences for each agent
         # the main activity is the activity that takes the most time in the timespan
@@ -85,19 +85,14 @@ def activitySequences(filePath, startTime='00:00:00', endTime='32:00:00', interv
         intervalInSeconds = interval * 60
         formattedInterval = tools.getFormattedTime(intervalInSeconds)
         
-        # create array with all the start times of the intervals + the end time
+        # Create array with all the start times of the intervals + the end time
         timeList = [x for x in range(0, endTimeInSeconds, intervalInSeconds)] + [endTimeInSeconds]
         formattedTimeList = [tools.getFormattedTime(x) for x in timeList]
         
         # Create a dictionary with the start time of the interval as key and the formatted start time as value
         timeDict = dict(zip(timeList, formattedTimeList))
         
-        # for agent in allAgentsInZone:
-        #     currentAgentActivitySequencesDict = _getActivitySequencesOfAgentInZoneInTimespan(allActivitiesDf, agent, firstStartTimeInSeconds, endTimeInSeconds, intervalInSeconds, formattedInterval, timeDict)
-        #     activitySequencesDict = _mergeActivitySequencesDicts([activitySequencesDict, currentAgentActivitySequencesDict])
-        
-        # create batches of agents to process in parallel
-        batchSize = 100
+        # Create batches of agents to process in parallel
         batches = [allAgentsInZone[i:i + batchSize] for i in range(0, len(allAgentsInZone), batchSize)]
         
         # Process the batches in parallel
@@ -106,9 +101,8 @@ def activitySequences(filePath, startTime='00:00:00', endTime='32:00:00', interv
             
             for result in results:
                 activitySequencesDict = _mergeActivitySequencesDicts([activitySequencesDict, result])
-                
-        print("Processing all agents took", datetime.now() - agentProcessTimer)
-    
+        
+        
     
     activitySequencesDf = pd.DataFrame(activitySequencesDict)
     agent95254Activities = activitySequencesDf[activitySequencesDf["agentId"] == 233]
@@ -199,7 +193,6 @@ def _getActivitySequencesOfAgentInZoneInTimespan(allActivitiesDf, currentAgentId
             else:
                 # case where the agent has no activity in the current interval and the previous end activity ends before the current interval
                 # we keep all values to None
-                # print("==================================== Should not happen ====================================")
                 pass
         else:
             # use the activity that takes the most time in the interval as the main activity
