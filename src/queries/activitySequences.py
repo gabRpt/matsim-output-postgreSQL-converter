@@ -59,7 +59,7 @@ def activitySequences(filePath, startTime='00:00:00', endTime='32:00:00', interv
         # TODO Remove these lines
         # take the first 200 agents
         allAgentsInZone = allAgentsInZoneDf["personId"].tolist()
-        allAgentsInZone = allAgentsInZone[:200]
+        allAgentsInZone = allAgentsInZone[:5000]
         
         # dictionnary to store the activity sequences for each agent
         # the main activity is the activity that takes the most time in the timespan
@@ -96,14 +96,19 @@ def activitySequences(filePath, startTime='00:00:00', endTime='32:00:00', interv
         #     currentAgentActivitySequencesDict = _getActivitySequencesOfAgentInZoneInTimespan(allActivitiesDf, agent, firstStartTimeInSeconds, endTimeInSeconds, intervalInSeconds, formattedInterval, timeDict)
         #     activitySequencesDict = _mergeActivitySequencesDicts([activitySequencesDict, currentAgentActivitySequencesDict])
         
-        # process all agents in parallel
-        pool = mp.Pool(mp.cpu_count())
-        results = [pool.apply_async(_getActivitySequencesOfAgentInZoneInTimespan, args=(allActivitiesDf, agent, firstStartTimeInSeconds, endTimeInSeconds, intervalInSeconds, formattedInterval, timeDict)) for agent in allAgentsInZone]
-        output = [p.get() for p in results]
-        pool.close()
-        pool.join()
+        # create batches of agents to process in parallel
+        batchSize = 100
+        batches = [allAgentsInZone[i:i + batchSize] for i in range(0, len(allAgentsInZone), batchSize)]
         
-    activitySequencesDict = _mergeActivitySequencesDicts(output)
+        # Process the batches in parallel
+        with mp.Pool(mp.cpu_count()) as pool:
+            results = pool.starmap(_getActivitySequencesOfAgentInZoneInTimespanInBatch, [(allActivitiesDf, agentsList, firstStartTimeInSeconds, endTimeInSeconds, intervalInSeconds, formattedInterval, timeDict) for agentsList in batches])
+            
+            for result in results:
+                activitySequencesDict = _mergeActivitySequencesDicts([activitySequencesDict, result])
+                
+        print("Processing all agents took", datetime.now() - agentProcessTimer)
+    
     
     activitySequencesDf = pd.DataFrame(activitySequencesDict)
     agent95254Activities = activitySequencesDf[activitySequencesDf["agentId"] == 233]
@@ -117,6 +122,16 @@ def activitySequences(filePath, startTime='00:00:00', endTime='32:00:00', interv
     # TODO handle case when start_time and end_time are null
     # TODO remove unused variables
     return 1
+
+def _getActivitySequencesOfAgentInZoneInTimespanInBatch(allActivitiesDf, agentsList, firstStartTimeInSeconds, endTimeInSeconds, intervalInSeconds, formattedInterval, timeDict):
+    activitySequencesDict = collections.defaultdict(list)
+
+    for agent in agentsList:
+        currentAgentActivitySequencesDict = _getActivitySequencesOfAgentInZoneInTimespan(allActivitiesDf, agent, firstStartTimeInSeconds, endTimeInSeconds, intervalInSeconds, formattedInterval, timeDict)
+        activitySequencesDict = _mergeActivitySequencesDicts([activitySequencesDict, currentAgentActivitySequencesDict])
+
+    return activitySequencesDict
+
 
 
 def _getActivitySequencesOfAgentInZoneInTimespan(allActivitiesDf, currentAgentId, firstStartTimeInSeconds, endTimeInSeconds, intervalInSeconds, formattedInterval, timeDict):
@@ -184,7 +199,7 @@ def _getActivitySequencesOfAgentInZoneInTimespan(allActivitiesDf, currentAgentId
             else:
                 # case where the agent has no activity in the current interval and the previous end activity ends before the current interval
                 # we keep all values to None
-                print("==================================== Should not happen ====================================")
+                # print("==================================== Should not happen ====================================")
                 pass
         else:
             # use the activity that takes the most time in the interval as the main activity

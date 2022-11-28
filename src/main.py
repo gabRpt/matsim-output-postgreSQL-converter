@@ -43,7 +43,8 @@ def main():
         
     # ========= Activity Sequences =========
     # result = queries.activitySequencesBackup.activitySequences("./resources/sample/1zone.geojson", startTime='00:00:00', endTime='24:00:00', interval=30)
-    result = queries.activitySequences.activitySequences("./resources/sample/1LargeZone.geojson", startTime='00:00:00', endTime='24:00:00', interval=15)
+    if __name__ == '__main__':
+        result = queries.activitySequences.activitySequences("./resources/sample/1LargeZone.geojson", startTime='00:00:00', endTime='24:00:00', interval=15)
     
 
     
