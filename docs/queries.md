@@ -11,9 +11,9 @@ In [main.py](https://github.com/gabRpt/matsim-output-postgreSQL-converter/blob/m
 Edit the parameters of the function `queries.agentActivity.agentActivity` :
 
 * `filepath` : Path to the **geojson** file containing the different zones to consider (eg: [5zones.geojson](https://github.com/gabRpt/matsim-output-postgreSQL-converter/blob/main/resources/sample/5zones.geojson))
-* `start_time` : start time of the timespan
-* `end_time` : end time of the timespan
-* `strictTime` :
+* `start_time` : start time of the timespan (string default: `'00:00:00'`)
+* `end_time` : end time of the timespan (string default: `'32:00:00'`)
+* `strictTime` : (boolean default: `False`)
         if true, only activities that start and end in the time interval are considered
             eg: an activity starting at 18:30:00 and ending at 19:00:00 is considered
                 an activity starting at 18:30:00 and ending at 19:15:00 is NOT considered
@@ -40,9 +40,9 @@ In [main.py](https://github.com/gabRpt/matsim-output-postgreSQL-converter/blob/m
 Edit the parameters of the function `queries.odMatrix.odMatrix` :
 
 * `filepath` : Path to the **geojson** file containing the different zones to consider (eg: [5zones.geojson](https://github.com/gabRpt/matsim-output-postgreSQL-converter/blob/main/resources/sample/5zones.geojson))
-* `start_time` : start time of the timespan
-* `end_time` : end time of the timespan
-* `ignoreArrivalTime` :
+* `start_time` : start time of the timespan (string default: `'00:00:00'`)
+* `end_time` : end time of the timespan (string default: `'32:00:00'`)
+* `ignoreArrivalTime` : (boolean default: `True`)
         if true, only startTime is considered
         eg: a trip having dep_time = 18:00:00 and trav_time = 00:30:00 is considered
             a trip having dep_time = 18:00:00 and trav_time = 01:30:00 is NOT considered (arrivalTime = 19:30:00 is not in interval)
@@ -50,7 +50,7 @@ Edit the parameters of the function `queries.odMatrix.odMatrix` :
         eg : a trip having dep_time = 18:00:00 and trav_time = 00:30:00 is considered
                 a trip having dep_time = 18:00:00 and trav_time = 01:30:00 is considered
         in both cases, if a trip has a dep_time < 18:00:00 it will not be considered
-* `generateArabesqueFiles` : if true, generates the files needed to create a scheme in [Arabesque](http://arabesque.ifsttar.fr/)
+* `generateArabesqueFiles` : if true, generates the files needed to create a scheme in [Arabesque](http://arabesque.ifsttar.fr/) (boolean default: `False`)
 
 ##### Use generated files in Arabesque
 If `generateArabesqueFiles` is set to true, the files needed to create a scheme in [Arabesque](http://arabesque.ifsttar.fr/) are generated in the folder `/output`.
@@ -70,10 +70,10 @@ Get the activity sequences of agents during given timespan and zone
 
 In [main.py](https://github.com/gabRpt/matsim-output-postgreSQL-converter/blob/main/src/main.py "main.py") uncomment the lines below `========= Activity Sequences =========`. Edit the parameters of the function `queries.activitySequences.activitySequences` :
 * `filepath` : Path to the **geojson** file containing **only one** zone consider (eg: [1zone.geojson](https://github.com/gabRpt/matsim-output-postgreSQL-converter/blob/main/resources/sample/1zone.geojson))
-* `start_time` : start time of the timespan
-* `end_time` : end time of the timespan
-* `interval` : interval of time between each sequence (in minutes)
-* `batchSize` : number of agents to consider in each batch to optimize multiprocessing (has to be > 0)
+* `start_time` : start time of the timespan (string default: `'00:00:00'`)
+* `end_time` : end time of the timespan (string default: `'32:00:00'`)
+* `interval` : interval of time between each sequence (in minutes => int default: `15`)
+* `batchSize` : number of agents to consider in each batch to optimize multiprocessing (has to be > 0, int default: `10`)
 
 Returns a dataframe with all the activity sequences of all the agents that have **at least one** activity in the given zone during the given timespan.
 The dataframe has the following columns :
