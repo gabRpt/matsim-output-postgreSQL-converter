@@ -17,4 +17,5 @@
     * [OD Matrix](queries.md#od-matrix)
     * [Activity Sequences](queries.md#activity-sequences)
 
+* [Documentation](documentation.md)
 * [Troubleshooting](troubleshooting.md)
