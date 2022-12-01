@@ -31,7 +31,6 @@ def main():
     # allZonesDataframes = queries.agentActivity.agentActivity("./resources/sample/5zones.geojson", startTime='18:00:00', endTime='19:00:00', strictTime=False)
     
     
-    
     # ========= OD Matrix =========
     # Get od matrix of trips between zones during given timespan
     # Generates csv files in "output" folder compatible with Arabesque http://arabesque.ifsttar.fr/  ->  https://github.com/gflowiz/arabesque
@@ -40,14 +39,11 @@ def main():
         # print('\t'.join(map(str, i)))
         
     
-        
+    
     # ========= Activity Sequences =========
-    # result = queries.activitySequencesBackup.activitySequences("./resources/sample/1zone.geojson", startTime='00:00:00', endTime='24:00:00', interval=30)
     if __name__ == '__main__':
-        result = queries.activitySequences.activitySequences("./resources/sample/1LargeZone.geojson", startTime='00:00:00', endTime='24:00:00', interval=15)
-    
-
-    
+        result = queries.activitySequences.activitySequences("./resources/sample/1LargeZone.geojson", startTime='00:00:00', endTime='24:00:00', interval=60)
+        
 
 
 def launchImport(name):

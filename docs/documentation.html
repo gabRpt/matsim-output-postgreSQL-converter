@@ -3,7 +3,7 @@
 <html lang="" >
     <head>
         <meta charset="UTF-8">
-        <title>Database · HonKit</title>
+        <title>Documentation · HonKit</title>
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="description" content="">
         <meta name="generator" content="HonKit 4.0.0">
@@ -56,7 +56,7 @@
     <link rel="shortcut icon" href="gitbook/images/favicon.ico" type="image/x-icon">
 
     
-    <link rel="next" href="documentation.html" />
+    <link rel="next" href="troubleshooting.html" />
     
     
     <link rel="prev" href="./" />
@@ -262,7 +262,7 @@
             
         </li>
     
-        <li class="chapter " data-level="1.6" data-path="documentation.html">
+        <li class="chapter active" data-level="1.6" data-path="documentation.html">
             
                 <a href="documentation.html">
             
@@ -318,7 +318,7 @@
     <!-- Title -->
     <h1>
         <i class="fa fa-circle-o-notch fa-spin"></i>
-        <a href="." >Database</a>
+        <a href="." >Documentation</a>
     </h1>
 </div>
 
@@ -333,12 +333,22 @@
     
                                 <section class="normal markdown-section">
                                 
-                                <h1 id="database-structure">Database structure</h1>
-<p>You can see the following diagram more in details at <a href="https://dbdiagram.io/d/62bc660c69be0b672c6841b3" target="_blank">https://dbdiagram.io/d/62bc660c69be0b672c6841b3</a></p>
-<p>Or you can check the database doc here : <a href="https://dbdocs.io/gabRpt/matsim-output-postgreSQL-converter" target="_blank">https://dbdocs.io/gabRpt/matsim-output-postgreSQL-converter</a></p>
-<p><img src="https://raw.githubusercontent.com/gabRpt/matsim-output-postgreSQL-converter/main/resources/docs/database_diagram.png" alt="Diagram available at https://dbdiagram.io/d/62bc660c69be0b672c6841b3"></p>
-<h1 id="database-backup">Database backup</h1>
-<p>Todo</p>
+                                <h1 id="how-to-maintain-this-documentation">How to maintain this documentation</h1>
+<p>The documentation is written in <a href="https://en.wikipedia.org/wiki/Markdown" target="_blank">Markdown</a> and is built using <a href="https://honkit.netlify.app/" target="_blank">HonKit</a>. The documentation is hosted on <a href="https://pages.github.com/" target="_blank">GitHub Pages</a>.</p>
+<ul>
+<li><p>First install HonKit following the <a href="https://honkit.netlify.app/setup.html" target="_blank">installation guide</a>.</p>
+</li>
+<li><p>Then, in the <code>docs</code> folder at the root of the project, run <code>npx honkit serve</code> to build the documentation and serve it locally. The changes will be automatically updated in the browser.</p>
+</li>
+<li><p>Do your changes by editing the Markdown files in the <code>docs</code> folder.</p>
+</li>
+<li><p>To build the documentation, run <code>npx honkit build</code> in the <code>docs</code> folder. The documentation will be built in the <code>_book</code> folder.</p>
+</li>
+<li><p>Replace the html and json files in the <code>docs</code> folder with the html files in the <code>_book</code> folder. Do se same with gitbook folder.</p>
+</li>
+<li><p>Commit and push the changes.</p>
+</li>
+</ul>
 
                                 
                                 </section>
@@ -371,7 +381,7 @@
                 </a>
                 
                 
-                <a href="documentation.html" class="navigation navigation-next " aria-label="Next page: Documentation">
+                <a href="troubleshooting.html" class="navigation navigation-next " aria-label="Next page: Troubleshooting">
                     <i class="fa fa-angle-right"></i>
                 </a>
                 
@@ -382,7 +392,7 @@
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Database","level":"1.3","depth":1,"next":{"title":"Documentation","level":"1.6","depth":1,"path":"documentation.md","ref":"documentation.md","articles":[]},"previous":{"title":"Introduction","level":"1.1","depth":1,"path":"README.md","ref":"README.md","articles":[]},"articles":[{"title":"Database structure","level":"1.3.1","depth":2,"anchor":"#database-structure","path":"database.md","ref":"database.md#database-structure","articles":[]},{"title":"Database backup","level":"1.3.2","depth":2,"anchor":"#database-backup","path":"database.md","ref":"database.md#database-backup","articles":[]}],"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":[],"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"embedFonts":false},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"database.md","mtime":"2022-11-09T10:17:40.822Z","type":"markdown"},"gitbook":{"version":"4.0.0","time":"2022-12-01T14:30:28.559Z"},"basePath":".","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Documentation","level":"1.6","depth":1,"next":{"title":"Troubleshooting","level":"1.7","depth":1,"path":"troubleshooting.md","ref":"troubleshooting.md","articles":[]},"previous":{"title":"Introduction","level":"1.1","depth":1,"path":"README.md","ref":"README.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":[],"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"embedFonts":false},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"documentation.md","mtime":"2022-12-01T13:55:48.939Z","type":"markdown"},"gitbook":{"version":"4.0.0","time":"2022-12-01T14:30:28.559Z"},"basePath":".","book":{"language":""}});
         });
     </script>
 </div>

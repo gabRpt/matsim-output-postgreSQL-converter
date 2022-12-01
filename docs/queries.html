@@ -56,7 +56,7 @@
     <link rel="shortcut icon" href="gitbook/images/favicon.ico" type="image/x-icon">
 
     
-    <link rel="next" href="troubleshooting.html" />
+    <link rel="next" href="documentation.html" />
     
     
     <link rel="prev" href="./" />
@@ -244,12 +244,38 @@
             
         </li>
     
+        <li class="chapter " data-level="1.5.3" data-path="queries.html">
+            
+                <a href="queries.html#activity-sequences">
+            
+                    
+                    Activity Sequences
+            
+                </a>
+            
+
+            
+        </li>
+    
 
             </ul>
             
         </li>
     
-        <li class="chapter " data-level="1.6" data-path="troubleshooting.html">
+        <li class="chapter " data-level="1.6" data-path="documentation.html">
+            
+                <a href="documentation.html">
+            
+                    
+                    Documentation
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7" data-path="troubleshooting.html">
             
                 <a href="troubleshooting.html">
             
@@ -315,12 +341,15 @@ In <a href="https://github.com/gabRpt/matsim-output-postgreSQL-converter/blob/ma
 Edit the parameters of the function <code>queries.agentActivity.agentActivity</code> :</p>
 <ul>
 <li><code>filepath</code> : Path to the <strong>geojson</strong> file containing the different zones to consider (eg: <a href="https://github.com/gabRpt/matsim-output-postgreSQL-converter/blob/main/resources/sample/5zones.geojson" target="_blank">5zones.geojson</a>)</li>
-<li><code>start_time</code> : start time of the timespan</li>
-<li><code>end_time</code> : end time of the timespan</li>
-<li><code>strictTime</code> :<pre><code>  if true, only activities that start and end in the time interval are considered
+<li><code>start_time</code> : start time of the timespan (string default: <code>&apos;00:00:00&apos;</code>)</li>
+<li><code>end_time</code> : end time of the timespan (string default: <code>&apos;32:00:00&apos;</code>)</li>
+<li><p><code>strictTime</code> : (boolean default: <code>False</code>)</p>
+<pre><code>  if true, only activities that start and end in the time interval are considered
       eg: an activity starting at 18:30:00 and ending at 19:00:00 is considered
           an activity starting at 18:30:00 and ending at 19:15:00 is NOT considered
           an activity starting at 17:00:00 and ending at 19:00:00 is NOT considered
+          an activity starting starting or ending at null is NOT considered
+
   if false, if an activity starts before the time interval or ends after the time interval, it is considered
       eg: an activity starting at 18:00:00 and ending at xx:xx:xx is considered
           an activity starting at 18:00:00 and ending at null is considered
@@ -337,9 +366,9 @@ Edit the parameters of the function <code>queries.agentActivity.agentActivity</c
 Edit the parameters of the function <code>queries.odMatrix.odMatrix</code> :</p>
 <ul>
 <li><code>filepath</code> : Path to the <strong>geojson</strong> file containing the different zones to consider (eg: <a href="https://github.com/gabRpt/matsim-output-postgreSQL-converter/blob/main/resources/sample/5zones.geojson" target="_blank">5zones.geojson</a>)</li>
-<li><code>start_time</code> : start time of the timespan</li>
-<li><code>end_time</code> : end time of the timespan</li>
-<li><code>ignoreArrivalTime</code> :<pre><code>  if true, only startTime is considered
+<li><code>start_time</code> : start time of the timespan (string default: <code>&apos;00:00:00&apos;</code>)</li>
+<li><code>end_time</code> : end time of the timespan (string default: <code>&apos;32:00:00&apos;</code>)</li>
+<li><code>ignoreArrivalTime</code> : (boolean default: <code>True</code>)<pre><code>  if true, only startTime is considered
   eg: a trip having dep_time = 18:00:00 and trav_time = 00:30:00 is considered
       a trip having dep_time = 18:00:00 and trav_time = 01:30:00 is NOT considered (arrivalTime = 19:30:00 is not in interval)
   if False:
@@ -347,7 +376,7 @@ Edit the parameters of the function <code>queries.odMatrix.odMatrix</code> :</p>
           a trip having dep_time = 18:00:00 and trav_time = 01:30:00 is considered
   in both cases, if a trip has a dep_time &lt; 18:00:00 it will not be considered
 </code></pre></li>
-<li><code>generateArabesqueFiles</code> : if true, generates the files needed to create a scheme in <a href="http://arabesque.ifsttar.fr/" target="_blank">Arabesque</a></li>
+<li><code>generateArabesqueFiles</code> : if true, generates the files needed to create a scheme in <a href="http://arabesque.ifsttar.fr/" target="_blank">Arabesque</a> (boolean default: <code>False</code>)</li>
 </ul>
 <h5 id="use-generated-files-in-arabesque">Use generated files in Arabesque</h5>
 <p>If <code>generateArabesqueFiles</code> is set to true, the files needed to create a scheme in <a href="http://arabesque.ifsttar.fr/" target="_blank">Arabesque</a> are generated in the folder <code>/output</code>.
@@ -357,6 +386,30 @@ You will get 2 files :</p>
 <li><code>location.csv</code> : contains the zones with their coordinates</li>
 </ul>
 <p><em><strong>A detailed documentation on how to create a scheme in Arabesque can be found <a href="https://gflowiz.github.io/arabesque/" target="_blank">here</a>.</strong></em></p>
+<hr>
+<h2 id="activity-sequences">Activity Sequences</h2>
+<p>Get the activity sequences of agents during given timespan and zone</p>
+<p>In <a href="https://github.com/gabRpt/matsim-output-postgreSQL-converter/blob/main/src/main.py" title="main.py" target="_blank">main.py</a> uncomment the lines below <code>========= Activity Sequences =========</code>. Edit the parameters of the function <code>queries.activitySequences.activitySequences</code> :</p>
+<ul>
+<li><code>filepath</code> : Path to the <strong>geojson</strong> file containing <strong>only one</strong> zone consider (eg: <a href="https://github.com/gabRpt/matsim-output-postgreSQL-converter/blob/main/resources/sample/1zone.geojson" target="_blank">1zone.geojson</a>)</li>
+<li><code>start_time</code> : start time of the timespan (string default: <code>&apos;00:00:00&apos;</code>)</li>
+<li><code>end_time</code> : end time of the timespan (string default: <code>&apos;32:00:00&apos;</code>)</li>
+<li><code>interval</code> : interval of time between each sequence (in minutes =&gt; int default: <code>15</code>)</li>
+<li><code>batchSize</code> : number of agents to consider in each batch to optimize multiprocessing (has to be &gt; 0, int default: <code>10</code>)</li>
+</ul>
+<p>Returns a dataframe with all the activity sequences of all the agents that have <strong>at least one</strong> activity in the given zone during the given timespan.
+The dataframe has the following columns :</p>
+<ul>
+<li><code>agentId</code> : id of the agent</li>
+<li><code>periodStart</code> : start time of the current period</li>
+<li><code>periodEnd</code> : end time of the current period</li>
+<li><code>mainActivityId</code> : id of the activity the agent spent the most time in during the current period</li>
+<li><code>startActivityId</code> : id of the first activity of the agent during the current period</li>
+<li><code>endActivityId</code> : id of the last activity of the agent during the current period</li>
+<li><code>mainActivityStartTime</code> : start time of the activity the agent spent the most time in during the current period</li>
+<li><code>mainActivityEndTime</code> : end time of the activity the agent spent the most time in during the current period</li>
+<li><code>timeSpentInMainActivity</code> : time spent by the agent in the activity the agent spent the most time in during the current period</li>
+</ul>
 
                                 
                                 </section>
@@ -389,7 +442,7 @@ You will get 2 files :</p>
                 </a>
                 
                 
-                <a href="troubleshooting.html" class="navigation navigation-next " aria-label="Next page: Troubleshooting">
+                <a href="documentation.html" class="navigation navigation-next " aria-label="Next page: Documentation">
                     <i class="fa fa-angle-right"></i>
                 </a>
                 
@@ -400,7 +453,7 @@ You will get 2 files :</p>
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Queries","level":"1.5","depth":1,"next":{"title":"Troubleshooting","level":"1.6","depth":1,"path":"troubleshooting.md","ref":"troubleshooting.md","articles":[]},"previous":{"title":"Introduction","level":"1.1","depth":1,"path":"README.md","ref":"README.md","articles":[]},"articles":[{"title":"Agent Activity","level":"1.5.1","depth":2,"anchor":"#agent-activity","path":"queries.md","ref":"queries.md#agent-activity","articles":[]},{"title":"OD Matrix","level":"1.5.2","depth":2,"anchor":"#od-matrix","path":"queries.md","ref":"queries.md#od-matrix","articles":[]}],"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":[],"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"embedFonts":false},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"queries.md","mtime":"2022-11-09T10:21:32.667Z","type":"markdown"},"gitbook":{"version":"4.0.0","time":"2022-11-09T10:22:12.306Z"},"basePath":".","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Queries","level":"1.5","depth":1,"next":{"title":"Documentation","level":"1.6","depth":1,"path":"documentation.md","ref":"documentation.md","articles":[]},"previous":{"title":"Introduction","level":"1.1","depth":1,"path":"README.md","ref":"README.md","articles":[]},"articles":[{"title":"Agent Activity","level":"1.5.1","depth":2,"anchor":"#agent-activity","path":"queries.md","ref":"queries.md#agent-activity","articles":[]},{"title":"OD Matrix","level":"1.5.2","depth":2,"anchor":"#od-matrix","path":"queries.md","ref":"queries.md#od-matrix","articles":[]},{"title":"Activity Sequences","level":"1.5.3","depth":2,"anchor":"#activity-sequences","path":"queries.md","ref":"queries.md#activity-sequences","articles":[]}],"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":[],"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"embedFonts":false},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"queries.md","mtime":"2022-12-01T13:44:48.126Z","type":"markdown"},"gitbook":{"version":"4.0.0","time":"2022-12-01T14:30:28.559Z"},"basePath":".","book":{"language":""}});
         });
     </script>
 </div>
