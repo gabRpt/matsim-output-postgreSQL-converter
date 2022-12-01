@@ -16,7 +16,7 @@ ___
 * Install [conda](https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html) (Anaconda recommended)
 * In environments tab, create a new environment by importing [matsimConverterEnv.yaml](https://github.com/gabRpt/matsim-output-postgreSQL-converter/blob/main/resources/setup/matsimConverterEnv.yaml "matsimConverterEnv.yaml")
 * Launch an IDE like VS Code from Anaconda Navigator
-* `pip install ./resources/setup/matsim_tools-1.0.0-py3-none-any.whl`
+* `pip install ./resources/setup/matsim_tools-1.0.3-py3-none-any.whl`
 
 
 ___

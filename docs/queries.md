@@ -9,6 +9,7 @@ ___
 Get dataframes of the activities of agents in each zone during given timespan
 In [main.py](https://github.com/gabRpt/matsim-output-postgreSQL-converter/blob/main/src/main.py "main.py") uncomment the lines below `========= Agents activities dataframes =========`.
 Edit the parameters of the function `queries.agentActivity.agentActivity` :
+
 * `filepath` : Path to the **geojson** file containing the different zones to consider (eg: [5zones.geojson](https://github.com/gabRpt/matsim-output-postgreSQL-converter/blob/main/resources/sample/5zones.geojson))
 * `start_time` : start time of the timespan
 * `end_time` : end time of the timespan
@@ -17,6 +18,8 @@ Edit the parameters of the function `queries.agentActivity.agentActivity` :
             eg: an activity starting at 18:30:00 and ending at 19:00:00 is considered
                 an activity starting at 18:30:00 and ending at 19:15:00 is NOT considered
                 an activity starting at 17:00:00 and ending at 19:00:00 is NOT considered
+                an activity starting starting or ending at null is NOT considered
+
         if false, if an activity starts before the time interval or ends after the time interval, it is considered
             eg: an activity starting at 18:00:00 and ending at xx:xx:xx is considered
                 an activity starting at 18:00:00 and ending at null is considered
@@ -35,6 +38,7 @@ Get od matrix of trips between zones during given timespan
 ##### Generate the od matrix
 In [main.py](https://github.com/gabRpt/matsim-output-postgreSQL-converter/blob/main/src/main.py "main.py") uncomment the lines below `========= OD Matrix =========`.
 Edit the parameters of the function `queries.odMatrix.odMatrix` :
+
 * `filepath` : Path to the **geojson** file containing the different zones to consider (eg: [5zones.geojson](https://github.com/gabRpt/matsim-output-postgreSQL-converter/blob/main/resources/sample/5zones.geojson))
 * `start_time` : start time of the timespan
 * `end_time` : end time of the timespan
@@ -55,3 +59,31 @@ You will get 2 files :
 * `location.csv` : contains the zones with their coordinates
 
 _**A detailed documentation on how to create a scheme in Arabesque can be found [here](https://gflowiz.github.io/arabesque/).**_
+
+
+___
+
+
+
+## Activity Sequences
+Get the activity sequences of agents during given timespan and zone
+
+In [main.py](https://github.com/gabRpt/matsim-output-postgreSQL-converter/blob/main/src/main.py "main.py") uncomment the lines below `========= Activity Sequences =========`. Edit the parameters of the function `queries.activitySequences.activitySequences` :
+* `filepath` : Path to the **geojson** file containing **only one** zone consider (eg: [1zone.geojson](https://github.com/gabRpt/matsim-output-postgreSQL-converter/blob/main/resources/sample/1zone.geojson))
+* `start_time` : start time of the timespan
+* `end_time` : end time of the timespan
+* `interval` : interval of time between each sequence (in minutes)
+* `batchSize` : number of agents to consider in each batch to optimize multiprocessing (has to be > 0)
+
+Returns a dataframe with all the activity sequences of all the agents that have **at least one** activity in the given zone during the given timespan.
+The dataframe has the following columns :
+
+* `agentId` : id of the agent
+* `periodStart` : start time of the current period
+* `periodEnd` : end time of the current period
+* `mainActivityId` : id of the activity the agent spent the most time in during the current period
+* `startActivityId` : id of the first activity of the agent during the current period
+* `endActivityId` : id of the last activity of the agent during the current period
+* `mainActivityStartTime` : start time of the activity the agent spent the most time in during the current period
+* `mainActivityEndTime` : end time of the activity the agent spent the most time in during the current period
+* `timeSpentInMainActivity` : time spent by the agent in the activity the agent spent the most time in during the current period

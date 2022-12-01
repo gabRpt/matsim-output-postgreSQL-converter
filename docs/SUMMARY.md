@@ -15,5 +15,6 @@
 * [Queries](queries.md#queries)
     * [Agent Activity](queries.md#agent-activity)
     * [OD Matrix](queries.md#od-matrix)
+    * [Activity Sequences](queries.md#activity-sequences)
 
 * [Troubleshooting](troubleshooting.md)
