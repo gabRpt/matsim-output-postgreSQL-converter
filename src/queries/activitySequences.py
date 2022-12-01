@@ -3,13 +3,13 @@ import tools
 import geojson
 import pandas as pd
 import collections
-from datetime import datetime
 from sqlalchemy.sql import text
 import multiprocessing as mp
 
 # Return the activity sequences for a every users during a given timespan (by default, 00:00:00 to 32:00:00) 
 # with the given interval (by default, 60 minutes)
 # in the given zone (geojson file)
+# The batchSize parameter is used to speed up the process by splitting the users into batches of batchSize users
 def activitySequences(filePath, startTime='00:00:00', endTime='32:00:00', interval=15, batchSize=10):
     with open(filePath) as f:
         conn = tools.connectToDatabase()
@@ -46,20 +46,14 @@ def activitySequences(filePath, startTime='00:00:00', endTime='32:00:00', interv
         print("Getting all agents in zone...")
         queryAllAgentsInZone = queryAllAgentsInZone.bindparams(currentPolygon=polygon)
         allAgentsInZoneDf = pd.read_sql(queryAllAgentsInZone, conn)
+        allAgentsInZone = allAgentsInZoneDf["personId"].tolist()
         
         print("Getting all activities during time span and zone...")
         # Querying the database to get all activities of the current agent in the zone
         queryGetActivitiesDuringTimeSpanAndZone = queryGetActivitiesDuringTimeSpanAndZone.bindparams(
             currentPolygon=polygon,
         )
-        allActivitiesDf = pd.read_sql(queryGetActivitiesDuringTimeSpanAndZone, conn)
-                
-        agentProcessTimer = datetime.now() # timer to measure the time it takes to process all agents
-        
-        # TODO Remove these lines
-        # take the first 200 agents
-        allAgentsInZone = allAgentsInZoneDf["personId"].tolist()
-        allAgentsInZone = allAgentsInZone[:100]
+        allActivitiesDf = pd.read_sql(queryGetActivitiesDuringTimeSpanAndZone, conn)        
         
         # dictionnary to store the activity sequences for each agent
         # the main activity is the activity that takes the most time in the timespan
@@ -101,21 +95,12 @@ def activitySequences(filePath, startTime='00:00:00', endTime='32:00:00', interv
             
             for result in results:
                 activitySequencesDict = _mergeActivitySequencesDicts([activitySequencesDict, result])
-        
-        
     
     activitySequencesDf = pd.DataFrame(activitySequencesDict)
-    agent95254Activities = activitySequencesDf[activitySequencesDf["agentId"] == 233]
     
-    with pd.option_context('display.max_rows', None):
-        print(agent95254Activities)
-    
-    print(activitySequencesDf)
-    print(f"Time: {datetime.now() - agentProcessTimer}")
-    # TODO handle case when start_time is null
-    # TODO handle case when start_time and end_time are null
-    # TODO remove unused variables
-    return 1
+    return activitySequencesDf
+
+
 
 def _getActivitySequencesOfAgentInZoneInTimespanInBatch(allActivitiesDf, agentsList, firstStartTimeInSeconds, endTimeInSeconds, intervalInSeconds, formattedInterval, timeDict):
     activitySequencesDict = collections.defaultdict(list)
@@ -232,6 +217,8 @@ def _getActivitySequencesOfAgentInZoneInTimespan(allActivitiesDf, currentAgentId
     
     # create the dataframe
     return agentActivitySequencesDict
+
+
 
 # Merge a list of activity sequences dictionaries into a single dictionary
 def _mergeActivitySequencesDicts(activitySequencesDicts):
