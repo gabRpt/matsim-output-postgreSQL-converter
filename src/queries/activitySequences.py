@@ -57,9 +57,7 @@ def activitySequences(filePath, startTime='00:00:00', endTime='32:00:00', interv
         queryGetActivitiesDuringTimeSpanAndZone = queryGetActivitiesDuringTimeSpanAndZone.bindparams(
             currentPolygon=polygon,
         )
-        print(queryGetActivitiesDuringTimeSpanAndZone)
-        print(polygon)
-        quit()
+
         allActivitiesDf = pd.read_sql(queryGetActivitiesDuringTimeSpanAndZone, conn)        
         
         # dictionnary to store the activity sequences for each agent
@@ -93,8 +91,7 @@ def activitySequences(filePath, startTime='00:00:00', endTime='32:00:00', interv
         # Create a dictionary with the start time of the interval as key and the formatted start time as value
         timeDict = dict(zip(timeList, formattedTimeList))
         
-        # allAgentsInZone = [792541]
-        allAgentsInZone = [230]
+        allAgentsInZone = [1000123]
         
         # Create batches of agents to process in parallel
         batches = [allAgentsInZone[i:i + batchSize] for i in range(0, len(allAgentsInZone), batchSize)]
@@ -135,8 +132,8 @@ def _getActivitySequencesOfAgentInZoneInTimespan(allActivitiesDf, currentAgentId
     # Parse the activities
     currentAgentPreviousEndActivityId = None
     currentAgentPreviousEndActivityEndTime = None
-    print(agentActivitiesDf)
-    quit()
+    alreadyAddedNullStartActivity = False
+
     nullStartTimeActivities = agentActivitiesDf[agentActivitiesDf["start_time"].isnull()]
 
     while currentStartTimeInSeconds < endTimeInSeconds:
@@ -174,25 +171,33 @@ def _getActivitySequencesOfAgentInZoneInTimespan(allActivitiesDf, currentAgentId
             if currentAgentPreviousEndActivityEndTimeInSeconds >= currentStartTimeInSeconds or type(currentAgentPreviousEndActivityEndTime) is pd._libs.tslibs.nattype.NaTType:
                 currentAgentStartActivityId = currentAgentPreviousEndActivityId
                 currentAgentMainActivityId = currentAgentPreviousEndActivityId
-                currentAgentMainActivityStartTime = currentStartTimeFormatted
+                currentAgentMainActivityStartTime = currentAgentPreviousMainActivityStartTime
+                currentAgentMainActivityEndTime = currentAgentPreviousEndActivityEndTime
+                
                 
                 if currentAgentPreviousEndActivityEndTimeInSeconds >= currentEndTimeInSeconds or type(currentAgentPreviousEndActivityEndTime) is pd._libs.tslibs.nattype.NaTType:
                     # case where the previous end activity ends after the current interval
                     currentAgentTimeSpentInMainActivity = formattedInterval
                     currentAgentEndActivityId = currentAgentPreviousEndActivityId
                     currentAgentEndActivityEndTime = currentAgentPreviousEndActivityEndTime
-                    currentAgentMainActivityEndTime = currentAgentPreviousEndActivityEndTime
                 else:
                     # case where the previous end activity ends during the current interval
                     currentAgentTimeSpentInMainActivity = tools.getFormattedTime(currentAgentPreviousEndActivityEndTimeInSeconds - currentStartTimeInSeconds)
                     currentAgentEndActivityId = None
                     currentAgentEndActivityEndTime = None
-                    currentAgentMainActivityEndTime = currentAgentPreviousEndActivityEndTime
             else:
                 # case where the agent has no activity in the current interval and the previous end activity ends before the current interval
-                # we keep all values to None
-                print(nullStartTimeActivities)
-                quit()
+                                
+                if not nullStartTimeActivities.empty and not alreadyAddedNullStartActivity:
+                    # case where the agents has a starting activity with no start time
+                    currentAgentMainActivityId = nullStartTimeActivities.iloc[0]["id"]
+                    currentAgentMainActivityStartTime = nullStartTimeActivities.iloc[0]["start_time"]
+                    currentAgentMainActivityEndTime = nullStartTimeActivities.iloc[0]["end_time"]
+                    currentAgentTimeSpentInMainActivity = tools.getFormattedTime(intervalInSeconds)
+                    currentAgentEndActivityId = currentAgentMainActivityId
+                    currentAgentEndActivityEndTime = currentAgentMainActivityEndTime
+                    currentAgentStartActivityId = currentAgentMainActivityId
+                    alreadyAddedNullStartActivity = True
 
         else:
             # use the activity that takes the most time in the interval as the main activity
@@ -224,6 +229,7 @@ def _getActivitySequencesOfAgentInZoneInTimespan(allActivitiesDf, currentAgentId
         agentActivitySequencesDict["timeSpentInMainActivity"].append(currentAgentTimeSpentInMainActivity)
         
         # update the previous values
+        currentAgentPreviousMainActivityStartTime = currentAgentMainActivityStartTime
         currentAgentPreviousEndActivityId = currentAgentEndActivityId
         currentAgentPreviousEndActivityEndTime = currentAgentEndActivityEndTime
         

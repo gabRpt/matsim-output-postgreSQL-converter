@@ -13,16 +13,16 @@ def main():
         # "networkLinks",
         # "facilities",
         # "trips",
-        "activities",
+        # "activities",
         # "events",
         # "buildings",
     ]
     
     # ========= IMPORT =========
-    print("========== STARTING IMPORTATIONS ==========")
-    for table in tablesToImport:
-        launchImport(table)
-    print(f"========== IMPORTED IN {str(datetime.now() - overallStartTime)[:-5]} ==========")
+    # print("========== STARTING IMPORTATIONS ==========")
+    # for table in tablesToImport:
+    #     launchImport(table)
+    # print(f"========== IMPORTED IN {str(datetime.now() - overallStartTime)[:-5]} ==========")
     
     
     
@@ -42,12 +42,12 @@ def main():
     
     
     # ========= Activity Sequences =========
-    # if __name__ == '__main__':
-    #     resultDf = queries.activitySequences.activitySequences("./resources/sample/wholeCity.geojson", startTime='00:00:00', endTime='32:00:00', interval=15)
-    #     # print all rows of the dataframe
-    #     import pandas as pd
-    #     with pd.option_context('display.max_rows', None):
-    #         print(resultDf)
+    if __name__ == '__main__':
+        resultDf = queries.activitySequences.activitySequences("./resources/sample/wholeCity.geojson", startTime='00:00:00', endTime='32:00:00', interval=15)
+        # print all rows of the dataframe
+        import pandas as pd
+        with pd.option_context('display.max_rows', None):
+            print(resultDf)
         
 
 
