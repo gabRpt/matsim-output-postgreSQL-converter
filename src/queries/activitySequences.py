@@ -32,9 +32,13 @@ def activitySequences(filePath, startTime='00:00:00', endTime='32:00:00', interv
                                                                 CASE
                                                                     WHEN '{startTime}' <= start_time and '{endTime}' >= end_time then end_time - start_time
                                                                     WHEN '{startTime}' >= start_time and '{endTime}' >= end_time then end_time - '{startTime}'
-                                                                    WHEN '{startTime}' > start_time and '{endTime}' < end_time then TIME '{endTime}' - TIME '{startTime}'
+                                                                    WHEN '{startTime}' > start_time and '{endTime}' < end_time then interval '{endTime}' - interval '{startTime}'
                                                                     WHEN '{startTime}' <= start_time and '{endTime}' <= end_time then '{endTime}' - start_time
-                                                                    ELSE '{endTime}' - start_time
+                                                                    WHEN start_time is null and '{endTime}' >= end_time then end_time - '{startTime}'
+                                                                    WHEN start_time is null and '{endTime}' < end_time then interval '{endTime}' - interval '{startTime}'
+                                                                    WHEN '{startTime}' > start_time and end_time is null then interval '{endTime}' - interval '{startTime}'
+                                                                    WHEN '{startTime}' <= start_time and end_time is null then '{endTime}' - start_time
+                                                                    WHEN start_time is null and end_time is null then interval '{endTime}' - interval '{startTime}'
                                                                 END as activity_time_spent_in_interval
                                                             from activity 
                                                             where ST_Contains(ST_Transform(ST_GeomFromText(:currentPolygon, {geojsonEpsg}), {config.DB_SRID}), ST_SetSRID("location", {config.DB_SRID}))
@@ -53,6 +57,9 @@ def activitySequences(filePath, startTime='00:00:00', endTime='32:00:00', interv
         queryGetActivitiesDuringTimeSpanAndZone = queryGetActivitiesDuringTimeSpanAndZone.bindparams(
             currentPolygon=polygon,
         )
+        print(queryGetActivitiesDuringTimeSpanAndZone)
+        print(polygon)
+        quit()
         allActivitiesDf = pd.read_sql(queryGetActivitiesDuringTimeSpanAndZone, conn)        
         
         # dictionnary to store the activity sequences for each agent
@@ -85,6 +92,9 @@ def activitySequences(filePath, startTime='00:00:00', endTime='32:00:00', interv
         
         # Create a dictionary with the start time of the interval as key and the formatted start time as value
         timeDict = dict(zip(timeList, formattedTimeList))
+        
+        # allAgentsInZone = [792541]
+        allAgentsInZone = [230]
         
         # Create batches of agents to process in parallel
         batches = [allAgentsInZone[i:i + batchSize] for i in range(0, len(allAgentsInZone), batchSize)]
@@ -125,6 +135,9 @@ def _getActivitySequencesOfAgentInZoneInTimespan(allActivitiesDf, currentAgentId
     # Parse the activities
     currentAgentPreviousEndActivityId = None
     currentAgentPreviousEndActivityEndTime = None
+    print(agentActivitiesDf)
+    quit()
+    nullStartTimeActivities = agentActivitiesDf[agentActivitiesDf["start_time"].isnull()]
 
     while currentStartTimeInSeconds < endTimeInSeconds:
         currentEndTimeInSeconds = currentStartTimeInSeconds + intervalInSeconds
@@ -178,7 +191,9 @@ def _getActivitySequencesOfAgentInZoneInTimespan(allActivitiesDf, currentAgentId
             else:
                 # case where the agent has no activity in the current interval and the previous end activity ends before the current interval
                 # we keep all values to None
-                pass
+                print(nullStartTimeActivities)
+                quit()
+
         else:
             # use the activity that takes the most time in the interval as the main activity
             mostTimeSpentActivity = activitiesDf[activitiesDf["activity_time_spent_in_interval"] == activitiesDf["activity_time_spent_in_interval"].max()]

@@ -94,3 +94,8 @@ def getEPSGFromGeoJSON(gjson):
         epsg = config.ARABESQUE_DEFAULT_SRID
 
     return epsg
+
+
+def chunker(seq, size):
+    # from http://stackoverflow.com/a/434328
+    return (seq[pos:pos + size] for pos in range(0, len(seq), size))

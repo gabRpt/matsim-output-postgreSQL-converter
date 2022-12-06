@@ -32,6 +32,13 @@ def importActivities():
     activitiesDataframe.drop(columns=['x', 'y', 'plan_id', 'score', 'selected'], inplace=True)
     
     # Importing the data to the database
+    # separate in chunks of 10% to track progress
+    chunkSize = int(len(activitiesDataframe) / 10)
     conn = tools.connectToDatabase()
-    activitiesDataframe.to_sql(config.DB_PLANS_TABLE, con=conn, if_exists='append', index=False, dtype={'location': Geometry('POINT', srid=config.DB_SRID)})
+    
+    print("Importing activities to database...")
+    for i, chunk in enumerate(tools.chunker(activitiesDataframe, chunkSize)):
+        print(f'Importing activities {i * chunkSize} to {(i + 1) * chunkSize} of {len(activitiesDataframe)}')
+        chunk.to_sql(config.DB_PLANS_TABLE, con=conn, if_exists='append', index=False, dtype={'location': Geometry('POINT', srid=config.DB_SRID)})
+    
     conn.close()
