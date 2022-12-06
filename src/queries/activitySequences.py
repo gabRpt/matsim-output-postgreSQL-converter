@@ -90,9 +90,7 @@ def activitySequences(filePath, startTime='00:00:00', endTime='32:00:00', interv
         
         # Create a dictionary with the start time of the interval as key and the formatted start time as value
         timeDict = dict(zip(timeList, formattedTimeList))
-        
-        allAgentsInZone = [1000123]
-        
+                
         # Create batches of agents to process in parallel
         batches = [allAgentsInZone[i:i + batchSize] for i in range(0, len(allAgentsInZone), batchSize)]
         
