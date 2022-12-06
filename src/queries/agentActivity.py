@@ -9,7 +9,7 @@ from sqlalchemy.sql import text
 # Return an array of dataframes for each zone
 #
 # Options:
-# eg: startTime = '18:00:00' and endTime = '19:00:00'
+# eg: startTime = :startTime and endTime = '19:00:00'
 # strictTime :  if true, only activities that start and end in the time interval are considered
 #                   eg: an activity starting at 18:30:00 and ending at 19:00:00 is considered
 #                       an activity starting at 18:30:00 and ending at 19:15:00 is NOT considered
@@ -37,13 +37,13 @@ def agentActivity(filePath, startTime='00:00:00', endTime='32:00:00', strictTime
                                 CASE
                                     WHEN :startTime <= start_time and :endTime >= end_time then end_time - start_time
                                     WHEN :startTime >= start_time and :endTime >= end_time then end_time - :startTime
-                                    WHEN :startTime > start_time and :endTime < end_time then TIME :endTime - TIME :startTime
+                                    WHEN :startTime > start_time and :endTime < end_time then interval :endTime - interval :startTime
                                     WHEN :startTime <= start_time and :endTime <= end_time then :endTime - start_time
-                                    WHEN start_time is null and :endTime >= end_time then end_time - '18:00:00'
-                                    WHEN start_time is null and :endTime < end_time then TIME'18:30:00' - TIME'18:00:00'
-                                    WHEN :startTime > start_time and end_time is null then TIME'18:30:00' - TIME'18:00:00'
-                                    WHEN :startTime <= start_time and end_time is null then '18:30:00' - start_time
-                                    WHEN start_time is null and end_time is null then TIME'18:30:00' - TIME'18:00:00'
+                                    WHEN start_time is null and :endTime >= end_time then end_time - :startTime
+                                    WHEN start_time is null and :endTime < end_time then interval :endTime - interval :startTime
+                                    WHEN :startTime > start_time and end_time is null then interval :endTime - interval :startTime
+                                    WHEN :startTime <= start_time and end_time is null then :endTime - start_time
+                                    WHEN start_time is null and end_time is null then interval :endTime - interval :startTime
                                 END as time_spent_in_interval
                             from activity 
                             where ST_Contains(ST_Transform(ST_GeomFromText(:currentPolygon, {geojsonEpsg}), {config.DB_SRID}), ST_SetSRID("location", {config.DB_SRID}))
