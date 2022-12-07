@@ -6,6 +6,8 @@ import collections
 from sqlalchemy.sql import text
 import multiprocessing as mp
 from datetime import datetime
+from tqdm import tqdm
+
 
 # Return the activity sequences for a every users during a given timespan (by default, 00:00:00 to 32:00:00) 
 # with the given interval (by default, 60 minutes)
@@ -54,7 +56,7 @@ def activitySequences(filePath, startTime='00:00:00', endTime='32:00:00', interv
         allAgentsInZoneDf = pd.read_sql(queryAllAgentsInZone, conn)
         allAgentsInZone = allAgentsInZoneDf["personId"].tolist()
         
-        allAgentsInZone = [230]
+        allAgentsInZone = allAgentsInZone[:400]
         
         print("Getting all activities during time span and zone...")
         # Querying the database to get all activities of the current agent in the zone
@@ -97,8 +99,6 @@ def activitySequences(filePath, startTime='00:00:00', endTime='32:00:00', interv
     activitySequencesDf = pd.DataFrame(activitySequencesDict)
         
     if createTableInDatabase:
-        print("Creating table in database...")
-        print(activitySequencesDf.dtypes)
         _createTableInDatabase(activitySequencesDf, conn)
     
     conn.close()    
@@ -111,10 +111,16 @@ def _createTableInDatabase(activitySequencesDf, conn):
     # Set the table name
     time = datetime.now().strftime(config.ACTIVITY_SEQUENCES_TABLE_TIME_FORMAT)
     tableName = f"{config.ACTIVITY_SEQUENCES_TABLE_NAME}_{time}"
+    print(f"Creating table {tableName} in database...")
     
-    activitySequencesDf.to_sql(tableName, conn, if_exists="replace", index=True, dtype=config.ACTIVITY_SEQUENCES_TABLE_COLUMNS)
-    
-    
+    # Creating the database in chunks to track the progress
+    activitySequencesDfLen = len(activitySequencesDf)
+    chunksize = int(activitySequencesDfLen * config.ACTIVITY_SEQUENCES_DB_PROGRESS_BAR_PERCENTAGE / 100)
+    with tqdm(total=activitySequencesDfLen) as pbar:
+        for i, cdf in enumerate(tools.chunker(activitySequencesDf, chunksize)):
+            replace = "replace" if i == 0 else "append"
+            cdf.to_sql(tableName, conn, if_exists=replace, index=True, dtype=config.ACTIVITY_SEQUENCES_TABLE_COLUMNS, chunksize=5000, method="multi")
+            pbar.update(chunksize)    
     
 
 # Function used to call _getActivitySequencesOfAgentInZoneInTimespan for each agent in the batch

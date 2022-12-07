@@ -54,3 +54,4 @@ ACTIVITY_SEQUENCES_TABLE_COLUMNS = {
     "mainActivityEndTime": types.Interval,
     "timeSpentInMainActivity": types.Interval
 }
+ACTIVITY_SEQUENCES_DB_PROGRESS_BAR_PERCENTAGE = 5 # the progress bar will be updated every 10% of the table

@@ -44,10 +44,6 @@ def main():
     # ========= Activity Sequences =========
     if __name__ == '__main__':
         resultDf = queries.activitySequences.activitySequences("./resources/sample/wholeCity.geojson", startTime='00:00:00', endTime='32:00:00', interval=15, createTableInDatabase=True)
-        # print all rows of the dataframe
-        import pandas as pd
-        with pd.option_context('display.max_rows', None):
-            print(resultDf)
         
 
 
