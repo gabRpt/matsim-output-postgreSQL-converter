@@ -29,7 +29,7 @@ def main():
     # ========= Agents activities dataframes =========
     # Get dataframes of the activities of agents in each zone during given timespan
     # allZonesDataframes = queries.agentActivity.agentActivity("./resources/sample/5zones.geojson", startTime='18:00:00', endTime='19:00:00', strictTime=False)
-    
+    # print(allZonesDataframes)
     
     # ========= OD Matrix =========
     # Get od matrix of trips between zones during given timespan
@@ -43,7 +43,7 @@ def main():
     
     # ========= Activity Sequences =========
     if __name__ == '__main__':
-        resultDf = queries.activitySequences.activitySequences("./resources/sample/wholeCity.geojson", startTime='00:00:00', endTime='32:00:00', interval=15)
+        resultDf = queries.activitySequences.activitySequences("./resources/sample/wholeCity.geojson", startTime='00:00:00', endTime='32:00:00', interval=15, createTableInDatabase=True)
         # print all rows of the dataframe
         import pandas as pd
         with pd.option_context('display.max_rows', None):

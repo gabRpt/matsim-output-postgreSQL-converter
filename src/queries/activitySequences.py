@@ -5,12 +5,14 @@ import pandas as pd
 import collections
 from sqlalchemy.sql import text
 import multiprocessing as mp
+from datetime import datetime
 
 # Return the activity sequences for a every users during a given timespan (by default, 00:00:00 to 32:00:00) 
 # with the given interval (by default, 60 minutes)
 # in the given zone (geojson file)
 # The batchSize parameter is used to speed up the process by splitting the users into batches of batchSize users
-def activitySequences(filePath, startTime='00:00:00', endTime='32:00:00', interval=15, batchSize=10):
+# if createTableInDatabase is True, the function will create a table in the database with the activity sequences
+def activitySequences(filePath, startTime='00:00:00', endTime='32:00:00', interval=15, batchSize=10, createTableInDatabase=False):
     with open(filePath) as f:
         conn = tools.connectToDatabase()
         gjson = geojson.load(f)
@@ -52,6 +54,8 @@ def activitySequences(filePath, startTime='00:00:00', endTime='32:00:00', interv
         allAgentsInZoneDf = pd.read_sql(queryAllAgentsInZone, conn)
         allAgentsInZone = allAgentsInZoneDf["personId"].tolist()
         
+        allAgentsInZone = [230]
+        
         print("Getting all activities during time span and zone...")
         # Querying the database to get all activities of the current agent in the zone
         queryGetActivitiesDuringTimeSpanAndZone = queryGetActivitiesDuringTimeSpanAndZone.bindparams(
@@ -62,19 +66,8 @@ def activitySequences(filePath, startTime='00:00:00', endTime='32:00:00', interv
         
         # dictionnary to store the activity sequences for each agent
         # the main activity is the activity that takes the most time in the timespan
-        # the keys are: agentId, periodStart, periodEnd, mainActivityId, startActivityId, endActivityId, mainActivityStartTime, mainActivityEndTime, timeSpentInMainActivity
-        activitySequencesDf = pd.DataFrame(columns=[
-            "agentId",
-            "periodStart",
-            "periodEnd",
-            "mainActivityId",
-            "startActivityId",
-            "endActivityId",
-            "endActivityEndTime",
-            "mainActivityStartTime",
-            "mainActivityEndTime",
-            "timeSpentInMainActivity"
-        ])
+        # the keys are: personId, periodStart, periodEnd, mainActivityId, startActivityId, endActivityId, mainActivityStartTime, mainActivityEndTime, timeSpentInMainActivity
+        activitySequencesDf = pd.DataFrame(columns=config.ACTIVITY_SEQUENCES_TABLE_COLUMNS)
         
         activitySequencesDict = collections.defaultdict(list)
         
@@ -102,11 +95,29 @@ def activitySequences(filePath, startTime='00:00:00', endTime='32:00:00', interv
                 activitySequencesDict = _mergeActivitySequencesDicts([activitySequencesDict, result])
     
     activitySequencesDf = pd.DataFrame(activitySequencesDict)
+        
+    if createTableInDatabase:
+        print("Creating table in database...")
+        print(activitySequencesDf.dtypes)
+        _createTableInDatabase(activitySequencesDf, conn)
     
+    conn.close()    
+        
     return activitySequencesDf
 
 
+# Create a tablea in the database with the activity sequences
+def _createTableInDatabase(activitySequencesDf, conn):
+    # Set the table name
+    time = datetime.now().strftime(config.ACTIVITY_SEQUENCES_TABLE_TIME_FORMAT)
+    tableName = f"{config.ACTIVITY_SEQUENCES_TABLE_NAME}_{time}"
+    
+    activitySequencesDf.to_sql(tableName, conn, if_exists="replace", index=True, dtype=config.ACTIVITY_SEQUENCES_TABLE_COLUMNS)
+    
+    
+    
 
+# Function used to call _getActivitySequencesOfAgentInZoneInTimespan for each agent in the batch
 def _getActivitySequencesOfAgentInZoneInTimespanInBatch(allActivitiesDf, agentsList, firstStartTimeInSeconds, endTimeInSeconds, intervalInSeconds, formattedInterval, timeDict):
     activitySequencesDict = collections.defaultdict(list)
 
@@ -117,13 +128,13 @@ def _getActivitySequencesOfAgentInZoneInTimespanInBatch(allActivitiesDf, agentsL
     return activitySequencesDict
 
 
-
-def _getActivitySequencesOfAgentInZoneInTimespan(allActivitiesDf, currentAgentId, firstStartTimeInSeconds, endTimeInSeconds, intervalInSeconds, formattedInterval, timeDict):
+# Function used to get the activity sequences of an agent in a zone in a timespan
+def _getActivitySequencesOfAgentInZoneInTimespan(allActivitiesDf, currentpersonId, firstStartTimeInSeconds, endTimeInSeconds, intervalInSeconds, formattedInterval, timeDict):
     # get all activities of the current agent in the zone during the given timespan
-    agentActivitiesDf = allActivitiesDf[allActivitiesDf["personId"] == currentAgentId]
+    agentActivitiesDf = allActivitiesDf[allActivitiesDf["personId"] == currentpersonId]
     
     # dictionary with the same structure as the activitySequencesDf
-    # the keys are: agentId, periodStart, periodEnd, mainActivityId, startActivityId, endActivityId, mainActivityStartTime, mainActivityEndTime, timeSpentInMainActivity
+    # the keys are: personId, periodStart, periodEnd, mainActivityId, startActivityId, endActivityId, mainActivityStartTime, mainActivityEndTime, timeSpentInMainActivity
     agentActivitySequencesDict = collections.defaultdict(list)
     currentStartTimeInSeconds = firstStartTimeInSeconds
     
@@ -156,7 +167,7 @@ def _getActivitySequencesOfAgentInZoneInTimespan(allActivitiesDf, currentAgentId
                 pass
             else:
                 print(f"{currentStartTimeFormatted} - {currentEndTimeFormatted}")
-                print(f"{currentAgentId} - {currentAgentPreviousEndActivityEndTime}")
+                print(f"{currentpersonId} - {currentAgentPreviousEndActivityEndTime}")
                 print(f"unknown type: {type(currentAgentPreviousEndActivityEndTime)}")
         else:
             currentAgentPreviousEndActivityEndTimeInSeconds = -1
@@ -212,11 +223,19 @@ def _getActivitySequencesOfAgentInZoneInTimespan(allActivitiesDf, currentAgentId
                 currentAgentTimeSpentInMainActivity = tools.getFormattedTime(currentEndTimeInSeconds - currentAgentMainActivityStartTime.total_seconds())
             else:
                 currentAgentTimeSpentInMainActivity = tools.getFormattedTime(currentAgentMainActivityEndTime.total_seconds() - currentAgentMainActivityStartTime.total_seconds())
-                
 
+        if type(currentAgentMainActivityStartTime) == pd._libs.tslibs.timedeltas.Timedelta:
+            currentAgentMainActivityStartTime = tools.getFormattedTime(currentAgentMainActivityStartTime.total_seconds())
+        if type(currentAgentMainActivityEndTime) == pd._libs.tslibs.timedeltas.Timedelta:
+            currentAgentMainActivityEndTime = tools.getFormattedTime(currentAgentMainActivityEndTime.total_seconds())
+        
+        if type(currentAgentMainActivityStartTime) == pd._libs.tslibs.nattype.NaTType:
+            currentAgentMainActivityStartTime = None
+        if type(currentAgentMainActivityEndTime) == pd._libs.tslibs.nattype.NaTType:
+            currentAgentMainActivityEndTime = None
         
         # add the current activity sequence to the dictionary
-        agentActivitySequencesDict["agentId"].append(currentAgentId)
+        agentActivitySequencesDict["personId"].append(currentpersonId)
         agentActivitySequencesDict["periodStart"].append(currentStartTimeFormatted)
         agentActivitySequencesDict["periodEnd"].append(currentEndTimeFormatted)
         agentActivitySequencesDict["mainActivityId"].append(currentAgentMainActivityId)

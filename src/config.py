@@ -1,3 +1,5 @@
+import sqlalchemy.types as types
+
 PATH_SIMULATION_OUTPUT = 'C:/Users/name/Documents/matsimOutput/simulation_output' # Path to the simulation output folder like
 
 PATH_ALLVEHICLES = PATH_SIMULATION_OUTPUT + '/output_allvehicles.xml.gz'
@@ -37,3 +39,18 @@ DETAILED_NETWORK_CSV_SEPARATOR = ','
 # ===== QUERIES =====
 ARABESQUE_DEFAULT_SRID = '4326' # EPSG used by Arabesque
 ARABESQUE_GENERATED_FILES_DIRECTORY_PATH = './output/'
+
+ACTIVITY_SEQUENCES_TABLE_NAME = 'activitySequences'
+ACTIVITY_SEQUENCES_TABLE_TIME_FORMAT = '%d_%m_%Y_%H_%M_%S' # time used to indicate when the table was generated, it will be added to the table name
+ACTIVITY_SEQUENCES_TABLE_COLUMNS = {
+    "id": types.Integer,
+    "personId": types.Integer,
+    "periodStart": types.Interval,
+    "periodEnd": types.Interval,
+    "mainActivityId": types.Integer,
+    "startActivityId": types.Integer,
+    "endActivityId": types.Integer,
+    "mainActivityStartTime": types.Interval,
+    "mainActivityEndTime": types.Interval,
+    "timeSpentInMainActivity": types.Interval
+}
