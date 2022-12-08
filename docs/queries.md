@@ -74,6 +74,8 @@ In [main.py](https://github.com/gabRpt/matsim-output-postgreSQL-converter/blob/m
 * `end_time` : end time of the timespan (string default: `'32:00:00'`)
 * `interval` : interval of time between each sequence (in minutes => int default: `15`)
 * `batchSize` : number of agents to consider in each batch to optimize multiprocessing (has to be > 0, int default: `10`)
+* `createTableInDatabase` : if true, creates a table in the database with the activity sequences, the name of the table can be defined in the config file (boolean default: `False`)
+* `nbAgentsToProcess` : number of agents to process, if set at 100 it will process the first 100 agents. If set at -1 it will process all agents (int default: `-1`)
 
 Returns a dataframe with all the activity sequences of all the agents that have **at least one** activity in the given zone during the given timespan.
 The dataframe has the following columns :
