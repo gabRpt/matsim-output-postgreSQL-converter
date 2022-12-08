@@ -14,7 +14,9 @@ from tqdm import tqdm
 # in the given zone (geojson file)
 # The batchSize parameter is used to speed up the process by splitting the users into batches of batchSize users
 # if createTableInDatabase is True, the function will create a table in the database with the activity sequences
-def activitySequences(filePath, startTime='00:00:00', endTime='32:00:00', interval=15, batchSize=10, createTableInDatabase=False):
+# nbAgentsToProcess is used to limit the number of agents to process, set to -1 to process all agents
+#       eg: if set to 1000, only the first 1000 agents will be processed
+def activitySequences(filePath, startTime='00:00:00', endTime='32:00:00', interval=15, batchSize=10, createTableInDatabase=False, nbAgentsToProcess=-1):
     with open(filePath) as f:
         conn = tools.connectToDatabase()
         gjson = geojson.load(f)
@@ -56,7 +58,8 @@ def activitySequences(filePath, startTime='00:00:00', endTime='32:00:00', interv
         allAgentsInZoneDf = pd.read_sql(queryAllAgentsInZone, conn)
         allAgentsInZone = allAgentsInZoneDf["personId"].tolist()
         
-        allAgentsInZone = allAgentsInZone[:400]
+        if nbAgentsToProcess > 0:
+            allAgentsInZone = allAgentsInZone[:nbAgentsToProcess]
         
         print("Getting all activities during time span and zone...")
         # Querying the database to get all activities of the current agent in the zone
@@ -64,8 +67,8 @@ def activitySequences(filePath, startTime='00:00:00', endTime='32:00:00', interv
             currentPolygon=polygon,
         )
 
-        allActivitiesDf = pd.read_sql(queryGetActivitiesDuringTimeSpanAndZone, conn)        
-        
+        allActivitiesDf = pd.read_sql(queryGetActivitiesDuringTimeSpanAndZone, conn)
+                
         # dictionnary to store the activity sequences for each agent
         # the main activity is the activity that takes the most time in the timespan
         # the keys are: personId, periodStart, periodEnd, mainActivityId, startActivityId, endActivityId, mainActivityStartTime, mainActivityEndTime, timeSpentInMainActivity
@@ -90,7 +93,8 @@ def activitySequences(filePath, startTime='00:00:00', endTime='32:00:00', interv
         batches = [allAgentsInZone[i:i + batchSize] for i in range(0, len(allAgentsInZone), batchSize)]
         
         # Process the batches in parallel
-        with mp.Pool(mp.cpu_count()) as pool:
+        print("Calculating activity sequences...")
+        with mp.Pool(mp.cpu_count()) as pool:           
             results = pool.starmap(_getActivitySequencesOfAgentInZoneInTimespanInBatch, [(allActivitiesDf, agentsList, firstStartTimeInSeconds, endTimeInSeconds, intervalInSeconds, formattedInterval, timeDict) for agentsList in batches])
             
             for result in results:

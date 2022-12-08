@@ -34,7 +34,7 @@ def main():
     # ========= OD Matrix =========
     # Get od matrix of trips between zones during given timespan
     # Generates csv files in "output" folder compatible with Arabesque http://arabesque.ifsttar.fr/  ->  https://github.com/gflowiz/arabesque
-    # finalODMatrix = queries.odMatrix.odMatrix("C:/Users/raapoto/Documents/5zones.geojson", startTime='14:30:00', endTime='15:00:00', ignoreArrivalTime=True, generateArabesqueFiles=True)
+    # finalODMatrix = queries.odMatrix.odMatrix("./resources/sample/5zones.geojson", startTime='14:30:00', endTime='15:00:00', ignoreArrivalTime=True, generateArabesqueFiles=True)
     
     # for i in finalODMatrix:
         # print('\t'.join(map(str, i)))
@@ -43,7 +43,7 @@ def main():
     
     # ========= Activity Sequences =========
     if __name__ == '__main__':
-        resultDf = queries.activitySequences.activitySequences("./resources/sample/wholeCity.geojson", startTime='00:00:00', endTime='32:00:00', interval=15, createTableInDatabase=True)
+        resultDf = queries.activitySequences.activitySequences("./resources/sample/wholeCity.geojson", startTime='00:00:00', endTime='32:00:00', interval=15, createTableInDatabase=True, nbAgentsToProcess=200)
         
 
 
