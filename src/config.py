@@ -1,6 +1,7 @@
 import sqlalchemy.types as types
 
-PATH_SIMULATION_OUTPUT = 'C:/Users/name/Documents/matsimOutput/simulation_output' # Path to the simulation output folder like
+# Path to the simulation output folder like on windows don't use backslash '\' and replace them with normal slash '/'
+PATH_SIMULATION_OUTPUT = 'C:/Users/name/Documents/matsimOutput/simulation_output'
 
 PATH_ALLVEHICLES = PATH_SIMULATION_OUTPUT + '/output_allvehicles.xml.gz'
 PATH_EVENTS = PATH_SIMULATION_OUTPUT + '/output_events.xml.gz'
