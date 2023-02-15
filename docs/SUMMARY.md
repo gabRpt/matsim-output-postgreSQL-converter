@@ -2,11 +2,11 @@
 
 * [Introduction](README.md)
 
-* [Getting Started](./getting-started/getting-started.md)
-    * [First thing to do](./getting-started/clone-project.md)
-    * [Setup the database](./getting-started/database-setup.md)
-    * [Setup the environment](./getting-started/environment-setup.md)
-    * [Configuration](./getting-started/project-configuration.md)
+* [Getting Started](getting-started.md)
+    * [First thing to do](getting-started.md#first-thing-to-do)
+    * [Setup the database](getting-started.md#setup-the-database)
+    * [Setup the environment](getting-started.md#setup-the-environment)
+    * [Configuration](getting-started.md#configuration)
 
 * [Database](database.md#database)
     * [Database structure](database.md#database-structure)

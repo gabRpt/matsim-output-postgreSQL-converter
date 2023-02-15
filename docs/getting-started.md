@@ -1,3 +1,25 @@
+# Getting-started
+
+___
+
+## First thing to do
+
+Here's a step-by-step tutorial on how to clone the GitHub repository of [matsim-output-postgreSQL-converter](https://github.com/gabRpt/matsim-output-postgreSQL-converter) to your local machine using git:
+
+1. Install git on your machine if you haven't already.  
+    => If you don't know what git is, here is a [guide](https://github.com/git-guides)  
+    => If you just want to install it, check [here](https://github.com/git-guides/install-git)
+
+2. Open your terminal or command prompt and navigate to the directory where you want to clone the repository.
+
+3. Type the command `git clone https://github.com/gabRpt/matsim-output-postgreSQL-converter.git` and press Enter.
+
+4. Wait for the cloning process to complete. This may take a few minutes depending on the size of the repository.
+
+5. Once the cloning process is complete, you should see a new directory named `matsim-output-postgreSQL-converter` in the directory where you cloned the repository.
+
+___
+
 ## Setup the database
 
 #### Step 1: Install PostgreSQL with postGIS extension
@@ -42,3 +64,29 @@
 6. Navigate to the directory where the backup file is located (./resources/setup/[databaseBackupPostgresCustom](https://github.com/gabRpt/matsim-output-postgreSQL-converter/blob/main/resources/setup/databaseBackupPostgresCustom "databaseBackupPostgresCustom")) and select the backup file.
 
 7. Click "Restore" to restore the database from the backup file.
+
+___
+
+## Setup the environment
+
+*** For this part, I am using Anaconda ***
+1. Install `Anaconda` on your machine. You can follow the instructions in this [guide](https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html). Direct download [here](https://www.anaconda.com/products/distribution).
+
+2. Open Anaconda Navigator and navigate to the "Environments" tab in the left panel.
+
+3. Click on the "Import" button and select the matsimConverterEnv.yaml file located in the ./resources/setup/ folder of the cloned repository.
+
+4. Give a name to your new environment and wait for the setup process to complete.
+
+5. Once the environment is created, **select it** and launch an IDE like VS Code from Anaconda Navigator.
+
+6. Open a terminal in the IDE and run the command `pip install ./resources/setup/matsim_tools-1.0.5-py3-none-any.whl` to install the required matsim_tools package. **Please verify that you are installing the lastest version available in ./resources/setup/**
+
+___
+
+## Configuration
+
+In [config.py](https://github.com/gabRpt/matsim-output-postgreSQL-converter/blob/main/src/config.py "config.py") file, edit the commented constants
+* PATH_SIMULATION_OUTPUT
+* DB_CONNECTION_STRING
+* DB_SRID
