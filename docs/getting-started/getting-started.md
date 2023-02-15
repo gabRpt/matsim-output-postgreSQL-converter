@@ -2,16 +2,16 @@
 
 ___
 
-{% include "./clone-project.md" %}
+{% include "clone-project.md" %}
 
 ___
 
-{% include "./database-setup.md" %}
+{% include "database-setup.md" %}
 
 ___
 
-{% include "./environment-setup.md" %}
+{% include "environment-setup.md" %}
 
 ___
 
-{% include "./project-configuration.md" %}
+{% include "project-configuration.md" %}
