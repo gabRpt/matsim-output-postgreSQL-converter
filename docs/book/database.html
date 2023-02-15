@@ -3,7 +3,7 @@
 <html lang="" >
     <head>
         <meta charset="UTF-8">
-        <title>Introduction · HonKit</title>
+        <title>Database · HonKit</title>
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="description" content="">
         <meta name="generator" content="HonKit 4.0.0">
@@ -59,6 +59,8 @@
     <link rel="next" href="documentation.html" />
     
     
+    <link rel="prev" href="getting-started/project-configuration.html" />
+    
 
     </head>
     <body>
@@ -86,7 +88,7 @@
         
         
     
-        <li class="chapter active" data-level="1.1" data-path="./">
+        <li class="chapter " data-level="1.1" data-path="./">
             
                 <a href="./">
             
@@ -99,9 +101,9 @@
             
         </li>
     
-        <li class="chapter " data-level="1.2" data-path="getting-started.html">
+        <li class="chapter " data-level="1.2" data-path="getting-started/getting-started.html">
             
-                <a href="getting-started.html#getting-started">
+                <a href="getting-started/getting-started.html">
             
                     
                     Getting Started
@@ -113,12 +115,12 @@
             <ul class="articles">
                 
     
-        <li class="chapter " data-level="1.2.1" data-path="getting-started.html">
+        <li class="chapter " data-level="1.2.1" data-path="getting-started/clone-project.html">
             
-                <a href="getting-started.html#installation">
+                <a href="getting-started/clone-project.html">
             
                     
-                    Installation
+                    First thing to do
             
                 </a>
             
@@ -126,9 +128,35 @@
             
         </li>
     
-        <li class="chapter " data-level="1.2.2" data-path="getting-started.html">
+        <li class="chapter " data-level="1.2.2" data-path="getting-started/database-setup.html">
             
-                <a href="getting-started.html#configuration">
+                <a href="getting-started/database-setup.html">
+            
+                    
+                    Setup the database
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.3" data-path="getting-started/environment-setup.html">
+            
+                <a href="getting-started/environment-setup.html">
+            
+                    
+                    Setup the environment
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.4" data-path="getting-started/project-configuration.html">
+            
+                <a href="getting-started/project-configuration.html">
             
                     
                     Configuration
@@ -316,7 +344,7 @@
     <!-- Title -->
     <h1>
         <i class="fa fa-circle-o-notch fa-spin"></i>
-        <a href="." >Introduction</a>
+        <a href="." >Database</a>
     </h1>
 </div>
 
@@ -331,14 +359,12 @@
     
                                 <section class="normal markdown-section">
                                 
-                                <h1 id="introduction">Introduction</h1>
-<p>This tool converts matsim&apos;s output to <a href="https://www.postgresql.org/" target="_blank">postgreSQL</a> database with <a href="https://postgis.net/" target="_blank">postGIS extension</a> using custom matsim-tools package <a href="https://github.com/gabRpt/matsim-python-tools" target="_blank">enriched project</a> / <a href="https://github.com/matsim-vsp/matsim-python-tools" target="_blank">original project</a>.</p>
-<p>The tool also provides various queries to extract data from the database (check the documentation).</p>
-<hr>
-<p><a href="https://www.univ-gustave-eiffel.fr/" target="_blank"><img src="https://raw.githubusercontent.com/gabRpt/matsim-output-postgreSQL-converter/main/resources/docs/logo_univ_gustave_eiffel_rvb.svg" width="256"></a></p>
-<p><a href="https://lames.univ-gustave-eiffel.fr/en/" target="_blank"><img src="https://raw.githubusercontent.com/gabRpt/matsim-output-postgreSQL-converter/main/resources/docs/logo_LAMES.svg" width="256"></a>
-<a href="https://splott.univ-gustave-eiffel.fr/" target="_blank"><img src="https://raw.githubusercontent.com/gabRpt/matsim-output-postgreSQL-converter/main/resources/docs/logo_SPLOTT.svg" width="256"></a>
-<a href="https://www.umrae.fr/en/" target="_blank"><img src="https://raw.githubusercontent.com/gabRpt/matsim-output-postgreSQL-converter/main/resources/docs/logo_UMRAE.png" width="96"></a></p>
+                                <h1 id="database-structure">Database structure</h1>
+<p>You can see the following diagram more in details at <a href="https://dbdiagram.io/d/62bc660c69be0b672c6841b3" target="_blank">https://dbdiagram.io/d/62bc660c69be0b672c6841b3</a></p>
+<p>Or you can check the database doc here : <a href="https://dbdocs.io/gabRpt/matsim-output-postgreSQL-converter" target="_blank">https://dbdocs.io/gabRpt/matsim-output-postgreSQL-converter</a></p>
+<p><img src="https://raw.githubusercontent.com/gabRpt/matsim-output-postgreSQL-converter/main/resources/docs/database_diagram.png" alt="Diagram available at https://dbdiagram.io/d/62bc660c69be0b672c6841b3"></p>
+<h1 id="database-backup">Database backup</h1>
+<p>Todo</p>
 
                                 
                                 </section>
@@ -366,8 +392,12 @@
 
             
                 
+                <a href="getting-started/project-configuration.html" class="navigation navigation-prev " aria-label="Previous page: Configuration">
+                    <i class="fa fa-angle-left"></i>
+                </a>
                 
-                <a href="documentation.html" class="navigation navigation-next navigation-unique" aria-label="Next page: Documentation">
+                
+                <a href="documentation.html" class="navigation navigation-next " aria-label="Next page: Documentation">
                     <i class="fa fa-angle-right"></i>
                 </a>
                 
@@ -378,7 +408,7 @@
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Introduction","level":"1.1","depth":1,"next":{"title":"Documentation","level":"1.6","depth":1,"path":"documentation.md","ref":"documentation.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":[],"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"embedFonts":false},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"README.md","mtime":"2022-11-09T10:17:31.066Z","type":"markdown"},"gitbook":{"version":"4.0.0","time":"2022-12-08T15:20:26.663Z"},"basePath":".","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Database","level":"1.3","depth":1,"next":{"title":"Documentation","level":"1.6","depth":1,"path":"documentation.md","ref":"documentation.md","articles":[]},"previous":{"title":"Configuration","level":"1.2.4","depth":2,"path":"getting-started/project-configuration.md","ref":"./getting-started/project-configuration.md","articles":[]},"articles":[{"title":"Database structure","level":"1.3.1","depth":2,"anchor":"#database-structure","path":"database.md","ref":"database.md#database-structure","articles":[]},{"title":"Database backup","level":"1.3.2","depth":2,"anchor":"#database-backup","path":"database.md","ref":"database.md#database-backup","articles":[]}],"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":[],"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"embedFonts":false},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"database.md","mtime":"2022-11-09T10:17:40.822Z","type":"markdown"},"gitbook":{"version":"4.0.0","time":"2023-02-15T14:42:14.397Z"},"basePath":".","book":{"language":""}});
         });
     </script>
 </div>
