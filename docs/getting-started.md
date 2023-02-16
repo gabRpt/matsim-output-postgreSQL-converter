@@ -39,54 +39,102 @@ ___
 
 #### Step 2: Set up the binary paths in pgAdmin4
 
-1. If you don't have pgAdmin4 installed, download and install it from the official pgAdmin website (https://www.pgadmin.org/).
+* If you don't have pgAdmin4 installed, download and install it from the official pgAdmin website (https://www.pgadmin.org/).
 
-2. Open pgAdmin4 and go to "File" > "Preferences" > "Paths".
+{% method %}
+* Open pgAdmin4 and go to "File" > "Preferences" > "Paths".
 
-3. In the "Binary paths" tab, scroll down to "PostgreSQL Binary Path" and click add the binary path in the field corresponding to the version of PostgreSQL you installed.
+* In the "Binary paths" tab, scroll down to "PostgreSQL Binary Path" and click add the binary path in the field corresponding to the version of PostgreSQL you installed.
 
-4. Browse to the directory where PostgreSQL is installed (e.g. C:\Program Files\PostgreSQL\14\bin) and select it.
+* Browse to the directory where PostgreSQL is installed (e.g. C:\Program Files\PostgreSQL\14\bin) and select it.
 
-5. Click "Select" to save the path.
+* Click "Select" to save the path.
+{% common %}
+![Postgre setup binary path](https://raw.githubusercontent.com/gabRpt/matsim-output-postgreSQL-converter/main/resources/docs/getting-started/postgre_binay_path.png)
+
+{% endmethod %}
 
 #### Step 3: Create a database with a backup file
 
-1. In pgAdmin4, on the left panel, right-click on "Databases" and select "Create" > "Database".
+{% method %}
 
-2. In the "Create - Database" window, enter a name for the new database and leave the other options at their default values.
+* In pgAdmin4, on the left panel, right-click on "Databases" and select "Create" > "Database".
+{% common %}
+![Postgre create database](https://raw.githubusercontent.com/gabRpt/matsim-output-postgreSQL-converter/main/resources/docs/getting-started/postgre_create_db_1.png)
 
-3. Click "Save" to create the database.
+{% endmethod %}
+{% method %}
 
-4. Right-click on the new database and select "Restore...".
+* In the "Create - Database" window, enter a name for the new database and leave the other options at their default values.
 
-5. In the "Restore" window, select "Custom or tar" as the format and click in the field below to browse for the backup file.
+* Click "Save" to create the database.
+{% common %}
+![Postgre create database](https://raw.githubusercontent.com/gabRpt/matsim-output-postgreSQL-converter/main/resources/docs/getting-started/postgre_create_db_2.png)
 
-6. Navigate to the directory where the backup file is located (./resources/setup/[databaseBackupPostgresCustom](https://github.com/gabRpt/matsim-output-postgreSQL-converter/blob/main/resources/setup/databaseBackupPostgresCustom "databaseBackupPostgresCustom")) and select the backup file.
+{% endmethod %}
+{% method %}
 
-7. Click "Restore" to restore the database from the backup file.
+* Right-click on the new database and select "Restore...".
+{% common %}
+![Postgre restore database](https://raw.githubusercontent.com/gabRpt/matsim-output-postgreSQL-converter/main/resources/docs/getting-started/postgre_restore_db_1.png)
+
+{% endmethod %}
+{% method %}
+
+* In the "Restore" window, select "Custom or tar" as the format and click in the field below to browse for the backup file.
+
+* Navigate to the directory where the backup file is located (./resources/setup/[databaseBackupPostgresCustom](https://github.com/gabRpt/matsim-output-postgreSQL-converter/blob/main/resources/setup/databaseBackupPostgresCustom "databaseBackupPostgresCustom")) and select the backup file.
+{% common %}
+![Postgre restore database](https://raw.githubusercontent.com/gabRpt/matsim-output-postgreSQL-converter/main/resources/docs/getting-started/postgre_restore_db_2.png)
+
+{% endmethod %}
+{% method %}
+
+* Click "Restore" to restore the database from the backup file.
+{% common %}
+![Postgre restore database](https://raw.githubusercontent.com/gabRpt/matsim-output-postgreSQL-converter/main/resources/docs/getting-started/postgre_restore_db_3.png)
+
+{% endmethod %}
 
 ___
 
 ## Setup the environment
 
-*** For this part, I am using Anaconda ***
-1. Install `Anaconda` on your machine. You can follow the instructions in this [guide](https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html). Direct download [here](https://www.anaconda.com/products/distribution).
+***For this part, I am using Anaconda***
 
-2. Open Anaconda Navigator and navigate to the "Environments" tab in the left panel.
+* Install `Anaconda` on your machine. You can follow the instructions in this [guide](https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html). Direct download [here](https://www.anaconda.com/products/distribution).
 
-3. Click on the "Import" button and select the matsimConverterEnv.yaml file located in the ./resources/setup/ folder of the cloned repository.
+{% method %}
 
-4. Give a name to your new environment and wait for the setup process to complete.
+* Open Anaconda Navigator and navigate to the `Environments` tab in the left panel.
 
-5. Once the environment is created, **select it** and launch an IDE like VS Code from Anaconda Navigator.
+* Click on the `Import` button and select the matsimConverterEnv.yaml file located in the `./resources/setup/` folder of the cloned repository.
 
-6. Open a terminal in the IDE and run the command `pip install ./resources/setup/matsim_tools-1.0.5-py3-none-any.whl` to install the required matsim_tools package. **Please verify that you are installing the lastest version available in ./resources/setup/**
+{% common %}
+![Anaconda import environment](https://raw.githubusercontent.com/gabRpt/matsim-output-postgreSQL-converter/main/resources/docs/getting-started/anaconda_import_env.png)
+{% endmethod %}
+
+{% method %}
+
+* Give a name to your new environment and wait for the setup process to complete.
+
+* Once the environment is created, **select it** and launch an IDE like VS Code from Anaconda Navigator.
+{% common %}
+![Anaconda select environment](https://raw.githubusercontent.com/gabRpt/matsim-output-postgreSQL-converter/main/resources/docs/getting-started/anaconda_select_env.png)
+
+{% endmethod %}
+{% method %}
+
+* Open a terminal in the IDE and run the command `pip install ./resources/setup/matsim_tools-1.0.5-py3-none-any.whl` to install the required matsim_tools package. **Please verify that you are installing the lastest version available in ./resources/setup/**
+
+{% endmethod %}
 
 ___
 
 ## Configuration
 
 In [config.py](https://github.com/gabRpt/matsim-output-postgreSQL-converter/blob/main/src/config.py "config.py") file, edit the commented constants
+
 * PATH_SIMULATION_OUTPUT
 * DB_CONNECTION_STRING
 * DB_SRID

@@ -13,3 +13,5 @@ The documentation is written in [Markdown](https://en.wikipedia.org/wiki/Markdow
 * Replace the html and json files in the `docs` folder with the html files in the `_book` folder. Do se same with gitbook folder.
 
 * Commit and push the changes.
+
+NB : To solve plugin problems checkout [this](https://github.com/honkit/honkit/issues/217)
