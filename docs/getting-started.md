@@ -76,7 +76,7 @@ ___
 
 * Right-click on the new database and select "Restore...".
 {% common %}
-![Postgre restore database](https://raw.githubusercontent.com/gabRpt/matsim-output-postgreSQL-converter/main/resources/docs/getting-started/postgre_restore_db_1.png)
+![Postgre restore database](https://raw.githubusercontent.com/gabRpt/matsim-output-postgreSQL-converter/main/resources/docs/getting-started/postgre_restore_1.png)
 
 {% endmethod %}
 {% method %}
@@ -85,14 +85,14 @@ ___
 
 * Navigate to the directory where the backup file is located (./resources/setup/[databaseBackupPostgresCustom](https://github.com/gabRpt/matsim-output-postgreSQL-converter/blob/main/resources/setup/databaseBackupPostgresCustom "databaseBackupPostgresCustom")) and select the backup file.
 {% common %}
-![Postgre restore database](https://raw.githubusercontent.com/gabRpt/matsim-output-postgreSQL-converter/main/resources/docs/getting-started/postgre_restore_db_2.png)
+![Postgre restore database](https://raw.githubusercontent.com/gabRpt/matsim-output-postgreSQL-converter/main/resources/docs/getting-started/postgre_restore_2.png)
 
 {% endmethod %}
 {% method %}
 
 * Click "Restore" to restore the database from the backup file.
 {% common %}
-![Postgre restore database](https://raw.githubusercontent.com/gabRpt/matsim-output-postgreSQL-converter/main/resources/docs/getting-started/postgre_restore_db_3.png)
+![Postgre restore database](https://raw.githubusercontent.com/gabRpt/matsim-output-postgreSQL-converter/main/resources/docs/getting-started/postgre_restore_3.png)
 
 {% endmethod %}
 
