@@ -10,7 +10,7 @@
 
 * [Database](database.md#database)
     * [Database structure](database.md#database-structure)
-    * [Database backup](database.md#database-backup)
+    * [Matsim files and tables](database.md#matsim-files-and-tables)
 
 * [Converter](converter.md#converter)
 

@@ -1,0 +1,201 @@
+Project matsim_output_postgreSQL_converter {
+  database_type: 'PostgreSQL'
+}
+
+// output_allvehicles.xml.gz
+Table vehicle {
+  id varchar(50) [pk]
+  vehicleTypeId varchar(50) [ref: > vehicleType.id]
+}
+
+// output_allvehicles.xml.gz
+Table vehicleType {
+  id varchar(50) [pk]
+  seats integer
+  standingRoomInPersons integer
+  length real
+  width real
+  costInformation varchar(50)
+  passengerCarEquivalents real
+  networkMode varchar(50)
+  flowEfficiencyFactor real
+  accessTimeInSecondsPerPerson real
+  doorOperationMode varchar(50)
+  egressTimeInSecondsPerPerson real
+}
+
+// output_plans.xml.gz
+// output_experienced_plans.xml.gz 
+// output_facilities.xml.gz
+Table activity {
+  id integer [pk]
+  type varchar
+  location geometry //point(x, y)
+  z numeric(40,20)
+  start_time interval
+  end_time interval
+  max_dur interval
+  typeBeforeCutting varchar(40)
+  linkId varchar(40) [ref: > networkLink.id]
+  facilityId varchar(40) [ref: > facility.id]
+  personId integer [ref: > person.id]
+}
+
+// output_facilities.xml.gz
+Table facility {
+  id varchar(40) [pk]
+  linkId varchar(40) [ref: > networkLink.id]
+  location geometry //point(x,y)
+  activityType varchar
+}
+
+// output_households.xml.gz
+Table household {
+  id integer [pk]
+  bikeAvailability varchar
+  carAvailability varchar
+  censusId integer
+  household_income numeric(40,20)
+}
+
+// output_network.xml.gz
+Table networkLink {
+  id varchar(40) [pk]
+  from_node varchar(40)
+  to_node varchar(40)
+  geom geometry(LineString(from,to),2154)
+  length numeric(40, 20)
+  freespeed numeric(40, 20)
+  capacity double
+  permlanes double
+  oneway varchar(50)
+  modes varchar(8)
+  
+  osm_relation_route varchar(40)
+  osm_way_highway varchar(40)
+  osm_way_id bigint
+  osm_way_lanes varchar(40)
+  osm_way_name varchar(80)
+  osm_way_oneway varchar(40)
+  storageCapacityUsedInQsim double
+  osm_way_traffic_calming varchar(40)
+  osm_way_junction varchar(40)
+  osm_way_motorcycle varchar(40)
+  osm_way_railway varchar(40)
+  osm_way_service varchar(40)
+  osm_way_access varchar(40)
+  osm_way_tunnel varchar(40)
+  osm_way_psv varchar(40)
+  osm_way_vehicle varchar(40)
+}
+
+
+// output_events.xml.gz
+Table networkLinkTraffic{
+  linkId varchar(40) [pk]
+  startTime interval [pk]
+  endTime interval [pk]
+  vehicleCount integer
+  meanSpeed double
+}
+
+
+// output_persons.csv.gz
+Table person {
+  id integer [pk]
+  executed_score numeric(40,20)
+  first_act_point geom(point)
+  first_act_type varchar(50)
+  htsPersonId integer
+  sex char
+  bikeAvailability varchar(50)
+  htsHouseholdId integer
+  censusPersonId integer
+  employed boolean
+  motorbikesAvailability varchar(50)
+  householdId integer [ref: > household.id]
+  hasLicense boolean
+  carAvailability varchar(50)
+  hasPtSubscription boolean
+  isPassenger boolean
+  age smallint
+  householdIncome numeric(40,20)
+  censusHouseholdId integer
+  isOutside boolean
+}
+
+// output_trips.csv.gz
+Table trip {
+  id varchar(40) [pk]
+  personId integer [ref: > person.id]
+  trip_number integer
+  dep_time interval
+  trav_time interval
+  wait_time interval
+  traveled_distance integer
+  euclidean_distance integer
+  main_mode varchar(40)
+  longest_distance_mode varchar(40)
+  modes varchar(40)
+  start_facility_id varchar(40) [ref: > facility.id]
+  start_linkap varchar(40) [ref: > networkLink.id]
+  end_facility_id varchar(40) [ref: > facility.id]
+  end_link varchar(40) [ref: > networkLink.id]
+  first_pt_boarding_stop varchar(40)
+  last_pt_egress_stop varchar(40)
+}
+
+
+// BUILDINGS.geojson
+Table building{
+  id bigint [PK]
+  geometryType varchar(40)
+  type varchar(40)
+  PK bigint
+  height double
+  geometry geometry // Polygon or Multipolygon
+}
+
+
+
+
+// ===== NOT IMPORTED YET =====
+Table personVehicle {
+  personId integer [ref: > person.id]
+  vehicleId varchar [ref: > vehicle.id]
+  mode varchar
+}
+
+// ===== NOT IMPORTED YET =====
+Table transitSchedule {
+  id integer [pk]
+}
+
+
+// ===== NOT IMPORTED YET =====
+// output_events.xml
+Table event {
+  id integer [pk]
+  time float
+  type varchar
+  personId integer [ref: > person.id]
+  facility varchar [ref: > facility.id]
+  link varchar [ref: > networkLink.id]
+  activityType varchar
+  legMode varchar
+  vehicle varchar [ref: > vehicle.id]
+  networkMode varchar
+  relativePosition float
+  location point(x, y)
+  distance numeric
+  mode varchar
+  driverId varchar
+  vehicleId varchar [ref: > vehicle.id]
+  transitLineId integer
+  transitRouteId varchar
+  departureId varchar
+  delay double
+  agent integer [ref: > person.id]
+  atStop varchar
+  destinationStop varchar
+}
