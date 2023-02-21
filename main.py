@@ -1,6 +1,6 @@
-import converter as converter
-import queries as queries
 from datetime import datetime
+import queries
+import converter
 
 def main():
     overallStartTime = datetime.now()
@@ -39,8 +39,8 @@ def main():
     
     # ========= Agents activities dataframes =========
     # # Get dataframes of the activities of agents in each zone during given timespan
-    # allZonesDataframes = queries.agentActivity.agentActivity("./resources/sample/5zones.geojson", startTime='18:00:00', endTime='19:00:00', strictTime=False)
-    # print(allZonesDataframes)
+    allZonesDataframes = queries.agentActivity.agentActivity("./resources/sample/5zones.geojson", startTime='18:00:00', endTime='19:00:00', strictTime=False)
+    print(allZonesDataframes)
     
     
     
@@ -84,6 +84,5 @@ def launchImport(name):
         converter.buildings.importBuildings()
     
     print(f" Done in {str(datetime.now() - currentStartTime)[:-5]} !")
-
-
+    
 main()

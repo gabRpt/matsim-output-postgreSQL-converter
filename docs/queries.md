@@ -60,10 +60,7 @@ You will get 2 files :
 
 _**A detailed documentation on how to create a scheme in Arabesque can be found [here](https://gflowiz.github.io/arabesque/).**_
 
-
 ___
-
-
 
 ## Activity Sequences
 Get the activity sequences of agents during given timespan and zone

@@ -14,4 +14,8 @@ The documentation is written in [Markdown](https://en.wikipedia.org/wiki/Markdow
 
 * Commit and push the changes.
 
-NB : To solve plugin problems checkout [this](https://github.com/honkit/honkit/issues/217)
+## Troubleshooting
+
+* To solve plugins problems checkout [this](https://github.com/honkit/honkit/issues/217)
+
+* When modifying SUMMARY.md you have to delete `_book` folder and restart the server.
