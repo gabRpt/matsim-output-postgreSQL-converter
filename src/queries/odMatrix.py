@@ -1,5 +1,5 @@
-import tools
-import config
+from furbain import tools
+from furbain import config
 import geojson
 import pandas as pd
 from pyproj import Proj, transform

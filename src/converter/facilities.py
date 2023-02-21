@@ -1,6 +1,6 @@
 import matsim.Facility as Facility
-import config
-import tools
+from furbain import config
+from furbain import tools
 import geopandas as gpd
 from geoalchemy2 import Geometry
 

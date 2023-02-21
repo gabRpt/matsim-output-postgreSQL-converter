@@ -1,6 +1,6 @@
 import collections
-import config
-import tools
+from furbain import config
+from furbain import tools
 import geopandas as gpd
 import pandas as pd
 import json

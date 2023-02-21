@@ -1,6 +1,6 @@
 import matsim.Household as Household
-import config
-import tools
+from furbain import config
+from furbain import tools
 
 def importHouseholds():
     householdReader = Household.houshold_reader(config.PATH_HOUSEHOLDS)

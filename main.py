@@ -1,11 +1,11 @@
 from datetime import datetime
 import queries
 import converter
+from furbain import config
 
 def main():
     overallStartTime = datetime.now()
-    
-    
+    # config.PATH_SIMULATION_OUTPUT = ''
     # =====================================================================
     # ========================   DATABASE IMPORT   ========================
     # =====================================================================

@@ -1,6 +1,6 @@
 import matsim.Vehicle as Vehicle
-import config
-import tools
+from furbain import config
+from furbain import tools
 
 def importVehicles():
     vehicleDataframes = Vehicle.vehicle_reader(config.PATH_ALLVEHICLES)

@@ -1,3 +1,5 @@
-import queries.odMatrix
-import queries.agentActivity
-import queries.activitySequences
+from . import odMatrix, agentActivity, activitySequences
+
+odMatrix = odMatrix.odMatrix
+agentActivity = agentActivity.agentActivity
+activitySequences = activitySequences.activitySequences

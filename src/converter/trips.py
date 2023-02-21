@@ -1,5 +1,5 @@
-import config
-import tools
+from furbain import config
+from furbain import tools
 import pandas as pd
 
 

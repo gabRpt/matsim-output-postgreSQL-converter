@@ -1,4 +1,4 @@
-import config
+from furbain import config
 from sqlalchemy import create_engine
 
 def connectToDatabase():   
