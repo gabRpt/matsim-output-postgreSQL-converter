@@ -21,7 +21,7 @@ setup(
         "geoalchemy2 >= 0.12.2",
         "geopandas >= 0.9.0",
         "pandas >= 1.4.3",
-        "sqlalchemy >= 1.4.39",
+        "sqlalchemy >= 1.4.39, <= 1.4.46", # https://stackoverflow.com/questions/75315117/attributeerror-connection-object-has-no-attribute-connect-when-use-df-to-sq
         "shapely >= 1.7.1",
         "tqdm >= 4.64.1",
         "pyproj >= 2.6.1",
