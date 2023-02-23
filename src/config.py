@@ -18,6 +18,10 @@ PATH_BUILDINGS = PATH_SIMULATION_OUTPUT + '/BUILDINGS.geojson'
 
 DB_CONNECTION_STRING = 'postgresql+psycopg2://<username>:<password>@<location>:<port>/<databaseName>' # Connection string to the database (eg: postgresql+psycopg2://postgres:admin@localhost:5432/test)
 DB_SRID = '2154' # SRID used in matsim
+DB_USER = 'postgres'
+DB_PASSWORD = 'admin'
+DB_HOST = 'localhost:5432'
+DB_DBNAME = ''
 
 # Names of the tables in the database
 DB_ALLVEHICLES_TABLE = 'vehicle' 

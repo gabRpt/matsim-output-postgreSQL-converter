@@ -1,10 +1,23 @@
 from furbain import config
 from sqlalchemy import create_engine
+import subprocess
 
 def connectToDatabase():   
     engine = create_engine(config.DB_CONNECTION_STRING)
     conn = engine.connect()
     return conn
+
+
+def createDatabaseFromBackup(backup_path, postgresURI=None):
+    # Create the database
+    if postgresURI is None:
+        postgresURI = f'postgresql://{config.DB_USER}:{config.DB_PASSWORD}@{config.DB_HOST}'
+    
+    subprocess.run(['createdb', '--maintenance-db', postgresURI, config.DB_DBNAME])
+    
+    # Restore the backup to the new database
+    with open(backup_path, 'rb') as f:
+        subprocess.run(['pg_restore', '-U', config.DB_USER, '-d', config.DB_DBNAME, backup_path])
 
 # Converts hh:mm:ss time to x days x hours x minutes x seconds
 def formatTimeToIntervalType(time):
