@@ -19,6 +19,12 @@ def createDatabaseFromBackup(backup_path, postgresURI=None):
     with open(backup_path, 'rb') as f:
         subprocess.run(['pg_restore', '-U', config.DB_USER, '-d', config.DB_DBNAME, backup_path])
 
+
+def getAllDatabasesProjects():
+    conn = connectToDatabase()
+    result = conn.execute("SELECT datname FROM pg_database WHERE datistemplate = false;")
+    return [row[0] for row in result.fetchall()]
+
 # Converts hh:mm:ss time to x days x hours x minutes x seconds
 def formatTimeToIntervalType(time):
     if time is not None and isinstance(time, str):
