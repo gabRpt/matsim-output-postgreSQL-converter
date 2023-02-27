@@ -47,7 +47,7 @@ __Output :__
 * `total_time_spent` : total time spent by the person in the activity
 * `time_spent_in_interval` : time spent by the person in the activity in the interval
 
-![Agent activity output](https://raw.githubusercontent.com/gabRpt/matsim-output-postgreSQL-converter/main/resources/docs/getting-started/agent_activity_output.png)
+![Agent activity output](https://raw.githubusercontent.com/gabRpt/matsim-output-postgreSQL-converter/main/resources/docs/queries/agent_activity_output.png)
 
 {% endmethod %}
 
@@ -80,7 +80,7 @@ Edit the parameters of the function `queries.odMatrix.odMatrix` :
 {% common %}
 __Output :__
 
-![OD Matrix output](https://raw.githubusercontent.com/gabRpt/matsim-output-postgreSQL-converter/main/resources/docs/getting-started/OD_matrix_output.png)
+![OD Matrix output](https://raw.githubusercontent.com/gabRpt/matsim-output-postgreSQL-converter/main/resources/docs/queries/OD_matrix_output.png)
 
 
 {% endmethod %}
