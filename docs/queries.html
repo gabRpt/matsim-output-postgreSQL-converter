@@ -292,7 +292,20 @@
             
         </li>
     
-        <li class="chapter " data-level="1.6" data-path="documentation.html">
+        <li class="chapter " data-level="1.6" data-path="tools.html">
+            
+                <a href="tools.html#tools">
+            
+                    
+                    Tools
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7" data-path="documentation.html">
             
                 <a href="documentation.html">
             
@@ -305,7 +318,7 @@
             
         </li>
     
-        <li class="chapter " data-level="1.7" data-path="troubleshooting.html">
+        <li class="chapter " data-level="1.8" data-path="troubleshooting.html">
             
                 <a href="troubleshooting.html">
             
@@ -366,8 +379,8 @@
                                 <h1 id="queries">Queries</h1>
 <hr>
 <h2 id="agent-activity">Agent activity</h2>
-<p>Get dataframes of the activities of agents in each zone during given timespan
-In <a href="https://github.com/gabRpt/matsim-output-postgreSQL-converter/blob/main/src/main.py" title="main.py" target="_blank">main.py</a> uncomment the lines below <code>========= Agents activities dataframes =========</code>.
+<div class="api-method"><div class="api-method-definition"><p><em>Get dataframes of the activities of agents in each zone during given timespan</em></p>
+<p>In <a href="https://github.com/gabRpt/matsim-output-postgreSQL-converter/blob/main/src/main.py" title="main.py" target="_blank">main.py</a> uncomment the lines below <code>========= Agents activities dataframes =========</code>.
 Edit the parameters of the function <code>queries.agentActivity.agentActivity</code> :</p>
 <ul>
 <li><code>filepath</code> : Path to the <strong>geojson</strong> file containing the different zones to consider (eg: <a href="https://github.com/gabRpt/matsim-output-postgreSQL-converter/blob/main/resources/sample/5zones.geojson" target="_blank">5zones.geojson</a>)</li>
@@ -388,10 +401,29 @@ Edit the parameters of the function <code>queries.agentActivity.agentActivity</c
 </code></pre></li>
 </ul>
 <p>Returns a list of dataframes, one dataframe per zone.</p>
+</div><div class="api-method-code"><div class="api-method-example"><p><strong>Output :</strong></p>
+<ul>
+<li><code>id</code> : id of the activity</li>
+<li><code>type</code> : type of the activity</li>
+<li><code>location</code> : location of the activity</li>
+<li><code>z</code> : z axis of the location</li>
+<li><code>start_time</code> : start time of the activity</li>
+<li><code>end_time</code> : end time of the activity</li>
+<li><code>max_dur</code> : maximum duration of the activity</li>
+<li><code>typeBeforeCutting</code> : type of the activity before cutting</li>
+<li><code>linkId</code> : linkId of the activity</li>
+<li><code>facilityId</code> : facilityId of the activity</li>
+<li><code>personId</code> : id of the agent</li>
+<li><code>total_time_spent</code> : total time spent by the person in the activity</li>
+<li><code>time_spent_in_interval</code> : time spent by the person in the activity in the interval</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/gabRpt/matsim-output-postgreSQL-converter/main/resources/docs/getting-started/agent_activity_output.png" alt="Agent activity output"></p>
+</div></div></div>
+
 <hr>
 <h2 id="od-matrix">OD Matrix</h2>
-<p>Get od matrix of trips between zones during given timespan</p>
 <h5 id="generate-the-od-matrix">Generate the od matrix</h5>
+<div class="api-method"><div class="api-method-definition"><p><em>Get od matrix of trips between zones during given timespan</em></p>
 <p>In <a href="https://github.com/gabRpt/matsim-output-postgreSQL-converter/blob/main/src/main.py" title="main.py" target="_blank">main.py</a> uncomment the lines below <code>========= OD Matrix =========</code>.
 Edit the parameters of the function <code>queries.odMatrix.odMatrix</code> :</p>
 <ul>
@@ -408,14 +440,20 @@ Edit the parameters of the function <code>queries.odMatrix.odMatrix</code> :</p>
 </code></pre></li>
 <li><code>generateArabesqueFiles</code> : if true, generates the files needed to create a scheme in <a href="http://arabesque.ifsttar.fr/" target="_blank">Arabesque</a> (boolean default: <code>False</code>)</li>
 </ul>
+</div><div class="api-method-code"><div class="api-method-example"><p><strong>Output :</strong></p>
+<p><img src="https://raw.githubusercontent.com/gabRpt/matsim-output-postgreSQL-converter/main/resources/docs/getting-started/OD_matrix_output.png" alt="OD Matrix output"></p>
+</div></div></div>
+
 <h5 id="use-generated-files-in-arabesque">Use generated files in Arabesque</h5>
-<p>If <code>generateArabesqueFiles</code> is set to true, the files needed to create a scheme in <a href="http://arabesque.ifsttar.fr/" target="_blank">Arabesque</a> are generated in the folder <code>/output</code>.
+<div class="api-method"><div class="api-method-definition"><p>If <code>generateArabesqueFiles</code> is set to true, the files needed to create a scheme in <a href="http://arabesque.ifsttar.fr/" target="_blank">Arabesque</a> are generated in the folder <code>/output</code>.
 You will get 2 files :</p>
 <ul>
 <li><code>flow.csv</code> : contains the od matrix of the trips between zones</li>
 <li><code>location.csv</code> : contains the zones with their coordinates</li>
 </ul>
 <p><em><strong>A detailed documentation on how to create a scheme in Arabesque can be found <a href="https://gflowiz.github.io/arabesque/" target="_blank">here</a>.</strong></em></p>
+</div><div class="api-method-code"></div></div>
+
 <hr>
 <h2 id="activity-sequences">Activity Sequences</h2>
 <p>Get the activity sequences of agents during given timespan and zone</p>
@@ -475,7 +513,7 @@ The dataframe has the following columns :</p>
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Queries","level":"1.5","depth":1,"next":{"title":"Documentation","level":"1.6","depth":1,"path":"documentation.md","ref":"documentation.md","articles":[]},"previous":{"title":"Getting Started","level":"1.2","depth":1,"path":"getting-started.md","ref":"getting-started.md","articles":[{"title":"First thing to do","level":"1.2.1","depth":2,"anchor":"#first-thing-to-do","path":"getting-started.md","ref":"getting-started.md#first-thing-to-do","articles":[]},{"title":"Setup the database","level":"1.2.2","depth":2,"anchor":"#setup-the-database","path":"getting-started.md","ref":"getting-started.md#setup-the-database","articles":[]},{"title":"Setup the environment","level":"1.2.3","depth":2,"anchor":"#setup-the-environment","path":"getting-started.md","ref":"getting-started.md#setup-the-environment","articles":[]},{"title":"Configuration","level":"1.2.4","depth":2,"anchor":"#configuration","path":"getting-started.md","ref":"getting-started.md#configuration","articles":[]}]},"articles":[{"title":"Agent Activity","level":"1.5.1","depth":2,"anchor":"#agent-activity","path":"queries.md","ref":"queries.md#agent-activity","articles":[]},{"title":"OD Matrix","level":"1.5.2","depth":2,"anchor":"#od-matrix","path":"queries.md","ref":"queries.md#od-matrix","articles":[]},{"title":"Activity Sequences","level":"1.5.3","depth":2,"anchor":"#activity-sequences","path":"queries.md","ref":"queries.md#activity-sequences","articles":[]}],"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["theme-api"],"pluginsConfig":{"theme-api":{"languages":[],"split":true,"theme":"light"},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"embedFonts":false},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"queries.md","mtime":"2022-12-08T14:48:34.212Z","type":"markdown"},"gitbook":{"version":"4.0.4","time":"2023-02-17T10:08:23.406Z"},"basePath":".","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Queries","level":"1.5","depth":1,"next":{"title":"Documentation","level":"1.7","depth":1,"path":"documentation.md","ref":"documentation.md","articles":[]},"previous":{"title":"Getting Started","level":"1.2","depth":1,"path":"getting-started.md","ref":"getting-started.md","articles":[{"title":"First thing to do","level":"1.2.1","depth":2,"anchor":"#first-thing-to-do","path":"getting-started.md","ref":"getting-started.md#first-thing-to-do","articles":[]},{"title":"Setup the database","level":"1.2.2","depth":2,"anchor":"#setup-the-database","path":"getting-started.md","ref":"getting-started.md#setup-the-database","articles":[]},{"title":"Setup the environment","level":"1.2.3","depth":2,"anchor":"#setup-the-environment","path":"getting-started.md","ref":"getting-started.md#setup-the-environment","articles":[]},{"title":"Configuration","level":"1.2.4","depth":2,"anchor":"#configuration","path":"getting-started.md","ref":"getting-started.md#configuration","articles":[]}]},"articles":[{"title":"Agent Activity","level":"1.5.1","depth":2,"anchor":"#agent-activity","path":"queries.md","ref":"queries.md#agent-activity","articles":[]},{"title":"OD Matrix","level":"1.5.2","depth":2,"anchor":"#od-matrix","path":"queries.md","ref":"queries.md#od-matrix","articles":[]},{"title":"Activity Sequences","level":"1.5.3","depth":2,"anchor":"#activity-sequences","path":"queries.md","ref":"queries.md#activity-sequences","articles":[]}],"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["theme-api"],"pluginsConfig":{"theme-api":{"languages":[],"split":true,"theme":"light"},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"embedFonts":false},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"queries.md","mtime":"2023-02-27T11:21:45.400Z","type":"markdown"},"gitbook":{"version":"4.0.4","time":"2023-02-27T11:22:21.040Z"},"basePath":".","book":{"language":""}});
         });
     </script>
 </div>

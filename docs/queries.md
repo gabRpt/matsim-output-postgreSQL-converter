@@ -6,7 +6,9 @@ ___
 
 
 ## Agent activity
-Get dataframes of the activities of agents in each zone during given timespan
+{% method %}
+_Get dataframes of the activities of agents in each zone during given timespan_
+
 In [main.py](https://github.com/gabRpt/matsim-output-postgreSQL-converter/blob/main/src/main.py "main.py") uncomment the lines below `========= Agents activities dataframes =========`.
 Edit the parameters of the function `queries.agentActivity.agentActivity` :
 
@@ -28,14 +30,37 @@ Edit the parameters of the function `queries.agentActivity.agentActivity` :
 
 Returns a list of dataframes, one dataframe per zone.
 
+{% common %}
+__Output :__
+
+* `id` : id of the activity
+* `type` : type of the activity
+* `location` : location of the activity
+* `z` : z axis of the location
+* `start_time` : start time of the activity
+* `end_time` : end time of the activity
+* `max_dur` : maximum duration of the activity
+* `typeBeforeCutting` : type of the activity before cutting
+* `linkId` : linkId of the activity
+* `facilityId` : facilityId of the activity
+* `personId` : id of the agent
+* `total_time_spent` : total time spent by the person in the activity
+* `time_spent_in_interval` : time spent by the person in the activity in the interval
+
+![Agent activity output](https://raw.githubusercontent.com/gabRpt/matsim-output-postgreSQL-converter/main/resources/docs/getting-started/agent_activity_output.png)
+
+{% endmethod %}
 
 ___
 
-
-
 ## OD Matrix
-Get od matrix of trips between zones during given timespan
+
 ##### Generate the od matrix
+
+{% method %}
+
+_Get od matrix of trips between zones during given timespan_
+
 In [main.py](https://github.com/gabRpt/matsim-output-postgreSQL-converter/blob/main/src/main.py "main.py") uncomment the lines below `========= OD Matrix =========`.
 Edit the parameters of the function `queries.odMatrix.odMatrix` :
 
@@ -52,13 +77,26 @@ Edit the parameters of the function `queries.odMatrix.odMatrix` :
         in both cases, if a trip has a dep_time < 18:00:00 it will not be considered
 * `generateArabesqueFiles` : if true, generates the files needed to create a scheme in [Arabesque](http://arabesque.ifsttar.fr/) (boolean default: `False`)
 
+{% common %}
+__Output :__
+
+![OD Matrix output](https://raw.githubusercontent.com/gabRpt/matsim-output-postgreSQL-converter/main/resources/docs/getting-started/OD_matrix_output.png)
+
+
+{% endmethod %}
+
 ##### Use generated files in Arabesque
+
+{% method %}
+
 If `generateArabesqueFiles` is set to true, the files needed to create a scheme in [Arabesque](http://arabesque.ifsttar.fr/) are generated in the folder `/output`.
 You will get 2 files :
 * `flow.csv` : contains the od matrix of the trips between zones
 * `location.csv` : contains the zones with their coordinates
 
 _**A detailed documentation on how to create a scheme in Arabesque can be found [here](https://gflowiz.github.io/arabesque/).**_
+
+{% endmethod %}
 
 ___
 
