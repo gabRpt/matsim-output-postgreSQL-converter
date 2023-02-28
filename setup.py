@@ -27,7 +27,7 @@ setup(
         "pyproj >= 2.6.1",
         "geojson >= 2.5.0",
         "protobuf == 3.20.0",
-        "psycopg2==2.9.3",
+        "psycopg2 == 2.9.3",
         f"matsim_tools @ file://localhost/{os.getcwd()}/resources/setup/matsim_tools-1.0.5-py3-none-any.whl"
     ],
 )
