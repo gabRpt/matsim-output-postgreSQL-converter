@@ -31,7 +31,43 @@ def importActivities():
     # removing unused columns
     activitiesDataframe.drop(columns=['x', 'y', 'plan_id', 'score', 'selected'], inplace=True)
     
+    # Creating the tables in the database
+    _createActivityTable()
+    
     # Importing the data to the database
     conn = tools.connectToDatabase()
     activitiesDataframe.to_sql(config.DB_PLANS_TABLE, con=conn, if_exists='append', index=False, dtype={'location': Geometry('POINT', srid=config.DB_SRID)})
+    conn.close()
+
+
+def _createActivityTable():
+    conn = tools.connectToDatabase()
+    conn.execute(f"""
+        CREATE TABLE IF NOT EXISTS "{config.DB_PLANS_TABLE}" (
+            id integer NOT NULL,
+            type character varying(40) COLLATE pg_catalog."default",
+            location geometry,
+            z numeric(40,20),
+            start_time interval,
+            end_time interval,
+            max_dur interval,
+            "typeBeforeCutting" character varying(40) COLLATE pg_catalog."default",
+            "linkId" character varying(40) COLLATE pg_catalog."default",
+            "facilityId" character varying(40) COLLATE pg_catalog."default",
+            "personId" integer,
+            CONSTRAINT activity_pkey PRIMARY KEY (id),
+            CONSTRAINT "activity_facilityId_fkey" FOREIGN KEY ("facilityId")
+                REFERENCES public.{config.DB_FACILITIES_TABLE} (id) MATCH SIMPLE
+                ON UPDATE NO ACTION
+                ON DELETE NO ACTION,
+            CONSTRAINT "activity_linkId_fkey" FOREIGN KEY ("linkId")
+                REFERENCES public."{config.DB_NETWORK_TABLE}" (id) MATCH SIMPLE
+                ON UPDATE NO ACTION
+                ON DELETE NO ACTION,
+            CONSTRAINT "activity_personId_fkey" FOREIGN KEY ("personId")
+                REFERENCES public.{config.DB_PERSONS_TABLE} (id) MATCH SIMPLE
+                ON UPDATE NO ACTION
+                ON DELETE NO ACTION
+        );
+    """)
     conn.close()

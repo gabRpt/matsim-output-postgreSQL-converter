@@ -31,21 +31,21 @@ def importVehicles():
 
 def _createVehicleTypeTable():
     conn = tools.connectToDatabase()
-    conn.execute("""
-        CREATE TABLE IF NOT EXISTS "vehicleType" (
-            id character varying(50) NOT NULL,
+    conn.execute(f"""
+        CREATE TABLE IF NOT EXISTS "{config.DB_ALLVEHICLES_TYPES_TABLE}" (
+            id character varying(50) COLLATE pg_catalog."default" NOT NULL,
             seats integer,
             "standingRoomInPersons" integer,
             length real,
             width real,
-            "costInformation" character varying(50),
+            "costInformation" character varying(50) COLLATE pg_catalog."default",
             "passengerCarEquivalents" real,
-            "networkMode" character varying(50),
+            "networkMode" character varying(50) COLLATE pg_catalog."default",
             "flowEfficiencyFactor" real,
             "accessTimeInSecondsPerPerson" real,
-            "doorOperationMode" character varying(50),
+            "doorOperationMode" character varying(50) COLLATE pg_catalog."default",
             "egressTimeInSecondsPerPerson" real,
-            PRIMARY KEY(id)
+            CONSTRAINT "vehicleType_pkey" PRIMARY KEY (id)
         );
     """)
     conn.close()
@@ -53,14 +53,15 @@ def _createVehicleTypeTable():
 
 def _createVehicleTable():
     conn = tools.connectToDatabase()
-    conn.execute("""
-        CREATE TABLE IF NOT EXISTS "vehicle" (
-            id character varying(50) NOT NULL,
-            "vehicleTypeId" character varying(50) NOT NULL,
-            PRIMARY KEY(id),
-            CONSTRAINT "vehicle_vehicleTypeId_fkey" 
-                FOREIGN KEY("vehicleTypeId") 
-                    REFERENCES "vehicleType"(id)
+    conn.execute(f"""
+        CREATE TABLE IF NOT EXISTS "{config.DB_ALLVEHICLES_TABLE}" (
+            id character varying(50) COLLATE pg_catalog."default" NOT NULL,
+            "vehicleTypeId" character varying(50) COLLATE pg_catalog."default" NOT NULL,
+            CONSTRAINT vehicle_pkey PRIMARY KEY (id),
+            CONSTRAINT "vehicle_vehicleTypeId_fkey" FOREIGN KEY ("vehicleTypeId")
+                REFERENCES public."{config.DB_ALLVEHICLES_TYPES_TABLE}" (id) MATCH SIMPLE
+                ON UPDATE NO ACTION
+                ON DELETE NO ACTION
         );
     """)
     conn.close()

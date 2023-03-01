@@ -33,11 +33,29 @@ def importBuildings():
             
         polygonDataframe = pd.DataFrame(polygonFeaturesDict)
         
+        # Creating the tables in the database
+        _createBuildingTable()
+        
         # Importing the data to the database        
         conn = tools.connectToDatabase()
         polygonDataframe.to_sql(config.DB_BUILDINGS_TABLE, con=conn, if_exists='append', index=False, dtype={'geom': Geometry('POLYGON', srid=config.DB_SRID)})
         conn.close()
 
+
+def _createBuildingTable():
+    conn = tools.connectToDatabase()
+    conn.execute(f"""
+        CREATE TABLE IF NOT EXISTS "{config.DB_BUILDINGS_TABLE}" (
+            id bigint NOT NULL DEFAULT nextval('building_id_seq'::regclass),
+            "geometryType" character varying(40) COLLATE pg_catalog."default",
+            type character varying(40) COLLATE pg_catalog."default",
+            "PK" bigint,
+            height double precision,
+            geometry geometry,
+            CONSTRAINT building_pkey PRIMARY KEY (id)
+        );
+    """)
+    conn.close()
 
 
 # Polygon coordinates structure in the json file is: [[[x,y], [x,y], [x,y], [x,y], [x,y]]]

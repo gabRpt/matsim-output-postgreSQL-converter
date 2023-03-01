@@ -93,8 +93,46 @@ def importNetworkLinks(useDetailedNetworkFile=True):
         links.rename(columns={
             columnName: columnName.replace(':', '_')
         }, inplace = True)
-        
+    
+    # Creating the tables in the database
+    _createNetworkLinkTable()
+    
     # Importing the data to the database
     conn = tools.connectToDatabase()
     links.to_sql(config.DB_NETWORK_TABLE, con=conn, if_exists='append', index=False, dtype={'geom': Geometry('LINESTRING', srid=config.DB_SRID)})
+    conn.close()
+
+def _createNetworkLinkTable():
+    conn = tools.connectToDatabase()
+    conn.execute(f"""
+        CREATE TABLE public."{config.DB_NETWORK_TABLE}" (
+            id character varying(40) COLLATE pg_catalog."default" NOT NULL,
+            geom geometry,
+            length numeric(40,20),
+            freespeed numeric(40,20),
+            capacity double precision,
+            permlanes double precision,
+            oneway character varying(50) COLLATE pg_catalog."default",
+            modes character varying(80) COLLATE pg_catalog."default",
+            osm_relation_route character varying(40) COLLATE pg_catalog."default",
+            osm_way_highway character varying(40) COLLATE pg_catalog."default",
+            osm_way_id bigint,
+            osm_way_lanes character varying(40) COLLATE pg_catalog."default",
+            osm_way_name character varying(80) COLLATE pg_catalog."default",
+            osm_way_oneway character varying(40) COLLATE pg_catalog."default",
+            "storageCapacityUsedInQsim" double precision,
+            osm_way_traffic_calming character varying(40) COLLATE pg_catalog."default",
+            osm_way_junction character varying(40) COLLATE pg_catalog."default",
+            osm_way_motorcycle character varying(40) COLLATE pg_catalog."default",
+            osm_way_railway character varying(40) COLLATE pg_catalog."default",
+            osm_way_service character varying(40) COLLATE pg_catalog."default",
+            osm_way_access character varying(40) COLLATE pg_catalog."default",
+            osm_way_tunnel character varying(40) COLLATE pg_catalog."default",
+            osm_way_psv character varying(40) COLLATE pg_catalog."default",
+            osm_way_vehicle character varying(40) COLLATE pg_catalog."default",
+            from_node character varying(40) COLLATE pg_catalog."default",
+            to_node character varying(40) COLLATE pg_catalog."default",
+            CONSTRAINT "networkLink_pkey" PRIMARY KEY (id)
+        );
+        """)
     conn.close()

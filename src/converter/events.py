@@ -10,12 +10,28 @@ import math
 def importEvents(timeStepInMinutes=60, useRoundedTime=True):
     eventsResultsDataframe = _getEventsVehicleCountAndMeanSpeed(timeStepInMinutes, useRoundedTime)
     
+    # Creating the tables in the database
+    _createEventsTable()
+    
     # Importing the data to the database
     conn = tools.connectToDatabase()
     eventsResultsDataframe.to_sql(config.DB_EVENTS_TABLE, con=conn, if_exists='append', index=False)
     conn.close()
     
 
+def _createEventsTable():
+    conn = tools.connectToDatabase()
+    conn.execute(f"""
+        CREATE TABLE IF NOT EXISTS "{config.DB_EVENTS_TABLE}" (
+            "linkId" character varying(40) COLLATE pg_catalog."default" NOT NULL,
+            "startTime" interval NOT NULL,
+            "endTime" interval NOT NULL,
+            "vehicleCount" integer,
+            "meanSpeed" double precision,
+            CONSTRAINT "networkLinkTraffic_pkey" PRIMARY KEY ("linkId", "startTime", "endTime")
+        );
+    """)
+    conn.close()
 
 
 # TODO: Take into account public transport events
