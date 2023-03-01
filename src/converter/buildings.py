@@ -45,6 +45,15 @@ def importBuildings():
 def _createBuildingTable():
     conn = tools.connectToDatabase()
     conn.execute(f"""
+        CREATE SEQUENCE public.building_id_seq
+            START WITH 1
+            INCREMENT BY 1
+            NO MINVALUE
+            NO MAXVALUE
+            CACHE 1;
+    """)
+    
+    conn.execute(f"""
         CREATE TABLE IF NOT EXISTS "{config.DB_BUILDINGS_TABLE}" (
             id bigint NOT NULL DEFAULT nextval('building_id_seq'::regclass),
             "geometryType" character varying(40) COLLATE pg_catalog."default",

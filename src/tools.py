@@ -7,6 +7,24 @@ def connectToDatabase():
     conn = engine.connect()
     return conn
 
+def configureDatabase():
+    conn = connectToDatabase()
+    conn.execute("SET statement_timeout = 0;")
+    conn.execute("SET lock_timeout = 0;")
+    conn.execute("SET idle_in_transaction_session_timeout = 0;")
+    conn.execute("SET client_encoding = 'UTF8';")
+    conn.execute("SET standard_conforming_strings = on;")
+    conn.execute("SELECT pg_catalog.set_config('search_path', '', false);")
+    conn.execute("SET check_function_bodies = false;")
+    conn.execute("SET xmloption = content;")
+    conn.execute("SET client_min_messages = warning;")
+    conn.execute("SET row_security = off;")
+    conn.execute("CREATE EXTENSION IF NOT EXISTS postgis WITH SCHEMA public;")
+    conn.execute("COMMENT ON EXTENSION postgis IS 'PostGIS geometry and geography spatial types and functions';")
+    conn.execute("SET default_tablespace = '';")
+    conn.execute("SET default_table_access_method = heap;")
+    conn.close()
+    
 
 def createDatabaseFromBackup(backup_path, postgresURI=None):
     # Create the database
