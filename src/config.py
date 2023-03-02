@@ -1,4 +1,6 @@
 import sqlalchemy.types as types
+import pathlib
+import json
 
 # Path to the simulation output folder like on windows don't use backslash '\' and replace them with normal slash '/'
 PATH_SIMULATION_OUTPUT = 'C:/Users/name/Documents/matsimOutput/simulation_output'
@@ -17,9 +19,6 @@ PATH_DETAILED_NETWORK = PATH_SIMULATION_OUTPUT + '/detailed_network.csv'
 PATH_BUILDINGS = PATH_SIMULATION_OUTPUT + '/BUILDINGS.geojson'
 
 DB_SRID = '2154' # SRID used in matsim
-DB_USER = 'postgres'
-DB_PASSWORD = 'admin'
-DB_HOST = 'localhost:5432'
 DB_DBNAME = ''
 
 # Names of the tables in the database
@@ -61,6 +60,79 @@ ACTIVITY_SEQUENCES_TABLE_COLUMNS = {
 ACTIVITY_SEQUENCES_DB_PROGRESS_BAR_PERCENTAGE = 5 # the progress bar will be updated every 10% of the table
 
 
+# ===== CONFIGURATION ENV =====
+PATH_CONFIGURATION_FILE = pathlib.Path.home() / '.furbain' / 'config.json'
+
+
+def createConfigurationFile():
+    # Create the config file if it doesn't exist
+    fileToCreate = PATH_CONFIGURATION_FILE
+    
+    if not fileToCreate.exists():
+        fileToCreate.parent.mkdir(parents=True, exist_ok=True)
+        fileToCreate.touch()
+        fileToCreate.write_text("""{
+    "db_host": "localhost",
+    "db_port": "5432",
+    "db_user": "postgres",
+    "db_password": "postgres",
+}""")
+
+def loadConfigurationFile():
+    fileToLoad = PATH_CONFIGURATION_FILE
+
+    if not fileToLoad.exists():
+        createConfigurationFile()
+    
+    with open(fileToLoad) as json_file:
+        return json.load(json_file)
+
+
+def saveConfigurationFile(config):
+    fileToSave = PATH_CONFIGURATION_FILE
+
+    if not fileToSave.exists():
+        createConfigurationFile()
+    
+    with open(fileToSave, 'w') as outfile:
+        json.dump(config, outfile, indent=4)
+
+# ----- User -----
 def setDatabaseUser(user):
-    global DB_USER
-    DB_USER = user
+    config = loadConfigurationFile()
+    config['db_user'] = user
+    saveConfigurationFile(config)
+
+def getDatabaseUser():
+    config = loadConfigurationFile()
+    return config['db_user']
+
+# ----- Password -----
+def setDatabasePassword(password):
+    config = loadConfigurationFile()
+    config['db_password'] = password
+    saveConfigurationFile(config)
+
+def getDatabasePassword():
+    config = loadConfigurationFile()
+    return config['db_password']
+
+# ----- Host -----
+def setDatabaseHost(host):
+    config = loadConfigurationFile()
+    config['db_host'] = host
+    saveConfigurationFile(config)
+
+def getDatabaseHost():
+    config = loadConfigurationFile()
+    return config['db_host']
+
+# ----- Port -----
+def setDatabasePort(port):
+    config = loadConfigurationFile()
+    config['db_port'] = port
+    saveConfigurationFile(config)
+
+def getDatabasePort():
+    config = loadConfigurationFile()
+    return config['db_port']

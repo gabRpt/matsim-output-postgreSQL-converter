@@ -3,12 +3,12 @@ from sqlalchemy import create_engine
 import subprocess
 
 def connectToDatabase():
-    engine = create_engine(f'postgresql+psycopg2://{config.DB_USER}:{config.DB_PASSWORD}@{config.DB_HOST}/{config.DB_DBNAME}')
+    engine = create_engine(f'postgresql+psycopg2://{config.getDatabaseUser()}:{config.getDatabasePassword()}@{config.getDatabaseHost()}:{config.getDatabasePort()}/{config.DB_DBNAME}')
     conn = engine.connect()
     return conn
 
 def connectToPostgres():
-    engine = create_engine(f'postgresql+psycopg2://{config.DB_USER}:{config.DB_PASSWORD}@{config.DB_HOST}')
+    engine = create_engine(f'postgresql+psycopg2://{config.getDatabaseUser()}:{config.getDatabasePassword()}@{config.getDatabaseHost()}:{config.getDatabasePort()}')
     conn = engine.connect()
     return conn
 
@@ -30,7 +30,7 @@ def configureDatabase():
     conn.execute("SET default_tablespace = '';")
     conn.execute("SET default_table_access_method = heap;")
     conn.close()
-    
+
 
 # Create databse will set the database as the selected database
 def createDatabase(name):
