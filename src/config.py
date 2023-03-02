@@ -16,7 +16,6 @@ PATH_TRIPS = PATH_SIMULATION_OUTPUT + '/output_trips.csv.gz'
 PATH_DETAILED_NETWORK = PATH_SIMULATION_OUTPUT + '/detailed_network.csv'
 PATH_BUILDINGS = PATH_SIMULATION_OUTPUT + '/BUILDINGS.geojson'
 
-DB_CONNECTION_STRING = 'postgresql+psycopg2://<username>:<password>@<location>:<port>/<databaseName>' # Connection string to the database (eg: postgresql+psycopg2://postgres:admin@localhost:5432/test)
 DB_SRID = '2154' # SRID used in matsim
 DB_USER = 'postgres'
 DB_PASSWORD = 'admin'
@@ -60,3 +59,8 @@ ACTIVITY_SEQUENCES_TABLE_COLUMNS = {
     "timeSpentInMainActivity": types.Interval
 }
 ACTIVITY_SEQUENCES_DB_PROGRESS_BAR_PERCENTAGE = 5 # the progress bar will be updated every 10% of the table
+
+
+def setDatabaseUser(user):
+    global DB_USER
+    DB_USER = user

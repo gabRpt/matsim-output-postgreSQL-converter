@@ -2,10 +2,16 @@ from furbain import config
 from sqlalchemy import create_engine
 import subprocess
 
-def connectToDatabase():   
-    engine = create_engine(config.DB_CONNECTION_STRING)
+def connectToDatabase():
+    engine = create_engine(f'postgresql+psycopg2://{config.DB_USER}:{config.DB_PASSWORD}@{config.DB_HOST}/{config.DB_DBNAME}')
     conn = engine.connect()
     return conn
+
+def connectToPostgres():
+    engine = create_engine(f'postgresql+psycopg2://{config.DB_USER}:{config.DB_PASSWORD}@{config.DB_HOST}')
+    conn = engine.connect()
+    return conn
+
 
 def configureDatabase():
     conn = connectToDatabase()
@@ -26,17 +32,31 @@ def configureDatabase():
     conn.close()
     
 
-def createDatabaseFromBackup(backup_path, postgresURI=None):
-    # Create the database
-    if postgresURI is None:
-        postgresURI = f'postgresql://{config.DB_USER}:{config.DB_PASSWORD}@{config.DB_HOST}'
-    
-    subprocess.run(['createdb', '--maintenance-db', postgresURI, config.DB_DBNAME])
-    
-    # Restore the backup to the new database
-    with open(backup_path, 'rb') as f:
-        subprocess.run(['pg_restore', '-U', config.DB_USER, '-d', config.DB_DBNAME, backup_path])
+# Create databse will set the database as the selected database
+def createDatabase(name):
+    # check if the database exists
+    if name in getAllDatabasesProjects():
+        raise Exception(f'The database "{name}" already exists.')
+    else:
+        conn = connectToPostgres()
+        conn.execution_options(isolation_level="AUTOCOMMIT").execute(f'CREATE DATABASE "{name}";')
+        conn.close()
+        
+        selectDatabase(name, False)
+        configureDatabase()
+        print(f'Database "{name}" created.')
 
+
+# Select database that will be used in the project
+def selectDatabase(name, verbose=True):
+    # check if the database exists
+    if name not in getAllDatabasesProjects():
+        raise Exception(f'The database "{name}" does not exist.')
+    else:
+        config.DB_DBNAME = name
+        if verbose:
+            print(f'Database "{name}" selected.')
+        
 
 def getAllDatabasesProjects():
     conn = connectToDatabase()
