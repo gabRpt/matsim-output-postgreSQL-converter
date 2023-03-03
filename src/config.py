@@ -18,7 +18,6 @@ PATH_TRIPS = PATH_SIMULATION_OUTPUT + '/output_trips.csv.gz'
 PATH_DETAILED_NETWORK = PATH_SIMULATION_OUTPUT + '/detailed_network.csv'
 PATH_BUILDINGS = PATH_SIMULATION_OUTPUT + '/BUILDINGS.geojson'
 
-DB_SRID = '2154' # SRID used in matsim
 DB_DBNAME = ''
 
 # Names of the tables in the database
@@ -76,6 +75,7 @@ def createConfigurationFile():
     "db_port": "5432",
     "db_user": "postgres",
     "db_password": "postgres",
+    "db_srid": "2154"
 }""")
 
 def loadConfigurationFile():
@@ -107,6 +107,7 @@ def getDatabaseUser():
     config = loadConfigurationFile()
     return config['db_user']
 
+
 # ----- Password -----
 def setDatabasePassword(password):
     config = loadConfigurationFile()
@@ -116,6 +117,7 @@ def setDatabasePassword(password):
 def getDatabasePassword():
     config = loadConfigurationFile()
     return config['db_password']
+
 
 # ----- Host -----
 def setDatabaseHost(host):
@@ -127,6 +129,7 @@ def getDatabaseHost():
     config = loadConfigurationFile()
     return config['db_host']
 
+
 # ----- Port -----
 def setDatabasePort(port):
     config = loadConfigurationFile()
@@ -136,3 +139,14 @@ def setDatabasePort(port):
 def getDatabasePort():
     config = loadConfigurationFile()
     return config['db_port']
+
+
+# ----- Database SRID -----
+def setDatabaseSRID(srid):
+    config = loadConfigurationFile()
+    config['db_srid'] = srid
+    saveConfigurationFile(config)
+
+def getDatabaseSRID():
+    config = loadConfigurationFile()
+    return config['db_srid']

@@ -38,7 +38,7 @@ def importBuildings():
         
         # Importing the data to the database        
         conn = tools.connectToDatabase()
-        polygonDataframe.to_sql(config.DB_BUILDINGS_TABLE, con=conn, if_exists='append', index=False, dtype={'geom': Geometry('POLYGON', srid=config.DB_SRID)})
+        polygonDataframe.to_sql(config.DB_BUILDINGS_TABLE, con=conn, if_exists='append', index=False, dtype={'geom': Geometry('POLYGON', srid=config.getDatabaseSRID())})
         conn.close()
 
 

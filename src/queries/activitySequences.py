@@ -31,7 +31,7 @@ def activitySequences(filePath, startTime='00:00:00', endTime='32:00:00', interv
         # QUERIES
         queryAllAgentsInZone = text(f"""SELECT distinct "personId"
                                         from activity
-                                        where ST_Contains(ST_Transform(ST_GeomFromText(:currentPolygon, {geojsonEpsg}), {config.DB_SRID}), ST_SetSRID("location", {config.DB_SRID}))
+                                        where ST_Contains(ST_Transform(ST_GeomFromText(:currentPolygon, {geojsonEpsg}), {config.getDatabaseSRID()}), ST_SetSRID("location", {config.getDatabaseSRID()}))
                                     """)
         
         queryGetActivitiesDuringTimeSpanAndZone = text(f"""SELECT *, 
@@ -47,7 +47,7 @@ def activitySequences(filePath, startTime='00:00:00', endTime='32:00:00', interv
                                                                     WHEN start_time is null and end_time is null then interval '{endTime}' - interval '{startTime}'
                                                                 END as activity_time_spent_in_interval
                                                             from activity 
-                                                            where ST_Contains(ST_Transform(ST_GeomFromText(:currentPolygon, {geojsonEpsg}), {config.DB_SRID}), ST_SetSRID("location", {config.DB_SRID}))
+                                                            where ST_Contains(ST_Transform(ST_GeomFromText(:currentPolygon, {geojsonEpsg}), {config.getDatabaseSRID()}), ST_SetSRID("location", {config.getDatabaseSRID()}))
                                                             and (start_time between '{startTime}' and '{endTime}' or start_time is null)
                                                             and (end_time between '{startTime}' and '{endTime}' or end_time is null)
                                                             order by start_time asc

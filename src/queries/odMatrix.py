@@ -40,11 +40,11 @@ def odMatrix(filePath, startTime='00:00:00', endTime='32:00:00', ignoreArrivalTi
                     where trip.id IN (SELECT t.id
                             from facility f
                             join trip t ON t.start_facility_id = f.id
-                            where ST_Contains(ST_Transform(ST_GeomFromText(:startingPolygon, {geojsonEpsg}), {config.DB_SRID}), ST_SetSRID("location", {config.DB_SRID})))
+                            where ST_Contains(ST_Transform(ST_GeomFromText(:startingPolygon, {geojsonEpsg}), {config.getDatabaseSRID()}), ST_SetSRID("location", {config.getDatabaseSRID()})))
                     AND trip.id IN  (SELECT t.id
                             from facility f
                             join trip t ON t.end_facility_id = f.id
-                            where ST_Contains(ST_Transform(ST_GeomFromText(:endingPolygon, {geojsonEpsg}), {config.DB_SRID}), ST_SetSRID("location", {config.DB_SRID})))
+                            where ST_Contains(ST_Transform(ST_GeomFromText(:endingPolygon, {geojsonEpsg}), {config.getDatabaseSRID()}), ST_SetSRID("location", {config.getDatabaseSRID()})))
                     AND dep_time < :endTime
                 """
         

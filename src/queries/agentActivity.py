@@ -46,7 +46,7 @@ def agentActivity(filePath, startTime='00:00:00', endTime='32:00:00', strictTime
                                     WHEN start_time is null and end_time is null then interval :endTime - interval :startTime
                                 END as time_spent_in_interval
                             from activity 
-                            where ST_Contains(ST_Transform(ST_GeomFromText(:currentPolygon, {geojsonEpsg}), {config.DB_SRID}), ST_SetSRID("location", {config.DB_SRID}))
+                            where ST_Contains(ST_Transform(ST_GeomFromText(:currentPolygon, {geojsonEpsg}), {config.getDatabaseSRID()}), ST_SetSRID("location", {config.getDatabaseSRID()}))
                         """
         # Changing query depending on strictTime option
         if strictTime:

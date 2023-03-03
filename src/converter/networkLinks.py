@@ -99,7 +99,7 @@ def importNetworkLinks(useDetailedNetworkFile=True):
     
     # Importing the data to the database
     conn = tools.connectToDatabase()
-    links.to_sql(config.DB_NETWORK_TABLE, con=conn, if_exists='append', index=False, dtype={'geom': Geometry('LINESTRING', srid=config.DB_SRID)})
+    links.to_sql(config.DB_NETWORK_TABLE, con=conn, if_exists='append', index=False, dtype={'geom': Geometry('LINESTRING', srid=config.getDatabaseSRID())})
     conn.close()
 
 def _createNetworkLinkTable():
