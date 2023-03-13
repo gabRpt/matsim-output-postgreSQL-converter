@@ -63,6 +63,12 @@ def getAllDatabasesProjects():
     result = conn.execute("SELECT datname FROM pg_database WHERE datistemplate = false;")
     return [row[0] for row in result.fetchall()]
 
+
+def executeSQLOnDatabase(queryString):
+    conn = connectToDatabase()
+    result = conn.execute(queryString)
+    return result.fetchall()
+
 # Converts hh:mm:ss time to x days x hours x minutes x seconds
 def formatTimeToIntervalType(time):
     if time is not None and isinstance(time, str):
