@@ -69,6 +69,21 @@ def executeSQLOnDatabase(queryString):
     result = conn.execute(queryString)
     return result.fetchall()
 
+
+def getTablesFromDatabase():
+    conn = connectToDatabase()
+    tables = conn.execute("SELECT table_name FROM information_schema.tables WHERE table_schema = 'public';")
+    return [table[0] for table in tables.fetchall()]
+
+
+def deleteTable(name):
+    conn = connectToDatabase()
+    # check if the table exists
+    if name in getTablesFromDatabase():
+        conn.execute(f'DROP TABLE "{name}";')
+    else:
+        raise Exception(f'The table "{name}" does not exist.')
+
 # Converts hh:mm:ss time to x days x hours x minutes x seconds
 def formatTimeToIntervalType(time):
     if time is not None and isinstance(time, str):
