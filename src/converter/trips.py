@@ -1,5 +1,6 @@
 from furbain import config
 from furbain import tools
+from furbain import databaseTools
 import pandas as pd
 
 
@@ -28,12 +29,12 @@ def importTrips():
     _createTripTable()
     
     # Importing the data to the database
-    conn = tools.connectToDatabase()
+    conn = databaseTools.connectToDatabase()
     tripsDataframe.to_sql(config.DB_TRIPS_TABLE, con=conn, if_exists='append', index=False)
     conn.close()
 
 def _createTripTable():
-    conn = tools.connectToDatabase()
+    conn = databaseTools.connectToDatabase()
     conn.execute(f"""
         CREATE TABLE IF NOT EXISTS "{config.DB_TRIPS_TABLE}" (
             id character varying(40) COLLATE pg_catalog."default" NOT NULL,

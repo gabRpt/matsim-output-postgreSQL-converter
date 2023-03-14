@@ -1,6 +1,6 @@
 import matsim.Network as Network
 from furbain import config
-from furbain import tools
+from furbain import databaseTools
 import pandas as pd
 import geopandas as gpd
 from geoalchemy2 import Geometry
@@ -98,12 +98,12 @@ def importNetworkLinks(useDetailedNetworkFile=True):
     _createNetworkLinkTable()
     
     # Importing the data to the database
-    conn = tools.connectToDatabase()
+    conn = databaseTools.connectToDatabase()
     links.to_sql(config.DB_NETWORK_TABLE, con=conn, if_exists='append', index=False, dtype={'geom': Geometry('LINESTRING', srid=config.getDatabaseSRID())})
     conn.close()
 
 def _createNetworkLinkTable():
-    conn = tools.connectToDatabase()
+    conn = databaseTools.connectToDatabase()
     conn.execute(f"""
         CREATE TABLE public."{config.DB_NETWORK_TABLE}" (
             id character varying(40) COLLATE pg_catalog."default" NOT NULL,

@@ -1,6 +1,6 @@
 import matsim.Household as Household
 from furbain import config
-from furbain import tools
+from furbain import databaseTools
 
 def importHouseholds():
     householdReader = Household.houshold_reader(config.PATH_HOUSEHOLDS)
@@ -13,13 +13,13 @@ def importHouseholds():
     _createHouseholdTable()
     
     # Importing the data to the database
-    conn = tools.connectToDatabase()
+    conn = databaseTools.connectToDatabase()
     householdDataframe.to_sql(config.DB_HOUSEHOLDS_TABLE, con=conn, if_exists='append', index=False)
     conn.close()
 
 
 def _createHouseholdTable():
-    conn = tools.connectToDatabase()
+    conn = databaseTools.connectToDatabase()
     conn.execute(f"""
         CREATE TABLE IF NOT EXISTS "{config.DB_HOUSEHOLDS_TABLE}" (
             id integer NOT NULL,

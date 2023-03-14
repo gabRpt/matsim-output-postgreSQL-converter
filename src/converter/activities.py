@@ -1,6 +1,7 @@
 import matsim.Plans as Plans
 from furbain import config
 from furbain import tools
+from furbain import databaseTools
 import pandas as pd
 from geoalchemy2 import Geometry
 
@@ -35,13 +36,13 @@ def importActivities():
     _createActivityTable()
     
     # Importing the data to the database
-    conn = tools.connectToDatabase()
+    conn = databaseTools.connectToDatabase()
     activitiesDataframe.to_sql(config.DB_PLANS_TABLE, con=conn, if_exists='append', index=False, dtype={'location': Geometry('POINT', srid=config.getDatabaseSRID())})
     conn.close()
 
 
 def _createActivityTable():
-    conn = tools.connectToDatabase()
+    conn = databaseTools.connectToDatabase()
     conn.execute(f"""
         CREATE TABLE IF NOT EXISTS "{config.DB_PLANS_TABLE}" (
             id integer NOT NULL,

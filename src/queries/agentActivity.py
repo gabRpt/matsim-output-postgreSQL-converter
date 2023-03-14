@@ -1,5 +1,6 @@
-from furbain import tools
 from furbain import config
+from furbain import tools
+from furbain import databaseTools
 import geojson
 import pandas as pd
 from sqlalchemy.sql import text
@@ -23,7 +24,7 @@ from sqlalchemy.sql import text
 #                       an activity starting at 19:00:00 and ending at xx:xx:xx is NOT considered
 
 def agentActivity(filePath, startTime='00:00:00', endTime='32:00:00', strictTime=False):
-    conn = tools.connectToDatabase()
+    conn = databaseTools.connectToDatabase()
     allZonesDataframes = [] # list dataframes for all zones
     
     with open(filePath) as f:

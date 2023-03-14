@@ -1,6 +1,6 @@
 import matsim.Vehicle as Vehicle
 from furbain import config
-from furbain import tools
+from furbain import databaseTools
 
 def importVehicles():
     vehicleDataframes = Vehicle.vehicle_reader(config.PATH_ALLVEHICLES)
@@ -22,7 +22,7 @@ def importVehicles():
     _createVehicleTable()
         
     # Importing the data to the database
-    conn = tools.connectToDatabase()
+    conn = databaseTools.connectToDatabase()
     
     vehicleTypes.to_sql(config.DB_ALLVEHICLES_TYPES_TABLE, con=conn, if_exists='append', index=False)
     vehicles.to_sql(config.DB_ALLVEHICLES_TABLE, con=conn, if_exists='append', index=False)
@@ -30,7 +30,7 @@ def importVehicles():
 
 
 def _createVehicleTypeTable():
-    conn = tools.connectToDatabase()
+    conn = databaseTools.connectToDatabase()
     conn.execute(f"""
         CREATE TABLE IF NOT EXISTS "{config.DB_ALLVEHICLES_TYPES_TABLE}" (
             id character varying(50) COLLATE pg_catalog."default" NOT NULL,
@@ -52,7 +52,7 @@ def _createVehicleTypeTable():
 
 
 def _createVehicleTable():
-    conn = tools.connectToDatabase()
+    conn = databaseTools.connectToDatabase()
     conn.execute(f"""
         CREATE TABLE IF NOT EXISTS "{config.DB_ALLVEHICLES_TABLE}" (
             id character varying(50) COLLATE pg_catalog."default" NOT NULL,

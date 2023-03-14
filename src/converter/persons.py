@@ -1,5 +1,5 @@
 from furbain import config
-from furbain import tools
+from furbain import databaseTools
 import pandas as pd
 import geopandas as gpd
 from geoalchemy2 import Geometry
@@ -22,12 +22,12 @@ def importPersons():
     _createPersonTable()
     
     # Importing the data to the database
-    conn = tools.connectToDatabase()
+    conn = databaseTools.connectToDatabase()
     personGeoDataframe.to_sql(config.DB_PERSONS_TABLE, con=conn, if_exists='append', index=False, dtype={'first_act_coord': Geometry('POINT', srid=config.getDatabaseSRID())})
     conn.close()
 
 def _createPersonTable():
-    conn = tools.connectToDatabase()
+    conn = databaseTools.connectToDatabase()
     conn.execute(f"""
         CREATE TABLE IF NOT EXISTS "{config.DB_PERSONS_TABLE}" (
             id integer NOT NULL,

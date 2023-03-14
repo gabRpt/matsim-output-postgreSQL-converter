@@ -1,5 +1,6 @@
-from furbain import tools
 from furbain import config
+from furbain import tools
+from furbain import databaseTools
 import geojson
 import pandas as pd
 from pyproj import Proj, transform
@@ -19,7 +20,7 @@ from shapely import wkt
 #        a trip having dep_time = 18:00:00 and trav_time = 01:30:00 is considered
 # in both cases, if a trip has a dep_time < 18:00:00 it will not be considered
 def odMatrix(filePath, startTime='00:00:00', endTime='32:00:00', ignoreArrivalTime=True, generateArabesqueFiles=False):
-    conn = tools.connectToDatabase()
+    conn = databaseTools.connectToDatabase()
     
     with open(filePath) as f:
         gjson = geojson.load(f)

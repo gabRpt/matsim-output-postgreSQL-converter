@@ -2,6 +2,7 @@ import matsim.Events as Events
 import matsim.Network as Network
 from furbain import config
 from furbain import tools
+from furbain import databaseTools
 import pandas as pd
 import collections
 import math
@@ -14,13 +15,13 @@ def importEvents(timeStepInMinutes=60, useRoundedTime=True):
     _createEventsTable()
     
     # Importing the data to the database
-    conn = tools.connectToDatabase()
+    conn = databaseTools.connectToDatabase()
     eventsResultsDataframe.to_sql(config.DB_EVENTS_TABLE, con=conn, if_exists='append', index=False)
     conn.close()
     
 
 def _createEventsTable():
-    conn = tools.connectToDatabase()
+    conn = databaseTools.connectToDatabase()
     conn.execute(f"""
         CREATE TABLE IF NOT EXISTS "{config.DB_EVENTS_TABLE}" (
             "linkId" character varying(40) COLLATE pg_catalog."default" NOT NULL,

@@ -1,5 +1,6 @@
 from furbain import config
 from furbain import tools
+from furbain import databaseTools
 import geojson
 import pandas as pd
 import collections
@@ -18,7 +19,7 @@ from tqdm import tqdm
 #       eg: if set to 1000, only the first 1000 agents will be processed
 def activitySequences(filePath, startTime='00:00:00', endTime='32:00:00', interval=15, batchSize=10, createTableInDatabase=False, nbAgentsToProcess=-1):
     with open(filePath) as f:
-        conn = tools.connectToDatabase()
+        conn = databaseTools.connectToDatabase()
         gjson = geojson.load(f)
         
         geojsonEpsg = tools.getEPSGFromGeoJSON(gjson)

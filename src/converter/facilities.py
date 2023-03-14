@@ -1,6 +1,6 @@
 import matsim.Facility as Facility
 from furbain import config
-from furbain import tools
+from furbain import databaseTools
 import geopandas as gpd
 from geoalchemy2 import Geometry
 
@@ -22,12 +22,12 @@ def importFacilities():
     _createFacilityTable()
     
     # Importing the data to the database
-    conn = tools.connectToDatabase()
+    conn = databaseTools.connectToDatabase()
     facilities.to_sql(config.DB_FACILITIES_TABLE, con=conn, if_exists='append', index=False, dtype={'location': Geometry('POINT', srid=config.getDatabaseSRID())})
     conn.close()
 
 def _createFacilityTable():
-    conn = tools.connectToDatabase()
+    conn = databaseTools.connectToDatabase()
     conn.execute(f"""
         CREATE TABLE IF NOT EXISTS "{config.DB_FACILITIES_TABLE}" (
             id character varying(40) COLLATE pg_catalog."default" NOT NULL,

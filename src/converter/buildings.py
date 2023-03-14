@@ -1,7 +1,6 @@
 import collections
 from furbain import config
-from furbain import tools
-import geopandas as gpd
+from furbain import databaseTools
 import pandas as pd
 import json
 from geoalchemy2 import Geometry
@@ -37,13 +36,13 @@ def importBuildings():
         _createBuildingTable()
         
         # Importing the data to the database        
-        conn = tools.connectToDatabase()
+        conn = databaseTools.connectToDatabase()
         polygonDataframe.to_sql(config.DB_BUILDINGS_TABLE, con=conn, if_exists='append', index=False, dtype={'geom': Geometry('POLYGON', srid=config.getDatabaseSRID())})
         conn.close()
 
 
 def _createBuildingTable():
-    conn = tools.connectToDatabase()
+    conn = databaseTools.connectToDatabase()
     conn.execute(f"""
         CREATE SEQUENCE public.building_id_seq
             START WITH 1
