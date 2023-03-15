@@ -1,5 +1,7 @@
 from furbain import config
 from sqlalchemy import create_engine
+import pandas as pd
+
 
 def connectToDatabase():
     engine = create_engine(f'postgresql+psycopg2://{config.getDatabaseUser()}:{config.getDatabasePassword()}@{config.getDatabaseHost()}:{config.getDatabasePort()}/{config.DB_DBNAME}')
@@ -32,29 +34,29 @@ def configureDatabase():
 
 
 # Create databse will set the database as the selected database
-def createDatabase(name):
+def createDatabase(databaseName):
     # check if the database exists
-    if name in getAllDatabasesProjects():
-        raise Exception(f'The database "{name}" already exists.')
+    if databaseName in getAllDatabasesProjects():
+        raise Exception(f'The database "{databaseName}" already exists.')
     else:
         conn = connectToPostgres()
-        conn.execution_options(isolation_level="AUTOCOMMIT").execute(f'CREATE DATABASE "{name}";')
+        conn.execution_options(isolation_level="AUTOCOMMIT").execute(f'CREATE DATABASE "{databaseName}";')
         conn.close()
         
-        selectDatabase(name, False)
+        selectDatabase(databaseName, False)
         configureDatabase()
-        print(f'Database "{name}" created.')
+        print(f'Database "{databaseName}" created.')
 
 
 # Select database that will be used in the project
-def selectDatabase(name, verbose=True):
+def selectDatabase(databaseName, verbose=True):
     # check if the database exists
-    if name not in getAllDatabasesProjects():
-        raise Exception(f'The database "{name}" does not exist.')
+    if databaseName not in getAllDatabasesProjects():
+        raise Exception(f'The database "{databaseName}" does not exist.')
     else:
-        config.DB_DBNAME = name
+        config.DB_DBNAME = databaseName
         if verbose:
-            print(f'Database "{name}" selected.')
+            print(f'Database "{databaseName}" selected.')
         
 
 def getAllDatabasesProjects():
@@ -75,11 +77,20 @@ def getTablesFromDatabase():
     return [table[0] for table in tables.fetchall()]
 
 
-def deleteTable(name):
+def deleteTable(tableName):
     conn = connectToDatabase()
     # check if the table exists
-    if name in getTablesFromDatabase():
-        conn.execute(f'DROP TABLE "{name}";')
-        print(f'Table "{name}" deleted.')
+    if tableName in getTablesFromDatabase():
+        conn.execute(f'DROP TABLE "{tableName}";')
+        print(f'Table "{tableName}" deleted.')
     else:
-        raise Exception(f'The table "{name}" does not exist.')
+        raise Exception(f'The table "{tableName}" does not exist.')
+
+
+# Returns a dataframe with the data from the table
+def getDatabaseTableDataframe(tableName):
+    conn = connectToDatabase()
+    if tableName in getTablesFromDatabase():
+        return pd.read_sql(f'SELECT * FROM "{tableName}";', conn)
+    else:
+        raise Exception(f'The table "{tableName}" does not exist.')
