@@ -54,7 +54,7 @@ ___
 
 {% endmethod %}
 
-#### Step 3: Create a database with a backup file
+#### Step 3: Create a database
 
 {% method %}
 
@@ -72,29 +72,6 @@ ___
 ![Postgre create database](https://raw.githubusercontent.com/gabRpt/matsim-output-postgreSQL-converter/main/resources/docs/getting-started/postgre_create_db_2.png)
 
 {% endmethod %}
-{% method %}
-
-* Right-click on the new database and select "Restore...".
-{% common %}
-![Postgre restore database](https://raw.githubusercontent.com/gabRpt/matsim-output-postgreSQL-converter/main/resources/docs/getting-started/postgre_restore_1.png)
-
-{% endmethod %}
-{% method %}
-
-* In the "Restore" window, select "Custom or tar" as the format and click in the field below to browse for the backup file.
-
-* Navigate to the directory where the backup file is located (./resources/setup/[databaseBackupPostgresCustom](https://github.com/gabRpt/matsim-output-postgreSQL-converter/blob/main/resources/setup/databaseBackupPostgresCustom "databaseBackupPostgresCustom")) and select the backup file.
-{% common %}
-![Postgre restore database](https://raw.githubusercontent.com/gabRpt/matsim-output-postgreSQL-converter/main/resources/docs/getting-started/postgre_restore_2.png)
-
-{% endmethod %}
-{% method %}
-
-* Click "Restore" to restore the database from the backup file.
-{% common %}
-![Postgre restore database](https://raw.githubusercontent.com/gabRpt/matsim-output-postgreSQL-converter/main/resources/docs/getting-started/postgre_restore_3.png)
-
-{% endmethod %}
 
 ___
 
@@ -108,10 +85,10 @@ ___
 
 * Open Anaconda Navigator and navigate to the `Environments` tab in the left panel.
 
-* Click on the `Import` button and select the matsimConverterEnv.yaml file located in the `./resources/setup/` folder of the cloned repository.
+* Click on the `Create` button and enter a name for the new environment.
 
 {% common %}
-![Anaconda import environment](https://raw.githubusercontent.com/gabRpt/matsim-output-postgreSQL-converter/main/resources/docs/getting-started/anaconda_import_env.png)
+![Anaconda create environment](https://raw.githubusercontent.com/gabRpt/matsim-output-postgreSQL-converter/main/resources/docs/getting-started/anaconda_create_env.png)
 {% endmethod %}
 
 {% method %}
@@ -124,8 +101,9 @@ ___
 
 {% endmethod %}
 {% method %}
+TODO MODIFIER LE PIP INSTALL
 
-* Open a terminal in the IDE and run the command `pip install ./resources/setup/matsim_tools-1.0.5-py3-none-any.whl` to install the required matsim_tools package. **Please verify that you are installing the lastest version available in ./resources/setup/**
+* Open a terminal in the IDE and run the command `pip install ./resources/setup/furbain-1.0.0-py3-none-any.whl` to install the required matsim_tools package. **Please verify that you are installing the lastest version available in ./resources/setup/**
 
 {% endmethod %}
 
