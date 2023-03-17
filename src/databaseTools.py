@@ -65,7 +65,7 @@ def getAllDatabasesProjects():
     return [row[0] for row in result.fetchall()]
 
 
-def executeSQLOnDatabase(queryString):
+def executeSQLQueryOnDatabase(queryString):
     conn = connectToDatabase()
     result = conn.execute(queryString)
     return result.fetchall()

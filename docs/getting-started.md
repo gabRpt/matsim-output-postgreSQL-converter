@@ -101,7 +101,7 @@ ___
 
 {% endmethod %}
 {% method %}
-TODO MODIFIER LE PIP INSTALL
+TODO MODIFY PIP INSTALL
 
 * Open a terminal in the IDE and run the command `pip install ./resources/setup/furbain-1.0.0-py3-none-any.whl` to install the required matsim_tools package. **Please verify that you are installing the lastest version available in ./resources/setup/**
 
@@ -111,8 +111,4 @@ ___
 
 ## Configuration
 
-In [config.py](https://github.com/gabRpt/matsim-output-postgreSQL-converter/blob/main/src/config.py "config.py") file, edit the commented constants
-
-* PATH_SIMULATION_OUTPUT
-* DB_CONNECTION_STRING
-* DB_SRID
+TODO

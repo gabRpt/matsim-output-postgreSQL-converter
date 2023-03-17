@@ -1,3 +1,7 @@
+# Documentation
+
+___
+
 # How to maintain this documentation
 
 The documentation is written in [Markdown](https://en.wikipedia.org/wiki/Markdown) and is built using [HonKit](https://honkit.netlify.app/). The documentation is hosted on [GitHub Pages](https://pages.github.com/).

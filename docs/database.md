@@ -1,4 +1,7 @@
 # Database
+
+___
+
 ## Database structure
 You can see the following diagram more in details at https://dbdiagram.io/d/62bc660c69be0b672c6841b3
 

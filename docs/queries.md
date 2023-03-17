@@ -1,9 +1,11 @@
 # Queries
 
-
 ___
 
-
+```python
+from furbain import queries
+```
+___
 
 ## Agent activity
 {% method %}
@@ -47,6 +49,7 @@ __Output :__
 * `total_time_spent` : total time spent by the person in the activity
 * `time_spent_in_interval` : time spent by the person in the activity in the interval
 
+{% common %}
 ![Agent activity output](https://raw.githubusercontent.com/gabRpt/matsim-output-postgreSQL-converter/main/resources/docs/queries/agent_activity_output.png)
 
 {% endmethod %}
@@ -101,7 +104,8 @@ _**A detailed documentation on how to create a scheme in Arabesque can be found 
 ___
 
 ## Activity Sequences
-Get the activity sequences of agents during given timespan and zone
+{% method %}
+_Get the activity sequences of agents during given timespan and zone_
 
 In [main.py](https://github.com/gabRpt/matsim-output-postgreSQL-converter/blob/main/src/main.py "main.py") uncomment the lines below `========= Activity Sequences =========`. Edit the parameters of the function `queries.activitySequences.activitySequences` :
 * `filepath` : Path to the **geojson** file containing **only one** zone consider (eg: [1zone.geojson](https://github.com/gabRpt/matsim-output-postgreSQL-converter/blob/main/resources/sample/1zone.geojson))
@@ -112,6 +116,7 @@ In [main.py](https://github.com/gabRpt/matsim-output-postgreSQL-converter/blob/m
 * `createTableInDatabase` : if true, creates a table in the database with the activity sequences, the name of the table can be defined in the config file (boolean default: `False`)
 * `nbAgentsToProcess` : number of agents to process, if set at 100 it will process the first 100 agents. If set at -1 it will process all agents (int default: `-1`)
 
+{% common %}
 Returns a dataframe with all the activity sequences of all the agents that have **at least one** activity in the given zone during the given timespan.
 The dataframe has the following columns :
 
@@ -124,3 +129,4 @@ The dataframe has the following columns :
 * `mainActivityStartTime` : start time of the activity the agent spent the most time in during the current period
 * `mainActivityEndTime` : end time of the activity the agent spent the most time in during the current period
 * `timeSpentInMainActivity` : time spent by the agent in the activity the agent spent the most time in during the current period
+{% endmethod %}
