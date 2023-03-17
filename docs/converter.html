@@ -292,12 +292,12 @@
             
         </li>
     
-        <li class="chapter " data-level="1.6" data-path="tools.html">
+        <li class="chapter " data-level="1.6" data-path="databaseTools.html">
             
-                <a href="tools.html#tools">
+                <a href="databaseTools.html#database-tools">
             
                     
-                    Tools
+                    Database tools
             
                 </a>
             
@@ -377,9 +377,55 @@
                                 <section class="normal markdown-section">
                                 
                                 <h1 id="converter">Converter</h1>
-<p>In <a href="https://github.com/gabRpt/matsim-output-postgreSQL-converter/blob/main/src/main.py" title="main.py" target="_blank">main.py</a> edit the array <code>tablesToImport</code> indicating which tables of the database will be imported.
-Then uncomment the lines below <code>========= IMPORT =========</code></p>
-<p>Check in the database if the tables have been imported correctly.</p>
+<hr>
+<p>Code example for tables importation :</p>
+<pre><code class="lang-python"><span class="hljs-keyword">from</span> datetime <span class="hljs-keyword">import</span> datetime
+<span class="hljs-keyword">from</span> furbain <span class="hljs-keyword">import</span> converter
+
+
+<span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">launchImport</span>(<span class="hljs-params">name</span>):</span>
+    currentStartTime = datetime.now()
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;Importing <span class="hljs-subst">{name}</span>...&quot;</span>, end=<span class="hljs-string">&quot;&quot;</span>, flush=<span class="hljs-literal">True</span>)
+
+    <span class="hljs-keyword">if</span> name == <span class="hljs-string">&quot;vehicles&quot;</span>:
+        converter.vehicles.importVehicles()
+    <span class="hljs-keyword">elif</span> name == <span class="hljs-string">&quot;households&quot;</span>:
+        converter.households.importHouseholds()
+    <span class="hljs-keyword">elif</span> name == <span class="hljs-string">&quot;persons&quot;</span>:
+        converter.persons.importPersons()
+    <span class="hljs-keyword">elif</span> name == <span class="hljs-string">&quot;networkLinks&quot;</span>:
+        converter.networkLinks.importNetworkLinks()
+    <span class="hljs-keyword">elif</span> name == <span class="hljs-string">&quot;facilities&quot;</span>:
+        converter.facilities.importFacilities()
+    <span class="hljs-keyword">elif</span> name == <span class="hljs-string">&quot;trips&quot;</span>:
+        converter.trips.importTrips()
+    <span class="hljs-keyword">elif</span> name == <span class="hljs-string">&quot;activities&quot;</span>:
+        converter.activities.importActivities()
+    <span class="hljs-keyword">elif</span> name == <span class="hljs-string">&quot;events&quot;</span>:
+        converter.events.importEvents(timeStepInMinutes=<span class="hljs-number">10</span>)
+    <span class="hljs-keyword">elif</span> name == <span class="hljs-string">&quot;buildings&quot;</span>:
+        converter.buildings.importBuildings()
+
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot; Done in <span class="hljs-subst">{<span class="hljs-built_in">str</span>(datetime.now() - currentStartTime)[:-<span class="hljs-number">5</span>]}</span> !&quot;</span>)
+
+
+tablesToImport = [
+    <span class="hljs-string">&quot;vehicles&quot;</span>,
+    <span class="hljs-string">&quot;households&quot;</span>,
+    <span class="hljs-string">&quot;persons&quot;</span>,
+    <span class="hljs-string">&quot;networkLinks&quot;</span>,
+    <span class="hljs-string">&quot;facilities&quot;</span>,
+    <span class="hljs-string">&quot;trips&quot;</span>,
+    <span class="hljs-string">&quot;activities&quot;</span>,
+    <span class="hljs-string">&quot;events&quot;</span>,
+    <span class="hljs-string">&quot;buildings&quot;</span>,
+]
+
+<span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;========== STARTING IMPORTATIONS ==========&quot;</span>)
+<span class="hljs-keyword">for</span> table <span class="hljs-keyword">in</span> tablesToImport:
+    launchImport(table)
+<span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;========== IMPORTED IN <span class="hljs-subst">{<span class="hljs-built_in">str</span>(datetime.now() - overallStartTime)[:-<span class="hljs-number">5</span>]}</span> ==========&quot;</span>)
+</code></pre>
 
                                 
                                 </section>
@@ -413,7 +459,7 @@ Then uncomment the lines below <code>========= IMPORT =========</code></p>
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Converter","level":"1.4","depth":1,"next":{"title":"Documentation","level":"1.7","depth":1,"path":"documentation.md","ref":"documentation.md","articles":[]},"previous":{"title":"Getting Started","level":"1.2","depth":1,"path":"getting-started.md","ref":"getting-started.md","articles":[{"title":"First thing to do","level":"1.2.1","depth":2,"anchor":"#first-thing-to-do","path":"getting-started.md","ref":"getting-started.md#first-thing-to-do","articles":[]},{"title":"Setup the database","level":"1.2.2","depth":2,"anchor":"#setup-the-database","path":"getting-started.md","ref":"getting-started.md#setup-the-database","articles":[]},{"title":"Setup the environment","level":"1.2.3","depth":2,"anchor":"#setup-the-environment","path":"getting-started.md","ref":"getting-started.md#setup-the-environment","articles":[]},{"title":"Configuration","level":"1.2.4","depth":2,"anchor":"#configuration","path":"getting-started.md","ref":"getting-started.md#configuration","articles":[]}]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["theme-api"],"pluginsConfig":{"theme-api":{"languages":[],"split":true,"theme":"light"},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"embedFonts":false},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"converter.md","mtime":"2022-11-08T14:31:55.263Z","type":"markdown"},"gitbook":{"version":"4.0.4","time":"2023-02-27T11:22:21.040Z"},"basePath":".","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Converter","level":"1.4","depth":1,"next":{"title":"Documentation","level":"1.7","depth":1,"path":"documentation.md","ref":"documentation.md","articles":[]},"previous":{"title":"Getting Started","level":"1.2","depth":1,"path":"getting-started.md","ref":"getting-started.md","articles":[{"title":"First thing to do","level":"1.2.1","depth":2,"anchor":"#first-thing-to-do","path":"getting-started.md","ref":"getting-started.md#first-thing-to-do","articles":[]},{"title":"Setup the database","level":"1.2.2","depth":2,"anchor":"#setup-the-database","path":"getting-started.md","ref":"getting-started.md#setup-the-database","articles":[]},{"title":"Setup the environment","level":"1.2.3","depth":2,"anchor":"#setup-the-environment","path":"getting-started.md","ref":"getting-started.md#setup-the-environment","articles":[]},{"title":"Configuration","level":"1.2.4","depth":2,"anchor":"#configuration","path":"getting-started.md","ref":"getting-started.md#configuration","articles":[]}]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["theme-api"],"pluginsConfig":{"theme-api":{"languages":[],"split":true,"theme":"light"},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"embedFonts":false},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"converter.md","mtime":"2023-03-16T15:27:55.495Z","type":"markdown"},"gitbook":{"version":"4.0.4","time":"2023-03-17T15:26:21.875Z"},"basePath":".","book":{"language":""}});
         });
     </script>
 </div>

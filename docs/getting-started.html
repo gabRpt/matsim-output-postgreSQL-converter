@@ -292,12 +292,12 @@
             
         </li>
     
-        <li class="chapter " data-level="1.6" data-path="tools.html">
+        <li class="chapter " data-level="1.6" data-path="databaseTools.html">
             
-                <a href="tools.html#tools">
+                <a href="databaseTools.html#database-tools">
             
                     
-                    Tools
+                    Database tools
             
                 </a>
             
@@ -427,7 +427,7 @@
 </div><div class="api-method-code"><div class="api-method-example"><p><img src="https://raw.githubusercontent.com/gabRpt/matsim-output-postgreSQL-converter/main/resources/docs/getting-started/postgre_binay_path.png" alt="Postgre setup binary path"></p>
 </div></div></div>
 
-<h4 id="step-3-create-a-database-with-a-backup-file">Step 3: Create a database with a backup file</h4>
+<h4 id="step-3-create-a-database">Step 3: Create a database</h4>
 <div class="api-method"><div class="api-method-definition"><ul>
 <li>In pgAdmin4, on the left panel, right-click on &quot;Databases&quot; and select &quot;Create&quot; &gt; &quot;Database&quot;.</li>
 </ul>
@@ -441,24 +441,6 @@
 </ul>
 </div><div class="api-method-code"><div class="api-method-example"><p><img src="https://raw.githubusercontent.com/gabRpt/matsim-output-postgreSQL-converter/main/resources/docs/getting-started/postgre_create_db_2.png" alt="Postgre create database"></p>
 </div></div></div>
-<div class="api-method"><div class="api-method-definition"><ul>
-<li>Right-click on the new database and select &quot;Restore...&quot;.</li>
-</ul>
-</div><div class="api-method-code"><div class="api-method-example"><p><img src="https://raw.githubusercontent.com/gabRpt/matsim-output-postgreSQL-converter/main/resources/docs/getting-started/postgre_restore_1.png" alt="Postgre restore database"></p>
-</div></div></div>
-<div class="api-method"><div class="api-method-definition"><ul>
-<li><p>In the &quot;Restore&quot; window, select &quot;Custom or tar&quot; as the format and click in the field below to browse for the backup file.</p>
-</li>
-<li><p>Navigate to the directory where the backup file is located (./resources/setup/<a href="https://github.com/gabRpt/matsim-output-postgreSQL-converter/blob/main/resources/setup/databaseBackupPostgresCustom" title="databaseBackupPostgresCustom" target="_blank">databaseBackupPostgresCustom</a>) and select the backup file.</p>
-</li>
-</ul>
-</div><div class="api-method-code"><div class="api-method-example"><p><img src="https://raw.githubusercontent.com/gabRpt/matsim-output-postgreSQL-converter/main/resources/docs/getting-started/postgre_restore_2.png" alt="Postgre restore database"></p>
-</div></div></div>
-<div class="api-method"><div class="api-method-definition"><ul>
-<li>Click &quot;Restore&quot; to restore the database from the backup file.</li>
-</ul>
-</div><div class="api-method-code"><div class="api-method-example"><p><img src="https://raw.githubusercontent.com/gabRpt/matsim-output-postgreSQL-converter/main/resources/docs/getting-started/postgre_restore_3.png" alt="Postgre restore database"></p>
-</div></div></div>
 
 <hr>
 <h2 id="setup-the-environment">Setup the environment</h2>
@@ -469,10 +451,10 @@
 <div class="api-method"><div class="api-method-definition"><ul>
 <li><p>Open Anaconda Navigator and navigate to the <code>Environments</code> tab in the left panel.</p>
 </li>
-<li><p>Click on the <code>Import</code> button and select the matsimConverterEnv.yaml file located in the <code>./resources/setup/</code> folder of the cloned repository.</p>
+<li><p>Click on the <code>Create</code> button and enter a name for the new environment.</p>
 </li>
 </ul>
-</div><div class="api-method-code"><div class="api-method-example"><p><img src="https://raw.githubusercontent.com/gabRpt/matsim-output-postgreSQL-converter/main/resources/docs/getting-started/anaconda_import_env.png" alt="Anaconda import environment"></p>
+</div><div class="api-method-code"><div class="api-method-example"><p><img src="https://raw.githubusercontent.com/gabRpt/matsim-output-postgreSQL-converter/main/resources/docs/getting-started/anaconda_create_env.png" alt="Anaconda create environment"></p>
 </div></div></div>
 
 <div class="api-method"><div class="api-method-definition"><ul>
@@ -483,19 +465,15 @@
 </ul>
 </div><div class="api-method-code"><div class="api-method-example"><p><img src="https://raw.githubusercontent.com/gabRpt/matsim-output-postgreSQL-converter/main/resources/docs/getting-started/anaconda_select_env.png" alt="Anaconda select environment"></p>
 </div></div></div>
-<div class="api-method"><div class="api-method-definition"><ul>
-<li>Open a terminal in the IDE and run the command <code>pip install ./resources/setup/matsim_tools-1.0.5-py3-none-any.whl</code> to install the required matsim_tools package. <strong>Please verify that you are installing the lastest version available in ./resources/setup/</strong></li>
+<div class="api-method"><div class="api-method-definition"><p>TODO MODIFY PIP INSTALL</p>
+<ul>
+<li>Open a terminal in the IDE and run the command <code>pip install ./resources/setup/furbain-1.0.0-py3-none-any.whl</code> to install the required matsim_tools package. <strong>Please verify that you are installing the lastest version available in ./resources/setup/</strong></li>
 </ul>
 </div><div class="api-method-code"></div></div>
 
 <hr>
 <h2 id="configuration">Configuration</h2>
-<p>In <a href="https://github.com/gabRpt/matsim-output-postgreSQL-converter/blob/main/src/config.py" title="config.py" target="_blank">config.py</a> file, edit the commented constants</p>
-<ul>
-<li>PATH_SIMULATION_OUTPUT</li>
-<li>DB_CONNECTION_STRING</li>
-<li>DB_SRID</li>
-</ul>
+<p>TODO</p>
 
                                 
                                 </section>
@@ -529,7 +507,7 @@
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Getting Started","level":"1.2","depth":1,"next":{"title":"Documentation","level":"1.7","depth":1,"path":"documentation.md","ref":"documentation.md","articles":[]},"previous":{"title":"Introduction","level":"1.1","depth":1,"path":"README.md","ref":"README.md","articles":[]},"articles":[{"title":"First thing to do","level":"1.2.1","depth":2,"anchor":"#first-thing-to-do","path":"getting-started.md","ref":"getting-started.md#first-thing-to-do","articles":[]},{"title":"Setup the database","level":"1.2.2","depth":2,"anchor":"#setup-the-database","path":"getting-started.md","ref":"getting-started.md#setup-the-database","articles":[]},{"title":"Setup the environment","level":"1.2.3","depth":2,"anchor":"#setup-the-environment","path":"getting-started.md","ref":"getting-started.md#setup-the-environment","articles":[]},{"title":"Configuration","level":"1.2.4","depth":2,"anchor":"#configuration","path":"getting-started.md","ref":"getting-started.md#configuration","articles":[]}],"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["theme-api"],"pluginsConfig":{"theme-api":{"languages":[],"split":true,"theme":"light"},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"embedFonts":false},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"getting-started.md","mtime":"2023-02-16T15:22:52.397Z","type":"markdown"},"gitbook":{"version":"4.0.4","time":"2023-02-27T11:22:21.040Z"},"basePath":".","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Getting Started","level":"1.2","depth":1,"next":{"title":"Documentation","level":"1.7","depth":1,"path":"documentation.md","ref":"documentation.md","articles":[]},"previous":{"title":"Introduction","level":"1.1","depth":1,"path":"README.md","ref":"README.md","articles":[]},"articles":[{"title":"First thing to do","level":"1.2.1","depth":2,"anchor":"#first-thing-to-do","path":"getting-started.md","ref":"getting-started.md#first-thing-to-do","articles":[]},{"title":"Setup the database","level":"1.2.2","depth":2,"anchor":"#setup-the-database","path":"getting-started.md","ref":"getting-started.md#setup-the-database","articles":[]},{"title":"Setup the environment","level":"1.2.3","depth":2,"anchor":"#setup-the-environment","path":"getting-started.md","ref":"getting-started.md#setup-the-environment","articles":[]},{"title":"Configuration","level":"1.2.4","depth":2,"anchor":"#configuration","path":"getting-started.md","ref":"getting-started.md#configuration","articles":[]}],"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["theme-api"],"pluginsConfig":{"theme-api":{"languages":[],"split":true,"theme":"light"},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"embedFonts":false},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"getting-started.md","mtime":"2023-03-16T15:28:13.463Z","type":"markdown"},"gitbook":{"version":"4.0.4","time":"2023-03-17T15:26:21.875Z"},"basePath":".","book":{"language":""}});
         });
     </script>
 </div>
