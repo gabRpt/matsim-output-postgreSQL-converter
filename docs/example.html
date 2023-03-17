@@ -3,7 +3,7 @@
 <html lang="" >
     <head>
         <meta charset="UTF-8">
-        <title>Database tools · HonKit</title>
+        <title>Example · HonKit</title>
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="description" content="">
         <meta name="generator" content="HonKit 4.0.4">
@@ -471,7 +471,7 @@
     <!-- Title -->
     <h1>
         <i class="fa fa-circle-o-notch fa-spin"></i>
-        <a href="." >Database tools</a>
+        <a href="." >Example</a>
     </h1>
 </div>
 
@@ -486,99 +486,145 @@
     
                                 <section class="normal markdown-section">
                                 
-                                <h1 id="database-tools">Database Tools</h1>
+                                <h1 id="example">Example</h1>
 <hr>
-<pre><code class="lang-python"><span class="hljs-keyword">from</span> furbain <span class="hljs-keyword">import</span> databaseTools
+<h2 id="package-usage-example">Package usage example</h2>
+<pre><code class="lang-python"><span class="hljs-keyword">from</span> datetime <span class="hljs-keyword">import</span> datetime
+<span class="hljs-keyword">from</span> furbain <span class="hljs-keyword">import</span> queries
+<span class="hljs-keyword">from</span> furbain <span class="hljs-keyword">import</span> converter
+<span class="hljs-keyword">from</span> furbain <span class="hljs-keyword">import</span> config
+<span class="hljs-keyword">from</span> furbain <span class="hljs-keyword">import</span> tools
+<span class="hljs-keyword">from</span> furbain <span class="hljs-keyword">import</span> databaseTools
+<span class="hljs-keyword">import</span> geopandas <span class="hljs-keyword">as</span> gpd
+
+
+<span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">main</span>():</span>
+    overallStartTime = datetime.now()
+
+    config.PATH_SIMULATION_OUTPUT = <span class="hljs-string">&apos;C:/Users/name/Documents/Furbain/data/matsim_nantes_edgt_20p/simulation_output&apos;</span>
+
+    config.PATH_ALLVEHICLES = config.PATH_SIMULATION_OUTPUT + <span class="hljs-string">&apos;/output_allvehicles.xml.gz&apos;</span>
+    config.PATH_EVENTS = config.PATH_SIMULATION_OUTPUT + <span class="hljs-string">&apos;/output_events.xml.gz&apos;</span>
+    config.PATH_FACILITIES = config.PATH_SIMULATION_OUTPUT + <span class="hljs-string">&apos;/output_facilities.xml.gz&apos;</span>
+    config.PATH_HOUSEHOLDS = config.PATH_SIMULATION_OUTPUT + <span class="hljs-string">&apos;/output_households.xml.gz&apos;</span>
+    config.PATH_LEGS = config.PATH_SIMULATION_OUTPUT + <span class="hljs-string">&apos;/output_legs.csv.gz&apos;</span>
+    config.PATH_NETWORK = config.PATH_SIMULATION_OUTPUT + <span class="hljs-string">&apos;/output_network.xml.gz&apos;</span>
+    config.PATH_PERSONS = config.PATH_SIMULATION_OUTPUT + <span class="hljs-string">&apos;/output_persons.csv.gz&apos;</span>
+    config.PATH_PLANS = config.PATH_SIMULATION_OUTPUT + <span class="hljs-string">&apos;/output_plans.xml.gz&apos;</span>
+    config.PATH_EXPERIENCED_PLANS = config.PATH_SIMULATION_OUTPUT + <span class="hljs-string">&apos;/output_experienced_plans.xml.gz&apos;</span>
+    config.PATH_TRIPS = config.PATH_SIMULATION_OUTPUT + <span class="hljs-string">&apos;/output_trips.csv.gz&apos;</span>
+    config.PATH_DETAILED_NETWORK = config.PATH_SIMULATION_OUTPUT + <span class="hljs-string">&apos;/detailed_network.csv&apos;</span>
+    config.PATH_BUILDINGS = config.PATH_SIMULATION_OUTPUT + <span class="hljs-string">&apos;/BUILDINGS.geojson&apos;</span>
+    config.ARABESQUE_GENERATED_FILES_DIRECTORY_PATH = <span class="hljs-string">&apos;./&apos;</span>
+
+    config.setDatabaseUser(<span class="hljs-string">&quot;postgres&quot;</span>)
+    config.setDatabasePassword(<span class="hljs-string">&quot;postgres&quot;</span>)
+    config.setDatabaseHost(<span class="hljs-string">&quot;localhost&quot;</span>)
+    config.setDatabasePort(<span class="hljs-string">&quot;5432&quot;</span>)
+    config.setDatabaseSRID(<span class="hljs-string">&quot;2154&quot;</span>)
+
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;====== CREATING DATABASE ======&quot;</span>)
+    databaseTools.createDatabase(<span class="hljs-string">&quot;furbain&quot;</span>)
+
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;\n====== LIST DATABASES ======&quot;</span>)
+    projectList = databaseTools.getAllDatabasesProjects()
+    <span class="hljs-built_in">print</span>(projectList)
+
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;\n====== SELECT DATABASE ======&quot;</span>)
+    databaseTools.selectDatabase(<span class="hljs-string">&quot;furbain&quot;</span>)
+
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;\n====== LIST TABLES ======&quot;</span>)
+    tables = databaseTools.getTablesFromDatabase()
+    <span class="hljs-built_in">print</span>(tables)
+
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;====== DROP TABLE ======&quot;</span>)
+    databaseTools.deleteTable(<span class="hljs-string">&quot;vehicle&quot;</span>)
+    databaseTools.deleteTable(<span class="hljs-string">&quot;vehicleType&quot;</span>)
+
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;\n====== GET TABLE AS A DATAFRAME ======&quot;</span>)
+    gpdDf = databaseTools.getDatabaseTableDataframe(<span class="hljs-string">&quot;networkLink&quot;</span>)
+    <span class="hljs-built_in">print</span>(gpdDf)
+
+    <span class="hljs-comment"># results = databaseTools.executeSQLOnDatabase(&apos;SELECT * from &quot;vehicleType&quot;&apos;)</span>
+
+    <span class="hljs-comment"># =====================================================================</span>
+    <span class="hljs-comment"># ========================   DATABASE IMPORT   ========================</span>
+    <span class="hljs-comment"># =====================================================================</span>
+    <span class="hljs-comment"># Select the tables you want to import</span>
+    <span class="hljs-comment"># =&gt; Import in the right order to avoid foreign key constraints problems</span>
+    tablesToImport = [
+        <span class="hljs-string">&quot;vehicles&quot;</span>,
+        <span class="hljs-string">&quot;households&quot;</span>,
+        <span class="hljs-string">&quot;persons&quot;</span>,
+        <span class="hljs-string">&quot;networkLinks&quot;</span>,
+        <span class="hljs-string">&quot;facilities&quot;</span>,
+        <span class="hljs-string">&quot;trips&quot;</span>,
+        <span class="hljs-string">&quot;activities&quot;</span>,
+        <span class="hljs-string">&quot;events&quot;</span>,
+        <span class="hljs-string">&quot;buildings&quot;</span>,
+    ]
+
+    <span class="hljs-comment"># ========= IMPORT =========</span>
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;========== STARTING IMPORTATIONS ==========&quot;</span>)
+    <span class="hljs-keyword">for</span> table <span class="hljs-keyword">in</span> tablesToImport:
+        launchImport(table)
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;========== IMPORTED IN <span class="hljs-subst">{<span class="hljs-built_in">str</span>(datetime.now() - overallStartTime)[:-<span class="hljs-number">5</span>]}</span> ==========&quot;</span>)
+
+
+
+
+    <span class="hljs-comment"># =====================================================================</span>
+    <span class="hljs-comment"># ============================   QUERIES   ============================</span>
+    <span class="hljs-comment"># =====================================================================</span>
+
+    <span class="hljs-comment"># ========= Agents activities dataframes =========</span>
+    <span class="hljs-comment"># Get dataframes of the activities of agents in each zone during given timespan</span>
+    allZonesDataframes = queries.agentActivity(<span class="hljs-string">&quot;./5zones.geojson&quot;</span>, startTime=<span class="hljs-string">&apos;18:00:00&apos;</span>, endTime=<span class="hljs-string">&apos;19:00:00&apos;</span>, strictTime=<span class="hljs-literal">False</span>)
+    <span class="hljs-keyword">for</span> df <span class="hljs-keyword">in</span> allZonesDataframes:
+        <span class="hljs-built_in">print</span>(df)
+
+
+    <span class="hljs-comment"># ========= OD Matrix =========</span>
+    <span class="hljs-comment"># Get the OD matrix of trips between zones during given timespan</span>
+    <span class="hljs-comment"># Generates csv files in &quot;output&quot; folder compatible with Arabesque http://arabesque.ifsttar.fr/  -&gt;  https://github.com/gflowiz/arabesque</span>
+    finalODMatrix = queries.odMatrix(<span class="hljs-string">&quot;./5zones.geojson&quot;</span>, startTime=<span class="hljs-string">&apos;14:30:00&apos;</span>, endTime=<span class="hljs-string">&apos;15:00:00&apos;</span>, ignoreArrivalTime=<span class="hljs-literal">True</span>, generateArabesqueFiles=<span class="hljs-literal">True</span>)
+    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> finalODMatrix:
+        <span class="hljs-built_in">print</span>(<span class="hljs-string">&apos;\t&apos;</span>.join(<span class="hljs-built_in">map</span>(<span class="hljs-built_in">str</span>, i)))
+
+    <span class="hljs-comment"># ========= Activity Sequences =========</span>
+    <span class="hljs-keyword">if</span> __name__ == <span class="hljs-string">&apos;__main__&apos;</span>:
+        resultDf = queries.activitySequences(<span class="hljs-string">&quot;./resources/sample/wholeCity.geojson&quot;</span>, startTime=<span class="hljs-string">&apos;00:00:00&apos;</span>, endTime=<span class="hljs-string">&apos;32:00:00&apos;</span>, interval=<span class="hljs-number">15</span>, createTableInDatabase=<span class="hljs-literal">True</span>, nbAgentsToProcess=<span class="hljs-number">200</span>)
+
+
+
+<span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">launchImport</span>(<span class="hljs-params">name</span>):</span>
+    currentStartTime = datetime.now()
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;Importing <span class="hljs-subst">{name}</span>...&quot;</span>, end=<span class="hljs-string">&quot;&quot;</span>, flush=<span class="hljs-literal">True</span>)
+
+    <span class="hljs-keyword">if</span> name == <span class="hljs-string">&quot;vehicles&quot;</span>:
+        converter.vehicles.importVehicles()
+    <span class="hljs-keyword">elif</span> name == <span class="hljs-string">&quot;households&quot;</span>:
+        converter.households.importHouseholds()
+    <span class="hljs-keyword">elif</span> name == <span class="hljs-string">&quot;persons&quot;</span>:
+        converter.persons.importPersons()
+    <span class="hljs-keyword">elif</span> name == <span class="hljs-string">&quot;networkLinks&quot;</span>:
+        converter.networkLinks.importNetworkLinks()
+    <span class="hljs-keyword">elif</span> name == <span class="hljs-string">&quot;facilities&quot;</span>:
+        converter.facilities.importFacilities()
+    <span class="hljs-keyword">elif</span> name == <span class="hljs-string">&quot;trips&quot;</span>:
+        converter.trips.importTrips()
+    <span class="hljs-keyword">elif</span> name == <span class="hljs-string">&quot;activities&quot;</span>:
+        converter.activities.importActivities()
+    <span class="hljs-keyword">elif</span> name == <span class="hljs-string">&quot;events&quot;</span>:
+        converter.events.importEvents(timeStepInMinutes=<span class="hljs-number">10</span>)
+    <span class="hljs-keyword">elif</span> name == <span class="hljs-string">&quot;buildings&quot;</span>:
+        converter.buildings.importBuildings()
+
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot; Done in <span class="hljs-subst">{<span class="hljs-built_in">str</span>(datetime.now() - currentStartTime)[:-<span class="hljs-number">5</span>]}</span> !&quot;</span>)
+
+main()
 </code></pre>
-<hr>
-<h2 id="createdatabasedatabasename">createDatabase(databaseName)</h2>
-<div class="api-method"><div class="api-method-definition"><p>Function to create a database. It will set the created database as the selected database.<br><strong>Parameters :</strong></p>
-<ul>
-<li><code>databaseName</code> : Name of the database to create</li>
-</ul>
-</div><div class="api-method-code"><div class="api-method-example"><p><strong>Output :</strong></p>
-<ul>
-<li><code>Database &quot;{databaseName}&quot; created.</code> if success</li>
-<li><code>The database &quot;{databaseName}&quot; already exists.</code> an exception raised</li>
-</ul>
-</div></div></div>
 
-
-
-<h2 id="selectdatabasedatabasename-verbosetrue">selectDatabase(databaseName, verbose=True)</h2>
-<div class="api-method"><div class="api-method-definition"><p>Function to select database that will be used in the project<br><strong>Parameters :</strong></p>
-<ul>
-<li><code>databaseName</code> : Name of the database to select (string)</li>
-<li><code>verbose</code> : print a confirmation messahe (boolean default: <code>True</code>)</li>
-</ul>
-</div><div class="api-method-code"><div class="api-method-example"><p><strong>Output :</strong></p>
-<ul>
-<li><code>Database &quot;{databaseName}&quot; selected.</code> if success</li>
-<li><code>The database &quot;{databaseName}&quot; does not exist.</code> an exception raised</li>
-</ul>
-</div></div></div>
-
-
-
-<h2 id="executesqlqueryondatabasequerystring">executeSQLQueryOnDatabase(queryString)</h2>
-<div class="api-method"><div class="api-method-definition"><p>Function to execute a SQL query on the selected database<br><strong>Parameters :</strong></p>
-<ul>
-<li><code>queryString</code> : SQL query to execute (string)</li>
-</ul>
-</div><div class="api-method-code"><div class="api-method-example"><p><strong>Output :</strong></p>
-<ul>
-<li>The results of the query</li>
-</ul>
-</div></div></div>
-
-
-
-<h2 id="getalldatabasesprojects">getAllDatabasesProjects()</h2>
-<div class="api-method"><div class="api-method-definition"><p>Function to get the name of all the databases in the project</p>
-</div><div class="api-method-code"><div class="api-method-example"><p><strong>Output :</strong></p>
-<ul>
-<li>A list of all the databases in the project</li>
-</ul>
-</div></div></div>
-
-
-
-<h2 id="gettablesfromdatabase">getTablesFromDatabase()</h2>
-<div class="api-method"><div class="api-method-definition"><p>Function to get the name of all the tables in the selected database</p>
-</div><div class="api-method-code"><div class="api-method-example"><p><strong>Output :</strong></p>
-<ul>
-<li>A list of all the tables in the selected database</li>
-</ul>
-</div></div></div>
-
-
-
-<h2 id="deletetabletablename">deleteTable(tableName)</h2>
-<div class="api-method"><div class="api-method-definition"><p>Function to delete a table from the selected database<br><strong>Parameters :</strong></p>
-<ul>
-<li><code>tableName</code> : Name of the table to delete (string)</li>
-</ul>
-</div><div class="api-method-code"><div class="api-method-example"><p><strong>Output :</strong></p>
-<ul>
-<li><code>Table &quot;{tableName}&quot; deleted.</code> if success</li>
-<li><code>The table &quot;{tableName}&quot; does not exist.</code> an exception raised</li>
-</ul>
-</div></div></div>
-
-
-
-<h1 id="getdatabasetabledataframetablename">getDatabaseTableDataframe(tableName)</h1>
-<div class="api-method"><div class="api-method-definition"><p>Function to get a dataframe of a table from the selected database
-<strong>Parameters :</strong></p>
-<ul>
-<li><code>tableName</code> : Name of the table to get (string)</li>
-</ul>
-</div><div class="api-method-code"><div class="api-method-example"><p><strong>Output :</strong></p>
-<ul>
-<li>A dataframe of the table if success</li>
-<li><code>The table &quot;{tableName}&quot; does not exist.</code> an exception raised</li>
-</ul>
-</div></div></div>
                                 
                                 </section>
                             
@@ -611,7 +657,7 @@
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Database tools","level":"1.6","depth":1,"next":{"title":"Documentation","level":"1.8","depth":1,"path":"documentation.md","ref":"documentation.md","articles":[]},"previous":{"title":"Getting Started","level":"1.2","depth":1,"path":"getting-started.md","ref":"getting-started.md","articles":[{"title":"First thing to do","level":"1.2.1","depth":2,"anchor":"#first-thing-to-do","path":"getting-started.md","ref":"getting-started.md#first-thing-to-do","articles":[]},{"title":"Setup the database","level":"1.2.2","depth":2,"anchor":"#setup-the-database","path":"getting-started.md","ref":"getting-started.md#setup-the-database","articles":[]},{"title":"Setup the environment","level":"1.2.3","depth":2,"anchor":"#setup-the-environment","path":"getting-started.md","ref":"getting-started.md#setup-the-environment","articles":[]},{"title":"Configuration","level":"1.2.4","depth":2,"anchor":"#configuration","path":"getting-started.md","ref":"getting-started.md#configuration","articles":[]}]},"articles":[{"title":"createDatabase()","level":"1.6.1","depth":2,"anchor":"#createdatabasedatabasename","path":"databaseTools.md","ref":"databaseTools.md#createdatabasedatabasename","articles":[]},{"title":"selectDatabase()","level":"1.6.2","depth":2,"anchor":"#selectdatabasedatabasename-verbosetrue","path":"databaseTools.md","ref":"databaseTools.md#selectdatabasedatabasename-verbosetrue","articles":[]},{"title":"executeSQLQueryOnDatabase()","level":"1.6.3","depth":2,"anchor":"#executesqlqueryondatabasequerystring","path":"databaseTools.md","ref":"databaseTools.md#executesqlqueryondatabasequerystring","articles":[]},{"title":"getAllDatabasesProjects()","level":"1.6.4","depth":2,"anchor":"#getalldatabasesprojects","path":"databaseTools.md","ref":"databaseTools.md#getalldatabasesprojects","articles":[]},{"title":"getTablesFromDatabase()","level":"1.6.5","depth":2,"anchor":"#gettablesfromdatabase","path":"databaseTools.md","ref":"databaseTools.md#gettablesfromdatabase","articles":[]},{"title":"deleteTable()","level":"1.6.6","depth":2,"anchor":"#deletetabletablename","path":"databaseTools.md","ref":"databaseTools.md#deletetabletablename","articles":[]},{"title":"getDatabaseTableDataframe()","level":"1.6.7","depth":2,"anchor":"#getdatabasetabledataframetablename","path":"databaseTools.md","ref":"databaseTools.md#getdatabasetabledataframetablename","articles":[]}],"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["theme-api"],"pluginsConfig":{"theme-api":{"languages":[],"split":true,"theme":"light"},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"embedFonts":false},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"databaseTools.md","mtime":"2023-03-17T15:22:27.346Z","type":"markdown"},"gitbook":{"version":"4.0.4","time":"2023-03-17T15:50:57.779Z"},"basePath":".","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Example","level":"1.7","depth":1,"next":{"title":"Documentation","level":"1.8","depth":1,"path":"documentation.md","ref":"documentation.md","articles":[]},"previous":{"title":"Getting Started","level":"1.2","depth":1,"path":"getting-started.md","ref":"getting-started.md","articles":[{"title":"First thing to do","level":"1.2.1","depth":2,"anchor":"#first-thing-to-do","path":"getting-started.md","ref":"getting-started.md#first-thing-to-do","articles":[]},{"title":"Setup the database","level":"1.2.2","depth":2,"anchor":"#setup-the-database","path":"getting-started.md","ref":"getting-started.md#setup-the-database","articles":[]},{"title":"Setup the environment","level":"1.2.3","depth":2,"anchor":"#setup-the-environment","path":"getting-started.md","ref":"getting-started.md#setup-the-environment","articles":[]},{"title":"Configuration","level":"1.2.4","depth":2,"anchor":"#configuration","path":"getting-started.md","ref":"getting-started.md#configuration","articles":[]}]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["theme-api"],"pluginsConfig":{"theme-api":{"languages":[],"split":true,"theme":"light"},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"embedFonts":false},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"example.md","mtime":"2023-03-17T15:47:15.264Z","type":"markdown"},"gitbook":{"version":"4.0.4","time":"2023-03-17T15:50:57.779Z"},"basePath":".","book":{"language":""}});
         });
     </script>
 </div>
