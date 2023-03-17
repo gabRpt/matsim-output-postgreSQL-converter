@@ -111,4 +111,4 @@ ___
 
 ## Configuration
 
-TODO
+TODO, ***for now see example section***

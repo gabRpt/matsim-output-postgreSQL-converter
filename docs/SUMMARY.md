@@ -20,6 +20,15 @@
     * [Activity Sequences](queries.md#activity-sequences)
 
 * [Database tools](databaseTools.md#database-tools)
+    * [createDatabase()](databaseTools.md#createdatabasedatabasename)
+    * [selectDatabase()](databaseTools.md#selectdatabasedatabasename-verbosetrue)
+    * [executeSQLQueryOnDatabase()](databaseTools.md#executesqlqueryondatabasequerystring)
+    * [getAllDatabasesProjects()](databaseTools.md#getalldatabasesprojects)
+    * [getTablesFromDatabase()](databaseTools.md#gettablesfromdatabase)
+    * [deleteTable()](databaseTools.md#deletetabletablename)
+    * [getDatabaseTableDataframe()](databaseTools.md#getdatabasetabledataframetablename)
+
+* [Example](example.md#package-usage-example)
 
 * [Documentation](documentation.md)
 * [Troubleshooting](troubleshooting.md)

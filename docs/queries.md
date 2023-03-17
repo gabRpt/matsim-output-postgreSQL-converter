@@ -11,9 +11,7 @@ ___
 {% method %}
 _Get dataframes of the activities of agents in each zone during given timespan_
 
-In [main.py](https://github.com/gabRpt/matsim-output-postgreSQL-converter/blob/main/src/main.py "main.py") uncomment the lines below `========= Agents activities dataframes =========`.
-Edit the parameters of the function `queries.agentActivity.agentActivity` :
-
+**Parameters :**
 * `filepath` : Path to the **geojson** file containing the different zones to consider (eg: [5zones.geojson](https://github.com/gabRpt/matsim-output-postgreSQL-converter/blob/main/resources/sample/5zones.geojson))
 * `start_time` : start time of the timespan (string default: `'00:00:00'`)
 * `end_time` : end time of the timespan (string default: `'32:00:00'`)
@@ -64,9 +62,7 @@ ___
 
 _Get od matrix of trips between zones during given timespan_
 
-In [main.py](https://github.com/gabRpt/matsim-output-postgreSQL-converter/blob/main/src/main.py "main.py") uncomment the lines below `========= OD Matrix =========`.
-Edit the parameters of the function `queries.odMatrix.odMatrix` :
-
+**Parameters :**
 * `filepath` : Path to the **geojson** file containing the different zones to consider (eg: [5zones.geojson](https://github.com/gabRpt/matsim-output-postgreSQL-converter/blob/main/resources/sample/5zones.geojson))
 * `start_time` : start time of the timespan (string default: `'00:00:00'`)
 * `end_time` : end time of the timespan (string default: `'32:00:00'`)
@@ -107,7 +103,7 @@ ___
 {% method %}
 _Get the activity sequences of agents during given timespan and zone_
 
-In [main.py](https://github.com/gabRpt/matsim-output-postgreSQL-converter/blob/main/src/main.py "main.py") uncomment the lines below `========= Activity Sequences =========`. Edit the parameters of the function `queries.activitySequences.activitySequences` :
+**Parameters :**
 * `filepath` : Path to the **geojson** file containing **only one** zone consider (eg: [1zone.geojson](https://github.com/gabRpt/matsim-output-postgreSQL-converter/blob/main/resources/sample/1zone.geojson))
 * `start_time` : start time of the timespan (string default: `'00:00:00'`)
 * `end_time` : end time of the timespan (string default: `'32:00:00'`)
