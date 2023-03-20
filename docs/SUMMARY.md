@@ -18,9 +18,9 @@
     * [Example](converter.md#example)
 
 * [Queries](queries.md#queries)
-    * [Agent Activity](queries.md#agent-activity)
-    * [OD Matrix](queries.md#od-matrix)
-    * [Activity Sequences](queries.md#activity-sequences)
+    * [agentActivity()](queries.md#agentactivity)
+    * [odMatrix()](queries.md#odmatrix)
+    * [activitySequences()](queries.md#activitysequences)
 
 * [Database tools](databaseTools.md#database-tools)
     * [createDatabase()](databaseTools.md#createdatabasedatabasename)

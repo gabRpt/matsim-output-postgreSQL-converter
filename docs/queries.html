@@ -295,10 +295,10 @@
     
         <li class="chapter " data-level="1.5.1" data-path="queries.html">
             
-                <a href="queries.html#agent-activity">
+                <a href="queries.html#agentactivity">
             
                     
-                    Agent Activity
+                    agentActivity()
             
                 </a>
             
@@ -308,10 +308,10 @@
     
         <li class="chapter " data-level="1.5.2" data-path="queries.html">
             
-                <a href="queries.html#od-matrix">
+                <a href="queries.html#odmatrix">
             
                     
-                    OD Matrix
+                    odMatrix()
             
                 </a>
             
@@ -321,10 +321,10 @@
     
         <li class="chapter " data-level="1.5.3" data-path="queries.html">
             
-                <a href="queries.html#activity-sequences">
+                <a href="queries.html#activitysequences">
             
                     
-                    Activity Sequences
+                    activitySequences()
             
                 </a>
             
@@ -536,8 +536,10 @@
 <pre><code class="lang-python"><span class="hljs-keyword">from</span> furbain <span class="hljs-keyword">import</span> queries
 </code></pre>
 <hr>
-<h2 id="agent-activity">Agent activity</h2>
+<h2 id="agentactivity">agentActivity()</h2>
 <div class="api-method"><div class="api-method-definition"><p><em>Get dataframes of the activities of agents in each zone during given timespan</em></p>
+<pre><code class="lang-python">agentActivity(filePath, startTime=<span class="hljs-string">&apos;00:00:00&apos;</span>, endTime=<span class="hljs-string">&apos;32:00:00&apos;</span>, strictTime=<span class="hljs-literal">False</span>)
+</code></pre>
 <p><strong>Parameters :</strong></p>
 <ul>
 <li><code>filepath</code> : Path to the <strong>geojson</strong> file containing the different zones to consider (eg: <a href="https://github.com/gabRpt/matsim-output-postgreSQL-converter/blob/main/resources/sample/5zones.geojson" target="_blank">5zones.geojson</a>)</li>
@@ -557,8 +559,8 @@
           an activity starting at 19:00:00 and ending at xx:xx:xx is NOT considered
 </code></pre></li>
 </ul>
-<p>Returns a list of dataframes, one dataframe per zone.</p>
 </div><div class="api-method-code"><div class="api-method-example"><p><strong>Output :</strong></p>
+<p>Returns a list of dataframes, one dataframe per zone.</p>
 <ul>
 <li><code>id</code> : id of the activity</li>
 <li><code>type</code> : type of the activity</li>
@@ -578,9 +580,11 @@
 </div></div></div>
 
 <hr>
-<h2 id="od-matrix">OD Matrix</h2>
+<h2 id="odmatrix">odMatrix()</h2>
 <h5 id="generate-the-od-matrix">Generate the od matrix</h5>
 <div class="api-method"><div class="api-method-definition"><p><em>Get od matrix of trips between zones during given timespan</em></p>
+<pre><code class="lang-python">odMatrix(filePath, startTime=<span class="hljs-string">&apos;00:00:00&apos;</span>, endTime=<span class="hljs-string">&apos;32:00:00&apos;</span>, ignoreArrivalTime=<span class="hljs-literal">True</span>, generateArabesqueFiles=<span class="hljs-literal">False</span>)
+</code></pre>
 <p><strong>Parameters :</strong></p>
 <ul>
 <li><code>filepath</code> : Path to the <strong>geojson</strong> file containing the different zones to consider (eg: <a href="https://github.com/gabRpt/matsim-output-postgreSQL-converter/blob/main/resources/sample/5zones.geojson" target="_blank">5zones.geojson</a>)</li>
@@ -597,6 +601,7 @@
 <li><code>generateArabesqueFiles</code> : if true, generates the files needed to create a scheme in <a href="http://arabesque.ifsttar.fr/" target="_blank">Arabesque</a> (boolean default: <code>False</code>)</li>
 </ul>
 </div><div class="api-method-code"><div class="api-method-example"><p><strong>Output :</strong></p>
+<p>A 2D array.</p>
 <p><img src="https://raw.githubusercontent.com/gabRpt/matsim-output-postgreSQL-converter/main/resources/docs/queries/OD_matrix_output.png" alt="OD Matrix output"></p>
 </div></div></div>
 
@@ -611,8 +616,10 @@ You will get 2 files :</p>
 </div><div class="api-method-code"></div></div>
 
 <hr>
-<h2 id="activity-sequences">Activity Sequences</h2>
+<h2 id="activitysequences">activitySequences()</h2>
 <div class="api-method"><div class="api-method-definition"><p><em>Get the activity sequences of agents during given timespan and zone</em></p>
+<pre><code class="lang-python">activitySequences(filePath, startTime=<span class="hljs-string">&apos;00:00:00&apos;</span>, endTime=<span class="hljs-string">&apos;32:00:00&apos;</span>, interval=<span class="hljs-number">15</span>, batchSize=<span class="hljs-number">10</span>, createTableInDatabase=<span class="hljs-literal">False</span>, nbAgentsToProcess=-<span class="hljs-number">1</span>)
+</code></pre>
 <p><strong>Parameters :</strong></p>
 <ul>
 <li><code>filepath</code> : Path to the <strong>geojson</strong> file containing <strong>only one</strong> zone consider (eg: <a href="https://github.com/gabRpt/matsim-output-postgreSQL-converter/blob/main/resources/sample/1zone.geojson" target="_blank">1zone.geojson</a>)</li>
@@ -623,7 +630,8 @@ You will get 2 files :</p>
 <li><code>createTableInDatabase</code> : if true, creates a table in the database with the activity sequences, the name of the table can be defined in the config file (boolean default: <code>False</code>)</li>
 <li><code>nbAgentsToProcess</code> : number of agents to process, if set at 100 it will process the first 100 agents. If set at -1 it will process all agents (int default: <code>-1</code>)</li>
 </ul>
-</div><div class="api-method-code"><div class="api-method-example"><p>Returns a dataframe with all the activity sequences of all the agents that have <strong>at least one</strong> activity in the given zone during the given timespan.
+</div><div class="api-method-code"><div class="api-method-example"><p><strong>Output :</strong></p>
+<p>Returns a dataframe with all the activity sequences of all the agents that have <strong>at least one</strong> activity in the given zone during the given timespan.
 The dataframe has the following columns :</p>
 <ul>
 <li><code>agentId</code> : id of the agent</li>
@@ -669,7 +677,7 @@ The dataframe has the following columns :</p>
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Queries","level":"1.5","depth":1,"next":{"title":"Documentation","level":"1.8","depth":1,"path":"documentation.md","ref":"documentation.md","articles":[]},"previous":{"title":"Getting Started","level":"1.2","depth":1,"path":"getting-started.md","ref":"getting-started.md","articles":[{"title":"First thing to do","level":"1.2.1","depth":2,"anchor":"#first-thing-to-do","path":"getting-started.md","ref":"getting-started.md#first-thing-to-do","articles":[]},{"title":"Setup the database","level":"1.2.2","depth":2,"anchor":"#setup-the-database","path":"getting-started.md","ref":"getting-started.md#setup-the-database","articles":[]},{"title":"Setup the environment","level":"1.2.3","depth":2,"anchor":"#setup-the-environment","path":"getting-started.md","ref":"getting-started.md#setup-the-environment","articles":[]},{"title":"Configuration","level":"1.2.4","depth":2,"anchor":"#configuration","path":"getting-started.md","ref":"getting-started.md#configuration","articles":[]}]},"articles":[{"title":"Agent Activity","level":"1.5.1","depth":2,"anchor":"#agent-activity","path":"queries.md","ref":"queries.md#agent-activity","articles":[]},{"title":"OD Matrix","level":"1.5.2","depth":2,"anchor":"#od-matrix","path":"queries.md","ref":"queries.md#od-matrix","articles":[]},{"title":"Activity Sequences","level":"1.5.3","depth":2,"anchor":"#activity-sequences","path":"queries.md","ref":"queries.md#activity-sequences","articles":[]}],"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["theme-api"],"pluginsConfig":{"theme-api":{"languages":[],"split":true,"theme":"light"},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"embedFonts":false},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"queries.md","mtime":"2023-03-17T15:43:23.166Z","type":"markdown"},"gitbook":{"version":"4.0.4","time":"2023-03-20T12:56:23.204Z"},"basePath":".","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Queries","level":"1.5","depth":1,"next":{"title":"Documentation","level":"1.8","depth":1,"path":"documentation.md","ref":"documentation.md","articles":[]},"previous":{"title":"Getting Started","level":"1.2","depth":1,"path":"getting-started.md","ref":"getting-started.md","articles":[{"title":"First thing to do","level":"1.2.1","depth":2,"anchor":"#first-thing-to-do","path":"getting-started.md","ref":"getting-started.md#first-thing-to-do","articles":[]},{"title":"Setup the database","level":"1.2.2","depth":2,"anchor":"#setup-the-database","path":"getting-started.md","ref":"getting-started.md#setup-the-database","articles":[]},{"title":"Setup the environment","level":"1.2.3","depth":2,"anchor":"#setup-the-environment","path":"getting-started.md","ref":"getting-started.md#setup-the-environment","articles":[]},{"title":"Configuration","level":"1.2.4","depth":2,"anchor":"#configuration","path":"getting-started.md","ref":"getting-started.md#configuration","articles":[]}]},"articles":[{"title":"agentActivity()","level":"1.5.1","depth":2,"anchor":"#agentactivity","path":"queries.md","ref":"queries.md#agentactivity","articles":[]},{"title":"odMatrix()","level":"1.5.2","depth":2,"anchor":"#odmatrix","path":"queries.md","ref":"queries.md#odmatrix","articles":[]},{"title":"activitySequences()","level":"1.5.3","depth":2,"anchor":"#activitysequences","path":"queries.md","ref":"queries.md#activitysequences","articles":[]}],"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["theme-api"],"pluginsConfig":{"theme-api":{"languages":[],"split":true,"theme":"light"},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"embedFonts":false},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"queries.md","mtime":"2023-03-20T13:43:02.555Z","type":"markdown"},"gitbook":{"version":"4.0.4","time":"2023-03-20T13:46:28.153Z"},"basePath":".","book":{"language":""}});
         });
     </script>
 </div>

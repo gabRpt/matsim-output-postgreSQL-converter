@@ -7,9 +7,13 @@ from furbain import queries
 ```
 ___
 
-## Agent activity
+## agentActivity()
 {% method %}
 _Get dataframes of the activities of agents in each zone during given timespan_
+
+```python
+agentActivity(filePath, startTime='00:00:00', endTime='32:00:00', strictTime=False)
+```
 
 **Parameters :**
 * `filepath` : Path to the **geojson** file containing the different zones to consider (eg: [5zones.geojson](https://github.com/gabRpt/matsim-output-postgreSQL-converter/blob/main/resources/sample/5zones.geojson))
@@ -27,7 +31,6 @@ _Get dataframes of the activities of agents in each zone during given timespan_
                 an activity starting at 18:00:00 and ending at null is considered
                 an activity starting at 17:00:00 and ending at 18:00:00 or later is considered
                 an activity starting at 19:00:00 and ending at xx:xx:xx is NOT considered
-
 
 {% common %}
 __Output :__
@@ -55,13 +58,17 @@ Returns a list of dataframes, one dataframe per zone.
 
 ___
 
-## OD Matrix
+## odMatrix()
 
 ##### Generate the od matrix
 
 {% method %}
 
 _Get od matrix of trips between zones during given timespan_
+
+```python
+odMatrix(filePath, startTime='00:00:00', endTime='32:00:00', ignoreArrivalTime=True, generateArabesqueFiles=False)
+```
 
 **Parameters :**
 * `filepath` : Path to the **geojson** file containing the different zones to consider (eg: [5zones.geojson](https://github.com/gabRpt/matsim-output-postgreSQL-converter/blob/main/resources/sample/5zones.geojson))
@@ -102,9 +109,13 @@ _**A detailed documentation on how to create a scheme in Arabesque can be found 
 
 ___
 
-## Activity Sequences
+## activitySequences()
 {% method %}
 _Get the activity sequences of agents during given timespan and zone_
+
+```python
+activitySequences(filePath, startTime='00:00:00', endTime='32:00:00', interval=15, batchSize=10, createTableInDatabase=False, nbAgentsToProcess=-1)
+```
 
 **Parameters :**
 * `filepath` : Path to the **geojson** file containing **only one** zone consider (eg: [1zone.geojson](https://github.com/gabRpt/matsim-output-postgreSQL-converter/blob/main/resources/sample/1zone.geojson))
