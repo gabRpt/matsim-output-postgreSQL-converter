@@ -39,6 +39,7 @@ def main():
     config.setDatabasePort("5432")
     config.setDatabaseSRID("2154")
     
+    # ========= Databases management functions =========
     print("====== CREATING DATABASE ======")
     databaseTools.createDatabase("furbain")
     
@@ -48,7 +49,7 @@ def main():
     
     print("\n====== SELECT DATABASE ======")
     databaseTools.selectDatabase("furbain")
-    
+
     print("\n====== LIST TABLES ======")
     tables = databaseTools.getTablesFromDatabase()
     print(tables)
@@ -61,7 +62,9 @@ def main():
     gpdDf = databaseTools.getDatabaseTableDataframe("networkLink")
     print(gpdDf)
     
-    # results = databaseTools.executeSQLOnDatabase('SELECT * from "vehicleType"')
+    print("\n====== CUSTOM SQL QUERY ======")
+    results = databaseTools.executeSQLOnDatabase('SELECT * from "vehicleType"')
+    
     
     # =====================================================================
     # ========================   DATABASE IMPORT   ========================
@@ -85,8 +88,6 @@ def main():
     for table in tablesToImport:
         launchImport(table)
     print(f"========== IMPORTED IN {str(datetime.now() - overallStartTime)[:-5]} ==========")
-    
-    
     
     
     # =====================================================================

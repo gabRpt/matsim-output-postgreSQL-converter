@@ -85,6 +85,8 @@ def launchImport(name):
     print(f" Done in {str(datetime.now() - currentStartTime)[:-5]} !")
 
 
+config.PATH_SIMULATION_OUTPUT = 'C:/Users/name/Documents/Furbain/data/matsim_nantes_edgt_20p/simulation_output'
+
 tablesToImport = [
     "vehicles",
     "households",
