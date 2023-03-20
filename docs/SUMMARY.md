@@ -13,6 +13,9 @@
     * [Matsim files and tables](database.md#matsim-files-and-tables)
 
 * [Converter](converter.md#converter)
+    * [How to](converter.md#how-to)
+    * [Specificities](converter.md#specificities)
+    * [Example](converter.md#example)
 
 * [Queries](queries.md#queries)
     * [Agent Activity](queries.md#agent-activity)
