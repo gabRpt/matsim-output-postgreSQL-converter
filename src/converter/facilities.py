@@ -5,7 +5,7 @@ import geopandas as gpd
 from geoalchemy2 import Geometry
 
 def importFacilities():
-    facilityReader = Facility.facility_reader(config.PATH_FACILITIES)
+    facilityReader = Facility.facility_reader(config.getFacilitiesPath())
     facilities = gpd.GeoDataFrame(facilityReader.facilities)
     
     # Renaming the columns to match the database

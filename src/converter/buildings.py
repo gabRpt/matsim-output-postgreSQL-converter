@@ -7,7 +7,7 @@ from geoalchemy2 import Geometry
 
 def importBuildings():
     
-    with open(config.PATH_BUILDINGS, 'r') as buildingsJson:
+    with open(config.getBuildingsPath(), 'r') as buildingsJson:
         buildings = json.load(buildingsJson)        
         polygonFeaturesDict = collections.defaultdict(list)
         

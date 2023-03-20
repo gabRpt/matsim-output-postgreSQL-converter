@@ -1,22 +1,7 @@
 import sqlalchemy.types as types
 import pathlib
 import json
-
-# Path to the simulation output folder like on windows don't use backslash '\' and replace them with normal slash '/'
-PATH_SIMULATION_OUTPUT = 'C:/Users/name/Documents/matsimOutput/simulation_output'
-
-PATH_ALLVEHICLES = PATH_SIMULATION_OUTPUT + '/output_allvehicles.xml.gz'
-PATH_EVENTS = PATH_SIMULATION_OUTPUT + '/output_events.xml.gz'
-PATH_FACILITIES = PATH_SIMULATION_OUTPUT + '/output_facilities.xml.gz'
-PATH_HOUSEHOLDS = PATH_SIMULATION_OUTPUT + '/output_households.xml.gz'
-PATH_LEGS = PATH_SIMULATION_OUTPUT + '/output_legs.csv.gz'
-PATH_NETWORK = PATH_SIMULATION_OUTPUT + '/output_network.xml.gz'
-PATH_PERSONS = PATH_SIMULATION_OUTPUT + '/output_persons.csv.gz'
-PATH_PLANS = PATH_SIMULATION_OUTPUT + '/output_plans.xml.gz'
-PATH_EXPERIENCED_PLANS = PATH_SIMULATION_OUTPUT + '/output_experienced_plans.xml.gz'
-PATH_TRIPS = PATH_SIMULATION_OUTPUT + '/output_trips.csv.gz'
-PATH_DETAILED_NETWORK = PATH_SIMULATION_OUTPUT + '/detailed_network.csv'
-PATH_BUILDINGS = PATH_SIMULATION_OUTPUT + '/BUILDINGS.geojson'
+from os.path import isdir
 
 DB_DBNAME = ''
 
@@ -75,7 +60,20 @@ def createConfigurationFile():
     "db_port": "5432",
     "db_user": "postgres",
     "db_password": "postgres",
-    "db_srid": "2154"
+    "db_srid": "2154",
+    "path_simulation_output": "C:/Users/name/Documents/matsimOutput/simulation_output",
+    "allvehicles_filename": "output_allvehicles.xml.gz",
+    "events_filename": "output_events.xml.gz",
+    "facilities_filename": "output_facilities.xml.gz",
+    "households_filename": "output_households.xml.gz",
+    "legs_filename": "output_legs.csv.gz",
+    "network_filename": "output_network.xml.gz",
+    "persons_filename": "output_persons.csv.gz",
+    "plans_filename": "output_plans.xml.gz",
+    "experienced_plans_filename": "output_experienced_plans.xml.gz",
+    "trips_filename": "output_trips.csv.gz",
+    "detailed_network_filename": "detailed_network.csv",
+    "buildings_filename": "BUILDINGS.geojson"
 }""")
 
 def loadConfigurationFile():
@@ -97,56 +95,105 @@ def saveConfigurationFile(config):
     with open(fileToSave, 'w') as outfile:
         json.dump(config, outfile, indent=4)
 
-# ----- User -----
-def setDatabaseUser(user):
+
+def setVariableInConfigurationFile(name, value):
     config = loadConfigurationFile()
-    config['db_user'] = user
+    config[name] = value
     saveConfigurationFile(config)
 
-def getDatabaseUser():
+def getVariableInConfigurationFile(name):
     config = loadConfigurationFile()
-    return config['db_user']
+    return config[name]
+
+# ----- User -----
+def setDatabaseUser(user):    
+    setVariableInConfigurationFile('db_user', user)
+
+def getDatabaseUser():
+    return getVariableInConfigurationFile('db_user')
 
 
 # ----- Password -----
 def setDatabasePassword(password):
-    config = loadConfigurationFile()
-    config['db_password'] = password
-    saveConfigurationFile(config)
+    setVariableInConfigurationFile('db_password', password)
 
 def getDatabasePassword():
-    config = loadConfigurationFile()
-    return config['db_password']
+    return getVariableInConfigurationFile('db_password')
 
 
 # ----- Host -----
 def setDatabaseHost(host):
-    config = loadConfigurationFile()
-    config['db_host'] = host
-    saveConfigurationFile(config)
+    setVariableInConfigurationFile('db_host', host)
 
 def getDatabaseHost():
-    config = loadConfigurationFile()
-    return config['db_host']
+    return getVariableInConfigurationFile('db_host')
 
 
 # ----- Port -----
 def setDatabasePort(port):
-    config = loadConfigurationFile()
-    config['db_port'] = port
-    saveConfigurationFile(config)
+    setVariableInConfigurationFile('db_port', port)
 
 def getDatabasePort():
-    config = loadConfigurationFile()
-    return config['db_port']
+    return getVariableInConfigurationFile('db_port')
 
 
 # ----- Database SRID -----
 def setDatabaseSRID(srid):
-    config = loadConfigurationFile()
-    config['db_srid'] = srid
-    saveConfigurationFile(config)
+    setVariableInConfigurationFile('db_srid', srid)
 
 def getDatabaseSRID():
-    config = loadConfigurationFile()
-    return config['db_srid']
+    return getVariableInConfigurationFile('db_srid')
+
+
+# ----- Simulation output paths -----
+def setSimulationOutputPath(path):
+    # Add '/' at the end if it doesn't exist
+    if path[-1] != '/':
+        path += '/'
+    
+    # Check if the path exists
+    if not isdir(path):
+        raise Exception('The path ' + path + ' doesn\'t exist')
+    
+    setVariableInConfigurationFile('path_simulation_output', path)
+
+def getSimulationOutputPath():
+    return getVariableInConfigurationFile('path_simulation_output')
+
+
+# ----- Output files paths -----
+def getAllVehiclesPath():
+    return getSimulationOutputPath() + getVariableInConfigurationFile('allvehicles_filename')
+
+def getEventsPath():
+    return getSimulationOutputPath() + getVariableInConfigurationFile('events_filename')
+
+def getFacilitiesPath():
+    return getSimulationOutputPath() + getVariableInConfigurationFile('facilities_filename')
+
+def getHouseholdsPath():
+    return getSimulationOutputPath() + getVariableInConfigurationFile('households_filename')
+
+def getLegsPath():
+    return getSimulationOutputPath() + getVariableInConfigurationFile('legs_filename')
+
+def getNetworkPath():
+    return getSimulationOutputPath() + getVariableInConfigurationFile('network_filename')
+
+def getPersonsPath():
+    return getSimulationOutputPath() + getVariableInConfigurationFile('persons_filename')
+
+def getPlansPath():
+    return getSimulationOutputPath() + getVariableInConfigurationFile('plans_filename')
+
+def getExperiencedPlansPath():
+    return getSimulationOutputPath() + getVariableInConfigurationFile('experienced_plans_filename')
+
+def getTripsPath():
+    return getSimulationOutputPath() + getVariableInConfigurationFile('trips_filename')
+
+def getDetailedNetworkPath():
+    return getSimulationOutputPath() + getVariableInConfigurationFile('detailed_network_filename')
+
+def getBuildingsPath():
+    return getSimulationOutputPath() + getVariableInConfigurationFile('buildings_filename')

@@ -6,7 +6,7 @@ from geoalchemy2 import Geometry
 
 
 def importPersons():
-    personsDataframe = pd.read_csv(config.PATH_PERSONS, sep=config.PERSONS_CSV_SEPARATOR)
+    personsDataframe = pd.read_csv(config.getPersonsPath(), sep=config.PERSONS_CSV_SEPARATOR)
     personGeoDataframe = gpd.GeoDataFrame(personsDataframe)
     
     # Renaming the columns to match the database

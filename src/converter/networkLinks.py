@@ -10,7 +10,7 @@ from shapely.geometry import LineString
 
 # if useDetailedNetworkFile is True, the geometry of the links found in the detailed network file will replace the geometry of the links found in the network file
 def importNetworkLinks(useDetailedNetworkFile=True):
-    network = Network.read_network(config.PATH_NETWORK)
+    network = Network.read_network(config.getNetworkPath())
     nodes = gpd.GeoDataFrame(network.nodes)
     links = network.links
     linkAttributes = network.link_attrs
@@ -42,7 +42,7 @@ def importNetworkLinks(useDetailedNetworkFile=True):
     links.drop(columns=['geometry'], inplace=True)
     
     if useDetailedNetworkFile:
-        detailedNetworkDataframe = pd.read_csv(config.PATH_DETAILED_NETWORK, sep=config.DETAILED_NETWORK_CSV_SEPARATOR)
+        detailedNetworkDataframe = pd.read_csv(config.getDetailedNetworkPath(), sep=config.DETAILED_NETWORK_CSV_SEPARATOR)
         
         # Removing rows where the linestring has less than 2 coordinates
         detailedNetworkDataframe = detailedNetworkDataframe[detailedNetworkDataframe['Geometry'].apply(lambda x: len(x.split(',')) > 1)]

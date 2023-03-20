@@ -3,7 +3,7 @@ from furbain import config
 from furbain import databaseTools
 
 def importVehicles():
-    vehicleDataframes = Vehicle.vehicle_reader(config.PATH_ALLVEHICLES)
+    vehicleDataframes = Vehicle.vehicle_reader(config.getAllVehiclesPath())
     vehicleTypes = vehicleDataframes.vehicle_types
     vehicles = vehicleDataframes.vehicles
     

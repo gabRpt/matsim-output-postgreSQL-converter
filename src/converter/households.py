@@ -3,7 +3,7 @@ from furbain import config
 from furbain import databaseTools
 
 def importHouseholds():
-    householdReader = Household.houshold_reader(config.PATH_HOUSEHOLDS)
+    householdReader = Household.houshold_reader(config.getHouseholdsPath())
     householdDataframe = householdReader.households
     
     # Formating dataframe

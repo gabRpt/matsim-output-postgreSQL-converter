@@ -7,7 +7,7 @@ from geoalchemy2 import Geometry
 
 
 def importActivities():
-    plansDataframes = Plans.plan_reader_dataframe(experienced_plans_filepath=config.PATH_EXPERIENCED_PLANS, plans_filepath=config.PATH_PLANS, facilities_file_path=config.PATH_FACILITIES)
+    plansDataframes = Plans.plan_reader_dataframe(experienced_plans_filepath=config.getExperiencedPlansPath(), plans_filepath=config.getPlansPath(), facilities_file_path=config.getFacilitiesPath())
     activitiesDataframe = plansDataframes.activities
     plans = plansDataframes.plans
     

@@ -41,10 +41,10 @@ def _createEventsTable():
 def _getEventsVehicleCountAndMeanSpeed(timeStepInMinutes=60, useRoundedTime=True):
     timeStepInSeconds = timeStepInMinutes * 60
     
-    events = Events.event_reader(config.PATH_EVENTS)    
+    events = Events.event_reader(config.getEventsPath())    
     eventsDataframe = pd.DataFrame(events)
     
-    network = Network.read_network(config.PATH_NETWORK)
+    network = Network.read_network(config.getNetworkPath())
     networkLinksDataframe = network.links
     networkLinksLengthDict = dict(zip(networkLinksDataframe['link_id'], networkLinksDataframe['length']))
     networkLinksFreespeedDict = dict(zip(networkLinksDataframe['link_id'], networkLinksDataframe['freespeed']))
