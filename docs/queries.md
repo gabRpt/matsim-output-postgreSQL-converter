@@ -28,10 +28,11 @@ _Get dataframes of the activities of agents in each zone during given timespan_
                 an activity starting at 17:00:00 and ending at 18:00:00 or later is considered
                 an activity starting at 19:00:00 and ending at xx:xx:xx is NOT considered
 
-Returns a list of dataframes, one dataframe per zone.
 
 {% common %}
 __Output :__
+
+Returns a list of dataframes, one dataframe per zone.
 
 * `id` : id of the activity
 * `type` : type of the activity
@@ -79,6 +80,8 @@ _Get od matrix of trips between zones during given timespan_
 {% common %}
 __Output :__
 
+A 2D array.
+
 ![OD Matrix output](https://raw.githubusercontent.com/gabRpt/matsim-output-postgreSQL-converter/main/resources/docs/queries/OD_matrix_output.png)
 
 
@@ -113,6 +116,8 @@ _Get the activity sequences of agents during given timespan and zone_
 * `nbAgentsToProcess` : number of agents to process, if set at 100 it will process the first 100 agents. If set at -1 it will process all agents (int default: `-1`)
 
 {% common %}
+__Output :__
+
 Returns a dataframe with all the activity sequences of all the agents that have **at least one** activity in the given zone during the given timespan.
 The dataframe has the following columns :
 

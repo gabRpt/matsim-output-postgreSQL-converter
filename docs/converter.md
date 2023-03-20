@@ -2,6 +2,11 @@
 
 ___
 
+```python
+from furbain import converter
+```
+___
+
 ## How to
 
 The converter is used to get the output data from matsim, process it and load it into a PostgreSQL database.  
@@ -57,6 +62,7 @@ Code example for tables importation :
 ```python
 from datetime import datetime
 from furbain import converter
+from furbain import config
 
 
 def launchImport(name):

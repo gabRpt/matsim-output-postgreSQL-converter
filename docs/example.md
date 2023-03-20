@@ -9,7 +9,6 @@ from datetime import datetime
 from furbain import queries
 from furbain import converter
 from furbain import config
-from furbain import tools
 from furbain import databaseTools
 import geopandas as gpd
 
@@ -57,7 +56,7 @@ def main():
     print("====== DROP TABLE ======")
     databaseTools.deleteTable("vehicle")
     databaseTools.deleteTable("vehicleType")
-    
+
     print("\n====== GET TABLE AS A DATAFRAME ======")
     gpdDf = databaseTools.getDatabaseTableDataframe("networkLink")
     print(gpdDf)
