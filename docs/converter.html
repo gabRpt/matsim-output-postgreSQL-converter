@@ -232,6 +232,51 @@
             
 
             
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.4.1" data-path="converter.html">
+            
+                <a href="converter.html#how-to">
+            
+                    
+                    How to
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.2" data-path="converter.html">
+            
+                <a href="converter.html#specificities">
+            
+                    
+                    Specificities
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.3" data-path="converter.html">
+            
+                <a href="converter.html#example">
+            
+                    
+                    Example
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
         </li>
     
         <li class="chapter " data-level="1.5" data-path="queries.html">
@@ -488,6 +533,87 @@
                                 
                                 <h1 id="converter">Converter</h1>
 <hr>
+<h2 id="how-to">How to</h2>
+<p>The converter is used to get the output data from matsim, process it and load it into a PostgreSQL database.<br>To use the converter you have to setup the simulation output path :</p>
+<pre><code class="lang-python">config.PATH_SIMULATION_OUTPUT = <span class="hljs-string">&apos;C:/Users/name/Documents/Furbain/data/matsim_nantes_edgt_20p/simulation_output&apos;</span>
+</code></pre>
+<p>You also may have to setup the output files names if they are different than the following :</p>
+<pre><code class="lang-python">    config.PATH_ALLVEHICLES = config.PATH_SIMULATION_OUTPUT + <span class="hljs-string">&apos;/output_allvehicles.xml.gz&apos;</span>
+    config.PATH_EVENTS = config.PATH_SIMULATION_OUTPUT + <span class="hljs-string">&apos;/output_events.xml.gz&apos;</span>
+    config.PATH_FACILITIES = config.PATH_SIMULATION_OUTPUT + <span class="hljs-string">&apos;/output_facilities.xml.gz&apos;</span>
+    config.PATH_HOUSEHOLDS = config.PATH_SIMULATION_OUTPUT + <span class="hljs-string">&apos;/output_households.xml.gz&apos;</span>
+    config.PATH_LEGS = config.PATH_SIMULATION_OUTPUT + <span class="hljs-string">&apos;/output_legs.csv.gz&apos;</span>
+    config.PATH_NETWORK = config.PATH_SIMULATION_OUTPUT + <span class="hljs-string">&apos;/output_network.xml.gz&apos;</span>
+    config.PATH_PERSONS = config.PATH_SIMULATION_OUTPUT + <span class="hljs-string">&apos;/output_persons.csv.gz&apos;</span>
+    config.PATH_PLANS = config.PATH_SIMULATION_OUTPUT + <span class="hljs-string">&apos;/output_plans.xml.gz&apos;</span>
+    config.PATH_EXPERIENCED_PLANS = config.PATH_SIMULATION_OUTPUT + <span class="hljs-string">&apos;/output_experienced_plans.xml.gz&apos;</span>
+    config.PATH_TRIPS = config.PATH_SIMULATION_OUTPUT + <span class="hljs-string">&apos;/output_trips.csv.gz&apos;</span>
+    config.PATH_DETAILED_NETWORK = config.PATH_SIMULATION_OUTPUT + <span class="hljs-string">&apos;/detailed_network.csv&apos;</span>
+    config.PATH_BUILDINGS = config.PATH_SIMULATION_OUTPUT + <span class="hljs-string">&apos;/BUILDINGS.geojson&apos;</span>
+    config.ARABESQUE_GENERATED_FILES_DIRECTORY_PATH = <span class="hljs-string">&apos;./&apos;</span>
+</code></pre>
+<p>Then you can user the converter to import the tables you want :</p>
+<table>
+<thead>
+<tr>
+<th>Table name</th>
+<th>Converter function to use</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>activity</td>
+<td>converter.activities.importActivities()</td>
+</tr>
+<tr>
+<td>building</td>
+<td>converter.buildings.importBuildings()</td>
+</tr>
+<tr>
+<td>facility</td>
+<td>converter.facilities.importFacilities()</td>
+</tr>
+<tr>
+<td>household</td>
+<td>converter.households.importHouseholds()</td>
+</tr>
+<tr>
+<td>networdlink</td>
+<td>converter.networkLinks.importNetworkLinks()</td>
+</tr>
+<tr>
+<td>networdlinkTraffic</td>
+<td>converter.events.importEvents()</td>
+</tr>
+<tr>
+<td>person</td>
+<td>converter.persons.importPersons()</td>
+</tr>
+<tr>
+<td>trip</td>
+<td>converter.trips.importTrips()</td>
+</tr>
+<tr>
+<td>vehicle</td>
+<td>converter.vehicles.importVehicles()</td>
+</tr>
+<tr>
+<td>vehicleType</td>
+<td>converter.vehicles.importVehicles()</td>
+</tr>
+</tbody>
+</table>
+<h2 id="specificities">Specificities</h2>
+<p>The function <code>importEvents()</code> has two parameters :</p>
+<ul>
+<li><code>timeStepInMinutes</code>  : an integer that defines the time step used to aggregate the events. <em>The default value is 60 minutes.</em></li>
+<li><code>useRoundedTime</code> : a boolean that defines if the starting time should be round, or if the time should be the exact time of the event. Eg: The first event starts at 12:36:01, timeStepInMinutes is set at 60. <strong>If set True</strong> the first time step will be 12:00:00 to 13:00:00. <strong>If set False</strong>, it will be 12:36:01 to 13:36:01. <em>The default value is True.</em></li>
+</ul>
+<p>The function <code>importNetworkLinks()</code> has one parameter :</p>
+<ul>
+<li><code>useDetailedNetworkFile</code> : a boolean that defines if the detailed network file should be used to generate the network links table. <em>The default value is True.</em></li>
+</ul>
+<h2 id="example">Example</h2>
 <p>Code example for tables importation :</p>
 <pre><code class="lang-python"><span class="hljs-keyword">from</span> datetime <span class="hljs-keyword">import</span> datetime
 <span class="hljs-keyword">from</span> furbain <span class="hljs-keyword">import</span> converter
@@ -518,6 +644,8 @@
 
     <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot; Done in <span class="hljs-subst">{<span class="hljs-built_in">str</span>(datetime.now() - currentStartTime)[:-<span class="hljs-number">5</span>]}</span> !&quot;</span>)
 
+
+config.PATH_SIMULATION_OUTPUT = <span class="hljs-string">&apos;C:/Users/name/Documents/Furbain/data/matsim_nantes_edgt_20p/simulation_output&apos;</span>
 
 tablesToImport = [
     <span class="hljs-string">&quot;vehicles&quot;</span>,
@@ -569,7 +697,7 @@ tablesToImport = [
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Converter","level":"1.4","depth":1,"next":{"title":"Documentation","level":"1.8","depth":1,"path":"documentation.md","ref":"documentation.md","articles":[]},"previous":{"title":"Getting Started","level":"1.2","depth":1,"path":"getting-started.md","ref":"getting-started.md","articles":[{"title":"First thing to do","level":"1.2.1","depth":2,"anchor":"#first-thing-to-do","path":"getting-started.md","ref":"getting-started.md#first-thing-to-do","articles":[]},{"title":"Setup the database","level":"1.2.2","depth":2,"anchor":"#setup-the-database","path":"getting-started.md","ref":"getting-started.md#setup-the-database","articles":[]},{"title":"Setup the environment","level":"1.2.3","depth":2,"anchor":"#setup-the-environment","path":"getting-started.md","ref":"getting-started.md#setup-the-environment","articles":[]},{"title":"Configuration","level":"1.2.4","depth":2,"anchor":"#configuration","path":"getting-started.md","ref":"getting-started.md#configuration","articles":[]}]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["theme-api"],"pluginsConfig":{"theme-api":{"languages":[],"split":true,"theme":"light"},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"embedFonts":false},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"converter.md","mtime":"2023-03-16T15:27:55.495Z","type":"markdown"},"gitbook":{"version":"4.0.4","time":"2023-03-17T15:50:57.779Z"},"basePath":".","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Converter","level":"1.4","depth":1,"next":{"title":"Documentation","level":"1.8","depth":1,"path":"documentation.md","ref":"documentation.md","articles":[]},"previous":{"title":"Getting Started","level":"1.2","depth":1,"path":"getting-started.md","ref":"getting-started.md","articles":[{"title":"First thing to do","level":"1.2.1","depth":2,"anchor":"#first-thing-to-do","path":"getting-started.md","ref":"getting-started.md#first-thing-to-do","articles":[]},{"title":"Setup the database","level":"1.2.2","depth":2,"anchor":"#setup-the-database","path":"getting-started.md","ref":"getting-started.md#setup-the-database","articles":[]},{"title":"Setup the environment","level":"1.2.3","depth":2,"anchor":"#setup-the-environment","path":"getting-started.md","ref":"getting-started.md#setup-the-environment","articles":[]},{"title":"Configuration","level":"1.2.4","depth":2,"anchor":"#configuration","path":"getting-started.md","ref":"getting-started.md#configuration","articles":[]}]},"articles":[{"title":"How to","level":"1.4.1","depth":2,"anchor":"#how-to","path":"converter.md","ref":"converter.md#how-to","articles":[]},{"title":"Specificities","level":"1.4.2","depth":2,"anchor":"#specificities","path":"converter.md","ref":"converter.md#specificities","articles":[]},{"title":"Example","level":"1.4.3","depth":2,"anchor":"#example","path":"converter.md","ref":"converter.md#example","articles":[]}],"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["theme-api"],"pluginsConfig":{"theme-api":{"languages":[],"split":true,"theme":"light"},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"embedFonts":false},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"converter.md","mtime":"2023-03-20T12:50:25.418Z","type":"markdown"},"gitbook":{"version":"4.0.4","time":"2023-03-20T12:56:23.204Z"},"basePath":".","book":{"language":""}});
         });
     </script>
 </div>
