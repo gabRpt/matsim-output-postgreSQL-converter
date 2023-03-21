@@ -7,7 +7,7 @@
     * [Setup the database](getting-started.md#setup-the-database)
     * [Setup the environment](getting-started.md#setup-the-environment)
 
-* [Configuration](configuration.md#configuration)
+* [Configuration](configuration.md)
 
 * [Database](database.md#database)
     * [Database structure](database.md#database-structure)
@@ -32,7 +32,7 @@
     * [deleteTable()](databaseTools.md#deletetabletablename)
     * [getDatabaseTableDataframe()](databaseTools.md#getdatabasetabledataframetablename)
 
-* [Example](example.md#package-usage-example)
+* [Example](example.md)
 
 * [Documentation](documentation.md)
 * [Troubleshooting](troubleshooting.md)
