@@ -106,9 +106,3 @@ TODO MODIFY PIP INSTALL
 * Open a terminal in the IDE and run the command `pip install ./resources/setup/furbain-1.0.0-py3-none-any.whl` to install the required matsim_tools package. **Please verify that you are installing the lastest version available in ./resources/setup/**
 
 {% endmethod %}
-
-___
-
-## Configuration
-
-TODO, ***for now see example section***

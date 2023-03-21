@@ -6,7 +6,8 @@
     * [First thing to do](getting-started.md#first-thing-to-do)
     * [Setup the database](getting-started.md#setup-the-database)
     * [Setup the environment](getting-started.md#setup-the-environment)
-    * [Configuration](getting-started.md#configuration)
+
+* [Configuration](configuration.md#configuration)
 
 * [Database](database.md#database)
     * [Database structure](database.md#database-structure)

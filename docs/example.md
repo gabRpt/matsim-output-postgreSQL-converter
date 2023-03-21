@@ -16,20 +16,9 @@ import geopandas as gpd
 def main():
     overallStartTime = datetime.now()
     
-    config.PATH_SIMULATION_OUTPUT = 'C:/Users/name/Documents/Furbain/data/matsim_nantes_edgt_20p/simulation_output'
-    
-    config.PATH_ALLVEHICLES = config.PATH_SIMULATION_OUTPUT + '/output_allvehicles.xml.gz'
-    config.PATH_EVENTS = config.PATH_SIMULATION_OUTPUT + '/output_events.xml.gz'
-    config.PATH_FACILITIES = config.PATH_SIMULATION_OUTPUT + '/output_facilities.xml.gz'
-    config.PATH_HOUSEHOLDS = config.PATH_SIMULATION_OUTPUT + '/output_households.xml.gz'
-    config.PATH_LEGS = config.PATH_SIMULATION_OUTPUT + '/output_legs.csv.gz'
-    config.PATH_NETWORK = config.PATH_SIMULATION_OUTPUT + '/output_network.xml.gz'
-    config.PATH_PERSONS = config.PATH_SIMULATION_OUTPUT + '/output_persons.csv.gz'
-    config.PATH_PLANS = config.PATH_SIMULATION_OUTPUT + '/output_plans.xml.gz'
-    config.PATH_EXPERIENCED_PLANS = config.PATH_SIMULATION_OUTPUT + '/output_experienced_plans.xml.gz'
-    config.PATH_TRIPS = config.PATH_SIMULATION_OUTPUT + '/output_trips.csv.gz'
-    config.PATH_DETAILED_NETWORK = config.PATH_SIMULATION_OUTPUT + '/detailed_network.csv'
-    config.PATH_BUILDINGS = config.PATH_SIMULATION_OUTPUT + '/BUILDINGS.geojson'
+    config.setSimulationOutputPath('C:/Users/name/Documents/Furbain/data/matsim_nantes_edgt_20p/simulation_output')
+    config.setVariableInConfigurationFile('allvehicles_filename','/output_allvehicles.xml.gz')
+
     config.ARABESQUE_GENERATED_FILES_DIRECTORY_PATH = './'
     
     config.setDatabaseUser("postgres")
