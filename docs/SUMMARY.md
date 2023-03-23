@@ -3,8 +3,8 @@
 * [Introduction](README.md)
 
 * [Getting Started](getting-started.md)
-    * [First thing to do](getting-started.md#first-thing-to-do)
-    * [Setup the database](getting-started.md#setup-the-database)
+    * [Clone the repository](getting-started.md#optional-clone-the-repository)
+    * [Setup the database](getting-started.md#optional-setup-the-database)
     * [Setup the environment](getting-started.md#setup-the-environment)
 
 * [Configuration](configuration.md)

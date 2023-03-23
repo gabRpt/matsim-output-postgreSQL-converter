@@ -2,7 +2,9 @@
 
 ___
 
-## First thing to do
+## (Optional) Clone the repository
+
+**This can be skipped if you only want the python package**
 
 Here's a step-by-step tutorial on how to clone the GitHub repository of [matsim-output-postgreSQL-converter](https://github.com/gabRpt/matsim-output-postgreSQL-converter) to your local machine using git:
 
@@ -20,7 +22,9 @@ Here's a step-by-step tutorial on how to clone the GitHub repository of [matsim-
 
 ___
 
-## Setup the database
+## (Optional) Setup the database
+
+**This can be skipped if you have a remote database with postGIS installed**
 
 #### Step 1: Install PostgreSQL with postGIS extension
 *** If you already have PostgreSQL installed, go to the point n°3 ***
@@ -101,8 +105,7 @@ ___
 
 {% endmethod %}
 {% method %}
-TODO MODIFY PIP INSTALL
 
-* Open a terminal in the IDE and run the command `pip install ./resources/setup/furbain-1.0.0-py3-none-any.whl` to install the required matsim_tools package. **Please verify that you are installing the lastest version available in ./resources/setup/**
+* Open a terminal in the IDE and run the command `pip install git+https://github.com/gabRpt/matsim-output-postgreSQL-converter` to install the package.
 
 {% endmethod %}

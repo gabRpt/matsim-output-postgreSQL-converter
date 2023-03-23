@@ -121,10 +121,10 @@
     
         <li class="chapter " data-level="1.2.1" data-path="getting-started.html">
             
-                <a href="getting-started.html#first-thing-to-do">
+                <a href="getting-started.html#optional-clone-the-repository">
             
                     
-                    First thing to do
+                    Clone the repository
             
                 </a>
             
@@ -134,7 +134,7 @@
     
         <li class="chapter " data-level="1.2.2" data-path="getting-started.html">
             
-                <a href="getting-started.html#setup-the-database">
+                <a href="getting-started.html#optional-setup-the-database">
             
                     
                     Setup the database
@@ -533,7 +533,8 @@
                                 
                                 <h1 id="getting-started">Getting-started</h1>
 <hr>
-<h2 id="first-thing-to-do">First thing to do</h2>
+<h2 id="optional-clone-the-repository">(Optional) Clone the repository</h2>
+<p><strong>This can be skipped if you only want the python package</strong></p>
 <p>Here&apos;s a step-by-step tutorial on how to clone the GitHub repository of <a href="https://github.com/gabRpt/matsim-output-postgreSQL-converter" target="_blank">matsim-output-postgreSQL-converter</a> to your local machine using git:</p>
 <ol>
 <li><p>Install git on your machine if you haven&apos;t already.<br> =&gt; If you don&apos;t know what git is, here is a <a href="https://github.com/git-guides" target="_blank">guide</a><br> =&gt; If you just want to install it, check <a href="https://github.com/git-guides/install-git" target="_blank">here</a></p>
@@ -548,7 +549,8 @@
 </li>
 </ol>
 <hr>
-<h2 id="setup-the-database">Setup the database</h2>
+<h2 id="optional-setup-the-database">(Optional) Setup the database</h2>
+<p><strong>This can be skipped if you have a remote database with postGIS installed</strong></p>
 <h4 id="step-1-install-postgresql-with-postgis-extension">Step 1: Install PostgreSQL with postGIS extension</h4>
 <p><strong><em> If you already have PostgreSQL installed, go to the point n°3 </em></strong></p>
 <ol>
@@ -620,9 +622,8 @@
 </ul>
 </div><div class="api-method-code"><div class="api-method-example"><p><img src="https://raw.githubusercontent.com/gabRpt/matsim-output-postgreSQL-converter/main/resources/docs/getting-started/anaconda_select_env.png" alt="Anaconda select environment"></p>
 </div></div></div>
-<div class="api-method"><div class="api-method-definition"><p>TODO MODIFY PIP INSTALL</p>
-<ul>
-<li>Open a terminal in the IDE and run the command <code>pip install ./resources/setup/furbain-1.0.0-py3-none-any.whl</code> to install the required matsim_tools package. <strong>Please verify that you are installing the lastest version available in ./resources/setup/</strong></li>
+<div class="api-method"><div class="api-method-definition"><ul>
+<li>Open a terminal in the IDE and run the command <code>pip install git+https://github.com/gabRpt/matsim-output-postgreSQL-converter</code> to install the package.</li>
 </ul>
 </div><div class="api-method-code"></div></div>
                                 
@@ -657,7 +658,7 @@
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Getting Started","level":"1.2","depth":1,"next":{"title":"Configuration","level":"1.3","depth":1,"path":"configuration.md","ref":"configuration.md","articles":[]},"previous":{"title":"Introduction","level":"1.1","depth":1,"path":"README.md","ref":"README.md","articles":[]},"articles":[{"title":"First thing to do","level":"1.2.1","depth":2,"anchor":"#first-thing-to-do","path":"getting-started.md","ref":"getting-started.md#first-thing-to-do","articles":[]},{"title":"Setup the database","level":"1.2.2","depth":2,"anchor":"#setup-the-database","path":"getting-started.md","ref":"getting-started.md#setup-the-database","articles":[]},{"title":"Setup the environment","level":"1.2.3","depth":2,"anchor":"#setup-the-environment","path":"getting-started.md","ref":"getting-started.md#setup-the-environment","articles":[]}],"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["theme-api"],"pluginsConfig":{"theme-api":{"languages":[],"split":true,"theme":"light"},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"embedFonts":false},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"getting-started.md","mtime":"2023-03-21T10:31:08.575Z","type":"markdown"},"gitbook":{"version":"4.0.4","time":"2023-03-21T15:12:03.441Z"},"basePath":".","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Getting Started","level":"1.2","depth":1,"next":{"title":"Configuration","level":"1.3","depth":1,"path":"configuration.md","ref":"configuration.md","articles":[]},"previous":{"title":"Introduction","level":"1.1","depth":1,"path":"README.md","ref":"README.md","articles":[]},"articles":[{"title":"Clone the repository","level":"1.2.1","depth":2,"anchor":"#optional-clone-the-repository","path":"getting-started.md","ref":"getting-started.md#optional-clone-the-repository","articles":[]},{"title":"Setup the database","level":"1.2.2","depth":2,"anchor":"#optional-setup-the-database","path":"getting-started.md","ref":"getting-started.md#optional-setup-the-database","articles":[]},{"title":"Setup the environment","level":"1.2.3","depth":2,"anchor":"#setup-the-environment","path":"getting-started.md","ref":"getting-started.md#setup-the-environment","articles":[]}],"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["theme-api"],"pluginsConfig":{"theme-api":{"languages":[],"split":true,"theme":"light"},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"embedFonts":false},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"getting-started.md","mtime":"2023-03-23T09:59:52.881Z","type":"markdown"},"gitbook":{"version":"4.0.4","time":"2023-03-23T10:00:06.863Z"},"basePath":".","book":{"language":""}});
         });
     </script>
 </div>

@@ -30,4 +30,9 @@ setup(
         "psycopg2 == 2.9.3",
         f"matsim_tools @ file://localhost/{os.getcwd()}/resources/setup/matsim_tools-1.0.5-py3-none-any.whl"
     ],
+    entry_points={
+        'console_scripts': [
+            'setDbUser=furbain.config:cmdSetDatabaseUser',
+        ],
+    },
 )
