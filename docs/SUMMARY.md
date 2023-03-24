@@ -13,6 +13,15 @@
     * [Database structure](database.md#database-structure)
     * [Matsim files and tables](database.md#matsim-files-and-tables)
 
+* [Database tools](databaseTools.md#database-tools)
+    * [createDatabase()](databaseTools.md#createdatabasedatabasename)
+    * [selectDatabase()](databaseTools.md#selectdatabasedatabasename-verbosetrue)
+    * [executeSQLQueryOnDatabase()](databaseTools.md#executesqlqueryondatabasequerystring)
+    * [getAllDatabasesProjects()](databaseTools.md#getalldatabasesprojects)
+    * [getTablesFromDatabase()](databaseTools.md#gettablesfromdatabase)
+    * [deleteTable()](databaseTools.md#deletetabletablename)
+    * [getDatabaseTableDataframe()](databaseTools.md#getdatabasetabledataframetablename)
+
 * [Converter](converter.md#converter)
     * [How to](converter.md#how-to)
     * [Specificities](converter.md#specificities)
@@ -22,15 +31,6 @@
     * [agentActivity()](queries.md#agentactivity)
     * [odMatrix()](queries.md#odmatrix)
     * [activitySequences()](queries.md#activitysequences)
-
-* [Database tools](databaseTools.md#database-tools)
-    * [createDatabase()](databaseTools.md#createdatabasedatabasename)
-    * [selectDatabase()](databaseTools.md#selectdatabasedatabasename-verbosetrue)
-    * [executeSQLQueryOnDatabase()](databaseTools.md#executesqlqueryondatabasequerystring)
-    * [getAllDatabasesProjects()](databaseTools.md#getalldatabasesprojects)
-    * [getTablesFromDatabase()](databaseTools.md#gettablesfromdatabase)
-    * [deleteTable()](databaseTools.md#deletetabletablename)
-    * [getDatabaseTableDataframe()](databaseTools.md#getdatabasetabledataframetablename)
 
 * [Example](example.md)
 
