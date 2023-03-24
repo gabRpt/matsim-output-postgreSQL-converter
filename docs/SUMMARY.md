@@ -8,6 +8,7 @@
     * [Setup the environment](getting-started.md#setup-the-environment)
 
 * [Configuration](configuration.md)
+* [CLI](cli.md)
 
 * [Database](database.md#database)
     * [Database structure](database.md#database-structure)

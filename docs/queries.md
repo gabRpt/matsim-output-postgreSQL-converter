@@ -114,6 +114,8 @@ ___
 {% method %}
 _Get the activity sequences of agents during given timespan and zone_
 
+**MULTIPROCESSING IS UNSTABLE, YOU SHOULD USE THIS FUNCTION ALONE IN A SCRIPT**
+
 ```python
 activitySequences(filePath, startTime='00:00:00', endTime='32:00:00', interval=15, batchSize=10, createTableInDatabase=False, nbAgentsToProcess=-1)
 ```
