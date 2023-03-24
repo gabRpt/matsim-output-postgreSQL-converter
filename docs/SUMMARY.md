@@ -32,6 +32,10 @@
     * [odMatrix()](queries.md#odmatrix)
     * [activitySequences()](queries.md#activitysequences)
 
+* [Miscellaneous](miscellaneous.md#miscellaneous)
+    * [Create geojson file](miscellaneous.md#create-geojson-file)
+    * [Convert the EPSG of a geojson file](miscellaneous.md#convert-the-epsg-of-a-geojson-file)
+
 * [Example](example.md)
 
 * [Documentation](documentation.md)
