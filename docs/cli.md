@@ -11,3 +11,6 @@ ___
 | -P | port | Set the port to connect to the database |
 | -s | SRID | Set the SRID of the database |
 | -o | simulationOutputPath | Set the simulation output path |
+
+Usage example :
+`furbain -u aaaaa -p bbbb`
