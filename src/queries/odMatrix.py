@@ -57,9 +57,12 @@ def odMatrix(filePath, startTime='00:00:00', endTime='32:00:00', ignoreArrivalTi
                 
         for i in range(nbFeatures):
             startingFeature = features[i]
-            startingGeometry = startingFeature["geometry"]
-            startingCoordinates = startingGeometry["coordinates"]
-            startingGeometryType = startingGeometry["type"]
+            startingCoordinates, startingGeometryType = tools.parseFeature(startingFeature)
+            
+            if startingCoordinates is None or startingGeometryType is None:
+                print(f"Skipped feature (origin {i}) of the list (starting at 0) because no geometry or coordinates were found")
+                continue
+            
             startingPolygon = tools.formatGeoJSONPolygonToPostgisPolygon(startingCoordinates, startingGeometryType, geojsonEpsg)
 
             # Adding coordinates of the centroid of the zone
@@ -69,9 +72,11 @@ def odMatrix(filePath, startTime='00:00:00', endTime='32:00:00', ignoreArrivalTi
             # creating OD matrix of count of trips between each points
             for j in range(nbFeatures):
                 endingFeature = features[j]
-                endingGeometry = endingFeature["geometry"]
-                endingCoordinates = endingGeometry["coordinates"]
-                endingGeometryType = endingGeometry["type"]
+                endingCoordinates, endingGeometryType = tools.parseFeature(endingFeature)
+            
+                if endingCoordinates is None or endingGeometryType is None:
+                    print(f"Skipped feature (destination {j}) of the list (starting at 0) because no geometry or coordinates were found")
+                    continue
 
                 endingPolygon = tools.formatGeoJSONPolygonToPostgisPolygon(endingCoordinates, endingGeometryType, geojsonEpsg)                    
                 

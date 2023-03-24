@@ -58,14 +58,16 @@ def agentActivity(filePath, startTime='00:00:00', endTime='32:00:00', strictTime
                                             and (end_time > :startTime or end_time is null)""")
         
         for i in range(nbFeatures):
-            currentFeature = features[i]
-            currentGeometry = currentFeature["geometry"]
-            currentCoordinates = currentGeometry["coordinates"]
-            currentGeometryType = currentGeometry["type"]
+            currentFeature = features[i]            
+            currentCoordinates, currentGeometryType = tools.parseFeature(currentFeature)
+            
+            if currentCoordinates is None or currentGeometryType is None:
+                print(f"Skipped feature {i} of the list (starting at 0) because no geometry or coordinates were found")
+                continue
+            
             currentPolygon = tools.formatGeoJSONPolygonToPostgisPolygon(currentCoordinates, currentGeometryType, geojsonEpsg)
             
             query = query.bindparams(currentPolygon=currentPolygon, startTime=startTime, endTime=endTime)
-            
             dataframe = pd.read_sql(query, conn)
             allZonesDataframes.append(dataframe)
     

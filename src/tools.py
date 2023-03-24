@@ -68,10 +68,11 @@ def formatGeoJSONPolygonToPostgisPolygon(coordinates, geometryType, epsg):
 
 
 # Return the EPSG of the geojson
-# if not found return the Arabesque default EPSG
+# if not found return the SRID of the database
 def getEPSGFromGeoJSON(gjson):
     epsg = None
-
+    dbSRID = config.getDatabaseSRID()
+    
     try:
         crs = gjson['crs']['properties']['name']
         
@@ -83,10 +84,13 @@ def getEPSGFromGeoJSON(gjson):
         
         if epsg is None:
             raise Exception("No EPSG code found in the GeoJSON file")
+        elif str(epsg) != dbSRID:
+            print(f"WARNING : The EPSG code of the GeoJSON file {epsg} is different from the EPSG code of the database {dbSRID}")
+            
 
     except:
-        print("No EPSG code found in the GeoJSON file")
-        epsg = config.ARABESQUE_DEFAULT_SRID
+        epsg = dbSRID
+        print(f"No EPSG code found in the GeoJSON file, the EPSG code of the database will be used ({epsg})")
 
     return epsg
 
@@ -94,3 +98,20 @@ def getEPSGFromGeoJSON(gjson):
 def chunker(seq, size):
     # from http://stackoverflow.com/a/434328
     return (seq[pos:pos + size] for pos in range(0, len(seq), size))
+
+# returns the coordinates and geometry type of the geojson feature
+def parseFeature(feature):
+    coordinates = None
+    geometryType = None
+    
+    geometry = feature["geometry"]
+    
+    if geometry is not None:
+        coordinates = geometry["coordinates"]
+        if coordinates is None or len(coordinates) == 0:
+            coordinates = None
+        else:
+            geometryType = geometry["type"]
+    
+    
+    return coordinates, geometryType
