@@ -32,7 +32,7 @@ setup(
     ],
     entry_points={
         'console_scripts': [
-            'setDbUser=furbain.config:cmdSetDatabaseUser',
+            'furbain=furbain.furbain:main',
         ],
     },
 )

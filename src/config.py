@@ -1,7 +1,6 @@
 import sqlalchemy.types as types
 import pathlib
 import json
-import argparse
 from os.path import isdir
 
 DB_DBNAME = ''
@@ -112,13 +111,6 @@ def setDatabaseUser(user):
 
 def getDatabaseUser():
     return getVariableInConfigurationFile('db_user')
-
-def cmdSetDatabaseUser(args=None):
-    parser = argparse.ArgumentParser(description='Set the database user')
-    parser.add_argument('user', help='The user to use to connect to the database')
-    args = parser.parse_args(args)
-    setDatabaseUser(args.user)
-    print('The database user has been set')
 
 
 # ----- Password -----
