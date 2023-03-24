@@ -147,7 +147,12 @@ def _getArabesqueDataframesFromODMatrix(odMatrix, zonesCentroids, geojsonEpsg):
 
 # generate the files for Arabesque
 def _generateArabesqueFiles(filePath, locationDf, flowDf):
+    if filePath[-1] != '/':
+        filePath += '/'
+    
     locationDf.to_csv(filePath + "location.csv", index=False)
     flowDf.to_csv(filePath + "flow.csv", index=False)
+    
+    print(f"Arabesque files generated, you can find them in {filePath}")
     
     return 1

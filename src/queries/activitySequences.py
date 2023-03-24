@@ -24,9 +24,10 @@ def activitySequences(filePath, startTime='00:00:00', endTime='32:00:00', interv
         
         geojsonEpsg = tools.getEPSGFromGeoJSON(gjson)
                 
-        geometry = gjson["features"][0]["geometry"]
-        coordinates = geometry["coordinates"]
-        geometryType = geometry["type"]
+        coordinates, geometryType = tools.parseFeature(gjson["features"][0])
+        if coordinates is None or geometryType is None:
+            raise(f"ERROR : No geometry or coordinates were found")
+        
         polygon = tools.formatGeoJSONPolygonToPostgisPolygon(coordinates, geometryType, geojsonEpsg)
 
         # QUERIES
