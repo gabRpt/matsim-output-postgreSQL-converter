@@ -2,6 +2,10 @@
 
 ___
 
+```python
+from furbain import config
+```
+___
 
 ## Introduction
 
@@ -16,41 +20,41 @@ To modifiy these informations you can either edit the file manually or use the f
 
 ### User
 
-`setDatabaseUser(user)` : sets the database user. (string default: `postgres`)  
-`getDatabaseUser()` : returns the database user.  
+`config.setDatabaseUser(user)` : sets the database user. (string default: `postgres`)  
+`config.getDatabaseUser()` : returns the database user.  
 
 
 ### Password
 
-`setDatabasePassword(password)` : sets the database password. (string default: `postgres`)  
-`getDatabasePassword()` : returns the database password.  
+`config.setDatabasePassword(password)` : sets the database password. (string default: `postgres`)  
+`config.getDatabasePassword()` : returns the database password.  
 
 
 ### Host
 
-`setDatabaseHost(host)` : sets the database host. (string default: `localhost`)  
-`getDatabaseHost()` : returns the database host.  
+`config.setDatabaseHost(host)` : sets the database host. (string default: `localhost`)  
+`config.getDatabaseHost()` : returns the database host.  
 
 ### Port
 
-`setDatabasePort(port)` : sets the database port. (string default: `5432`)  
-`getDatabasePort()` : returns the database port.  
+`config.setDatabasePort(port)` : sets the database port. (string default: `5432`)  
+`config.getDatabasePort()` : returns the database port.  
 
 ### SRID
 
-`setDatabaseSRID(srid)` : sets the database SRID. (string default: `4326`)  
-`getDatabaseSRID()` : returns the database SRID.  
+`config.setDatabaseSRID(srid)` : sets the database SRID. (string default: `4326`)  
+`config.getDatabaseSRID()` : returns the database SRID.  
 
 ### Simulation output path
 
-`setSimulationOutputPath(path)` : sets the path to the MATSim output files. (string default: `C:/Users/name/Documents/matsimOutput/simulation_output`)  
+`config.setSimulationOutputPath(path)` : sets the path to the MATSim output files. (string default: `C:/Users/name/Documents/matsimOutput/simulation_output`)  
 **On windows, do not use a backslash `\` but simple slash `/` in the path**  
 `getSimulationOutputPath()` : returns the path to the MATSim output files.  
 
 ## Set or get a variable in the configuration file
 
-`setVariableInConfigurationFile(name, value)` : sets a variable in the configuration file.  
-`getVariableInConfigurationFile(name)` : returns a variable in the configuration file.  
+`config.setVariableInConfigurationFile(name, value)` : sets a variable in the configuration file.  
+`config.getVariableInConfigurationFile(name)` : returns a variable in the configuration file.  
 
 Here are the variables you can set with their default values :
 

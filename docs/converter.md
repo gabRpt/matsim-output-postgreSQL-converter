@@ -48,6 +48,28 @@ from furbain import converter
 from furbain import config
 
 
+def main():
+    overallStartTime = datetime.now()
+
+    config.setSimulationOutputPath('C:/Users/name/Documents/Furbain/data/matsim_nantes_edgt_20p/simulation_output')
+
+    tablesToImport = [
+        "vehicles",
+        "households",
+        "persons",
+        "networkLinks",
+        "facilities",
+        "trips",
+        "activities",
+        "events",
+        "buildings",
+    ]
+
+    print("========== STARTING IMPORTATIONS ==========")
+    for table in tablesToImport:
+        launchImport(table)
+    print(f"========== IMPORTED IN {str(datetime.now() - overallStartTime)[:-5]} ==========")
+
 def launchImport(name):
     currentStartTime = datetime.now()
     print(f"Importing {name}...", end="", flush=True)
@@ -73,24 +95,6 @@ def launchImport(name):
     
     print(f" Done in {str(datetime.now() - currentStartTime)[:-5]} !")
 
-
-config.setSimulationOutputPath('C:/Users/name/Documents/Furbain/data/matsim_nantes_edgt_20p/simulation_output')
-
-tablesToImport = [
-    "vehicles",
-    "households",
-    "persons",
-    "networkLinks",
-    "facilities",
-    "trips",
-    "activities",
-    "events",
-    "buildings",
-]
-
-print("========== STARTING IMPORTATIONS ==========")
-for table in tablesToImport:
-    launchImport(table)
-print(f"========== IMPORTED IN {str(datetime.now() - overallStartTime)[:-5]} ==========")
+main()
 
 ```

@@ -578,25 +578,28 @@
                                 
                                 <h1 id="configuration">Configuration</h1>
 <hr>
+<pre><code class="lang-python"><span class="hljs-keyword">from</span> furbain <span class="hljs-keyword">import</span> config
+</code></pre>
+<hr>
 <h2 id="introduction">Introduction</h2>
 <p>Once you have opened your IDE, you can create a new python file and write <code>import furbain</code> and execute it. This will generate the configuration file.  </p>
 <p>On windows, furbain&apos;s configuration file is located at <code>C:\Users\name\.furbain\config.json</code>.<br>This file contains the database credentials and the path to the MATSim output files.  </p>
 <p>To modifiy these informations you can either edit the file manually or use the following functions:</p>
 <h2 id="functions">Functions</h2>
 <h3 id="user">User</h3>
-<p><code>setDatabaseUser(user)</code> : sets the database user. (string default: <code>postgres</code>)<br><code>getDatabaseUser()</code> : returns the database user.  </p>
+<p><code>config.setDatabaseUser(user)</code> : sets the database user. (string default: <code>postgres</code>)<br><code>config.getDatabaseUser()</code> : returns the database user.  </p>
 <h3 id="password">Password</h3>
-<p><code>setDatabasePassword(password)</code> : sets the database password. (string default: <code>postgres</code>)<br><code>getDatabasePassword()</code> : returns the database password.  </p>
+<p><code>config.setDatabasePassword(password)</code> : sets the database password. (string default: <code>postgres</code>)<br><code>config.getDatabasePassword()</code> : returns the database password.  </p>
 <h3 id="host">Host</h3>
-<p><code>setDatabaseHost(host)</code> : sets the database host. (string default: <code>localhost</code>)<br><code>getDatabaseHost()</code> : returns the database host.  </p>
+<p><code>config.setDatabaseHost(host)</code> : sets the database host. (string default: <code>localhost</code>)<br><code>config.getDatabaseHost()</code> : returns the database host.  </p>
 <h3 id="port">Port</h3>
-<p><code>setDatabasePort(port)</code> : sets the database port. (string default: <code>5432</code>)<br><code>getDatabasePort()</code> : returns the database port.  </p>
+<p><code>config.setDatabasePort(port)</code> : sets the database port. (string default: <code>5432</code>)<br><code>config.getDatabasePort()</code> : returns the database port.  </p>
 <h3 id="srid">SRID</h3>
-<p><code>setDatabaseSRID(srid)</code> : sets the database SRID. (string default: <code>4326</code>)<br><code>getDatabaseSRID()</code> : returns the database SRID.  </p>
+<p><code>config.setDatabaseSRID(srid)</code> : sets the database SRID. (string default: <code>4326</code>)<br><code>config.getDatabaseSRID()</code> : returns the database SRID.  </p>
 <h3 id="simulation-output-path">Simulation output path</h3>
-<p><code>setSimulationOutputPath(path)</code> : sets the path to the MATSim output files. (string default: <code>C:/Users/name/Documents/matsimOutput/simulation_output</code>)<br><strong>On windows, do not use a backslash <code>\</code> but simple slash <code>/</code> in the path</strong><br><code>getSimulationOutputPath()</code> : returns the path to the MATSim output files.  </p>
+<p><code>config.setSimulationOutputPath(path)</code> : sets the path to the MATSim output files. (string default: <code>C:/Users/name/Documents/matsimOutput/simulation_output</code>)<br><strong>On windows, do not use a backslash <code>\</code> but simple slash <code>/</code> in the path</strong><br><code>getSimulationOutputPath()</code> : returns the path to the MATSim output files.  </p>
 <h2 id="set-or-get-a-variable-in-the-configuration-file">Set or get a variable in the configuration file</h2>
-<p><code>setVariableInConfigurationFile(name, value)</code> : sets a variable in the configuration file.<br><code>getVariableInConfigurationFile(name)</code> : returns a variable in the configuration file.  </p>
+<p><code>config.setVariableInConfigurationFile(name, value)</code> : sets a variable in the configuration file.<br><code>config.getVariableInConfigurationFile(name)</code> : returns a variable in the configuration file.  </p>
 <p>Here are the variables you can set with their default values :</p>
 <pre><code class="lang-json">{
     <span class="hljs-string">&quot;db_host&quot;</span>: <span class="hljs-string">&quot;localhost&quot;</span>,
@@ -653,7 +656,7 @@
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Configuration","level":"1.3","depth":1,"next":{"title":"Example","level":"1.9","depth":1,"path":"example.md","ref":"example.md","articles":[]},"previous":{"title":"Getting Started","level":"1.2","depth":1,"path":"getting-started.md","ref":"getting-started.md","articles":[{"title":"Clone the repository","level":"1.2.1","depth":2,"anchor":"#optional-clone-the-repository","path":"getting-started.md","ref":"getting-started.md#optional-clone-the-repository","articles":[]},{"title":"Setup the database","level":"1.2.2","depth":2,"anchor":"#optional-setup-the-database","path":"getting-started.md","ref":"getting-started.md#optional-setup-the-database","articles":[]},{"title":"Setup the environment","level":"1.2.3","depth":2,"anchor":"#setup-the-environment","path":"getting-started.md","ref":"getting-started.md#setup-the-environment","articles":[]}]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["theme-api"],"pluginsConfig":{"theme-api":{"languages":[],"split":true,"theme":"light"},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"embedFonts":false},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"configuration.md","mtime":"2023-03-21T10:57:37.114Z","type":"markdown"},"gitbook":{"version":"4.0.4","time":"2023-03-24T15:13:54.198Z"},"basePath":".","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Configuration","level":"1.3","depth":1,"next":{"title":"Example","level":"1.9","depth":1,"path":"example.md","ref":"example.md","articles":[]},"previous":{"title":"Getting Started","level":"1.2","depth":1,"path":"getting-started.md","ref":"getting-started.md","articles":[{"title":"Clone the repository","level":"1.2.1","depth":2,"anchor":"#optional-clone-the-repository","path":"getting-started.md","ref":"getting-started.md#optional-clone-the-repository","articles":[]},{"title":"Setup the database","level":"1.2.2","depth":2,"anchor":"#optional-setup-the-database","path":"getting-started.md","ref":"getting-started.md#optional-setup-the-database","articles":[]},{"title":"Setup the environment","level":"1.2.3","depth":2,"anchor":"#setup-the-environment","path":"getting-started.md","ref":"getting-started.md#setup-the-environment","articles":[]}]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["theme-api"],"pluginsConfig":{"theme-api":{"languages":[],"split":true,"theme":"light"},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"embedFonts":false},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"configuration.md","mtime":"2023-03-24T15:18:40.634Z","type":"markdown"},"gitbook":{"version":"4.0.4","time":"2023-03-24T15:29:52.672Z"},"basePath":".","book":{"language":""}});
         });
     </script>
 </div>

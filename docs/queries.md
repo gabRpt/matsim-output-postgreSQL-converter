@@ -35,7 +35,8 @@ agentActivity(filePath, startTime='00:00:00', endTime='32:00:00', strictTime=Fal
 {% common %}
 __Output :__
 
-Returns a list of dataframes, one dataframe per zone.
+Returns a list of dataframes, one dataframe per zone.  
+**The order of the dataframes is the order of the zones in the geojson file.**
 
 * `id` : id of the activity
 * `type` : type of the activity
